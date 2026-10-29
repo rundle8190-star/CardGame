@@ -1,0 +1,44 @@
+# Unity 자동 생성 폴더 (공유하지 않음)
+/[Ll]ibrary/
+/[Tt]emp/
+/[Oo]bj/
+/[Bb]uild/
+/[Bb]uilds/
+/[Ll]ogs/
+/[Uu]ser[Ss]ettings/
+/[Mm]emoryCaptures/
+/[Rr]ecordings/
+
+# IDE
+.vs/
+.idea/
+*.csproj
+*.sln
+*.suo
+*.user
+*.pidb
+*.booproj
+*.svd
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+
+# 기타
+*.apk
+*.aab
+*.unitypackage
+crashlytics-build.properties
+.DS_Store
+Thumbs.db
+
+# 엑셀 임시 잠금 파일
+~$*.xlsx
+
+# Claude 개인 설정
+.claude/settings.local.json
+
+# 추가 (git 설정 시)
+*.unityproj
+*.tmp
+.vscode/

@@ -1,0 +1,1218 @@
+{
+  "source": "Design/card_battle_rulebook_v0.7.3.xlsx",
+  "version": "v0.7.3",
+  "cards": [
+    {
+      "id": "mace",
+      "name": "철퇴",
+      "category": "weapon",
+      "attackType": "melee",
+      "tags": [
+        "blunt"
+      ],
+      "power": 3,
+      "hits": 1,
+      "guard": 0,
+      "pierce": 0,
+      "range": 1,
+      "large": false,
+      "consumable": null,
+      "description": "스턴 (방어로 막지 못함)"
+    },
+    {
+      "id": "longsword",
+      "name": "장검",
+      "category": "weapon",
+      "attackType": "melee",
+      "tags": [
+        "slash"
+      ],
+      "power": 5,
+      "hits": 1,
+      "guard": 0,
+      "pierce": 0,
+      "range": 1,
+      "large": false,
+      "consumable": null,
+      "description": "기본 무기"
+    },
+    {
+      "id": "dagger",
+      "name": "단검",
+      "category": "weapon",
+      "attackType": "melee",
+      "tags": [
+        "slash"
+      ],
+      "power": 2,
+      "hits": 2,
+      "guard": 0,
+      "pierce": 0,
+      "range": 1,
+      "large": false,
+      "consumable": null,
+      "description": "연속(2)"
+    },
+    {
+      "id": "spear",
+      "name": "창",
+      "category": "weapon",
+      "attackType": "melee",
+      "tags": [
+        "pierce"
+      ],
+      "power": 5,
+      "hits": 1,
+      "guard": 0,
+      "pierce": 2,
+      "range": 1,
+      "large": false,
+      "consumable": null,
+      "description": "관통(2)"
+    },
+    {
+      "id": "hand_axe",
+      "name": "손도끼",
+      "category": "weapon",
+      "attackType": "melee",
+      "tags": [
+        "slash"
+      ],
+      "power": 4,
+      "hits": 1,
+      "guard": 0,
+      "pierce": 0,
+      "range": 1,
+      "large": false,
+      "consumable": null,
+      "description": "3번 슬롯이면 +4"
+    },
+    {
+      "id": "serrated_sword",
+      "name": "톱날 검",
+      "category": "weapon",
+      "attackType": "melee",
+      "tags": [
+        "slash"
+      ],
+      "power": 4,
+      "hits": 1,
+      "guard": 0,
+      "pierce": 0,
+      "range": 1,
+      "large": false,
+      "consumable": null,
+      "description": "출혈 2"
+    },
+    {
+      "id": "venom_dagger",
+      "name": "독침 단검",
+      "category": "weapon",
+      "attackType": "melee",
+      "tags": [
+        "slash"
+      ],
+      "power": 1,
+      "hits": 2,
+      "guard": 0,
+      "pierce": 0,
+      "range": 1,
+      "large": false,
+      "consumable": null,
+      "description": "연속(2), 피해가 들어가면 독 +1"
+    },
+    {
+      "id": "battle_axe",
+      "name": "전투 도끼",
+      "category": "weapon",
+      "attackType": "melee",
+      "tags": [
+        "large",
+        "slash"
+      ],
+      "power": 11,
+      "hits": 1,
+      "guard": 0,
+      "pierce": 0,
+      "range": 1,
+      "large": true,
+      "consumable": null,
+      "description": "2슬롯 점유, 한 번 행동"
+    },
+    {
+      "id": "war_hammer",
+      "name": "전투 망치",
+      "category": "weapon",
+      "attackType": "melee",
+      "tags": [
+        "large",
+        "blunt"
+      ],
+      "power": 9,
+      "hits": 1,
+      "guard": 0,
+      "pierce": 0,
+      "range": 1,
+      "large": true,
+      "consumable": null,
+      "description": "2슬롯 점유, 스턴 (방어로 막지 못함)"
+    },
+    {
+      "id": "halberd",
+      "name": "도끼창",
+      "category": "weapon",
+      "attackType": "melee",
+      "tags": [
+        "large",
+        "pierce"
+      ],
+      "power": 10,
+      "hits": 1,
+      "guard": 0,
+      "pierce": 4,
+      "range": 1,
+      "large": true,
+      "consumable": null,
+      "description": "2슬롯 점유, 관통(4)"
+    },
+    {
+      "id": "rapier",
+      "name": "레이피어",
+      "category": "weapon",
+      "attackType": "melee",
+      "tags": [
+        "thrust"
+      ],
+      "power": 4,
+      "hits": 1,
+      "guard": 0,
+      "pierce": 0,
+      "range": 2,
+      "large": false,
+      "consumable": null,
+      "description": "사거리 2 (최종 거리 1~2에서 명중)"
+    },
+    {
+      "id": "lance",
+      "name": "기병창",
+      "category": "weapon",
+      "attackType": "melee",
+      "tags": [
+        "large",
+        "pierce"
+      ],
+      "power": 9,
+      "hits": 1,
+      "guard": 0,
+      "pierce": 3,
+      "range": 1,
+      "large": true,
+      "consumable": null,
+      "description": "2슬롯 점유, 도약(3), 이동한 칸당 +2, 관통(3)"
+    },
+    {
+      "id": "charge_axe",
+      "name": "돌격 도끼",
+      "category": "weapon",
+      "attackType": "melee",
+      "tags": [
+        "slash"
+      ],
+      "power": 4,
+      "hits": 1,
+      "guard": 0,
+      "pierce": 0,
+      "range": 1,
+      "large": false,
+      "consumable": null,
+      "description": "도약(1), 이동했으면 +3"
+    },
+    {
+      "id": "assassin_dagger",
+      "name": "암살 단검",
+      "category": "weapon",
+      "attackType": "melee",
+      "tags": [
+        "slash"
+      ],
+      "power": 1,
+      "hits": 2,
+      "guard": 0,
+      "pierce": 0,
+      "range": 1,
+      "large": false,
+      "consumable": null,
+      "description": "연속(2), 등 뒤 공격이면 추가 +2"
+    },
+    {
+      "id": "crossbow",
+      "name": "석궁",
+      "category": "weapon",
+      "attackType": "line",
+      "tags": [
+        "shot"
+      ],
+      "power": 4,
+      "hits": 1,
+      "guard": 0,
+      "pierce": 1,
+      "range": null,
+      "large": false,
+      "consumable": {
+        "id": "arrow",
+        "name": "화살",
+        "perUse": 1
+      },
+      "description": "직선, 관통(1)"
+    },
+    {
+      "id": "hunting_bow",
+      "name": "사냥 활",
+      "category": "weapon",
+      "attackType": "line",
+      "tags": [
+        "shot"
+      ],
+      "power": 5,
+      "hits": 1,
+      "guard": 0,
+      "pierce": 0,
+      "range": null,
+      "large": false,
+      "consumable": {
+        "id": "arrow",
+        "name": "화살",
+        "perUse": 1
+      },
+      "description": "직선"
+    },
+    {
+      "id": "longbow",
+      "name": "장궁",
+      "category": "weapon",
+      "attackType": "line",
+      "tags": [
+        "shot"
+      ],
+      "power": 8,
+      "hits": 1,
+      "guard": 0,
+      "pierce": 0,
+      "range": null,
+      "large": false,
+      "consumable": {
+        "id": "arrow",
+        "name": "화살",
+        "perUse": 2
+      },
+      "description": "직선, 화살 2개 소비"
+    },
+    {
+      "id": "javelin",
+      "name": "투창",
+      "category": "weapon",
+      "attackType": "line",
+      "tags": [
+        "throw",
+        "line"
+      ],
+      "power": 8,
+      "hits": 1,
+      "guard": 0,
+      "pierce": 0,
+      "range": null,
+      "large": false,
+      "consumable": null,
+      "description": "직선 원거리(거리 2 이상), 던지면 땅에 떨어짐(회수 전 사용 불가)"
+    },
+    {
+      "id": "throwing_axe",
+      "name": "도끼 투척",
+      "category": "weapon",
+      "attackType": "throw",
+      "tags": [
+        "throw"
+      ],
+      "power": 9,
+      "hits": 1,
+      "guard": 0,
+      "pierce": 0,
+      "range": null,
+      "large": false,
+      "consumable": {
+        "id": "throwing_axe",
+        "name": "투척 도끼",
+        "perUse": 1
+      },
+      "description": "포물선"
+    },
+    {
+      "id": "poison_jar",
+      "name": "독 단지 투척",
+      "category": "weapon",
+      "attackType": "throw",
+      "tags": [
+        "throw"
+      ],
+      "power": 0,
+      "hits": 1,
+      "guard": 0,
+      "pierce": 0,
+      "range": null,
+      "large": false,
+      "consumable": {
+        "id": "poison_jar",
+        "name": "독 단지",
+        "perUse": 1
+      },
+      "description": "포물선, 제자리 상대에게 독 +2(방어 무시), 던진 칸에 독 장판(3슬롯)"
+    },
+    {
+      "id": "firebomb",
+      "name": "화염병 투척",
+      "category": "weapon",
+      "attackType": "throw",
+      "tags": [
+        "throw"
+      ],
+      "power": 4,
+      "hits": 1,
+      "guard": 0,
+      "pierce": 9,
+      "range": null,
+      "large": false,
+      "consumable": {
+        "id": "firebomb",
+        "name": "화염병",
+        "perUse": 1
+      },
+      "description": "포물선, 피해 4(방어 무시), 던진 칸에 불 장판(3슬롯, 슬롯 끝마다 피해 2)"
+    },
+    {
+      "id": "throwing_stone",
+      "name": "돌 투척",
+      "category": "weapon",
+      "attackType": "throw",
+      "tags": [
+        "throw"
+      ],
+      "power": 3,
+      "hits": 1,
+      "guard": 0,
+      "pierce": 0,
+      "range": null,
+      "large": false,
+      "consumable": {
+        "id": "sling_stone",
+        "name": "팔매 돌",
+        "perUse": 1
+      },
+      "description": "포물선, 스턴 (방어로 막지 못함)"
+    },
+    {
+      "id": "throwing_dagger",
+      "name": "단검 투척",
+      "category": "weapon",
+      "attackType": "throw",
+      "tags": [
+        "throw",
+        "slash"
+      ],
+      "power": 2,
+      "hits": 3,
+      "guard": 0,
+      "pierce": 0,
+      "range": null,
+      "large": false,
+      "consumable": {
+        "id": "throwing_dagger",
+        "name": "투척 단검",
+        "perUse": 3
+      },
+      "description": "포물선, 연속(3), 타마다 1개 소비"
+    },
+    {
+      "id": "iron_shield",
+      "name": "철 방패",
+      "category": "shield",
+      "attackType": null,
+      "tags": [
+        "guard"
+      ],
+      "power": 0,
+      "hits": 1,
+      "guard": 7,
+      "pierce": 0,
+      "range": null,
+      "large": false,
+      "consumable": null,
+      "description": "방어 7, 기본형"
+    },
+    {
+      "id": "wooden_shield",
+      "name": "나무 방패",
+      "category": "shield",
+      "attackType": null,
+      "tags": [
+        "guard"
+      ],
+      "power": 0,
+      "hits": 1,
+      "guard": 5,
+      "pierce": 0,
+      "range": null,
+      "large": false,
+      "consumable": null,
+      "description": "방어 5, 철 방패의 하위 버전"
+    },
+    {
+      "id": "spiked_shield",
+      "name": "가시 방패",
+      "category": "shield",
+      "attackType": null,
+      "tags": [
+        "guard"
+      ],
+      "power": 0,
+      "hits": 1,
+      "guard": 4,
+      "pierce": 0,
+      "range": null,
+      "large": false,
+      "consumable": null,
+      "description": "방어 4, 상대 공격이 맞을 때마다(연속 공격은 타마다) 반사 2"
+    },
+    {
+      "id": "tower_shield",
+      "name": "탑 방패",
+      "category": "shield",
+      "attackType": null,
+      "tags": [
+        "guard"
+      ],
+      "power": 0,
+      "hits": 1,
+      "guard": 9,
+      "pierce": 0,
+      "range": null,
+      "large": false,
+      "consumable": null,
+      "description": "방어 9, 대형 무기에도 방어 유지, 경직"
+    },
+    {
+      "id": "parry",
+      "name": "받아넘기기",
+      "category": "shield",
+      "attackType": null,
+      "tags": [
+        "guard"
+      ],
+      "power": 0,
+      "hits": 1,
+      "guard": 3,
+      "pierce": 0,
+      "range": null,
+      "large": false,
+      "consumable": null,
+      "description": "방어 3, 공격을 받으면 다음 슬롯 무기 +2"
+    },
+    {
+      "id": "roll",
+      "name": "구르기",
+      "category": "move",
+      "attackType": null,
+      "tags": [
+        "skill"
+      ],
+      "power": 0,
+      "hits": 1,
+      "guard": 0,
+      "pierce": 0,
+      "range": null,
+      "large": false,
+      "consumable": null,
+      "description": "앞 1칸, 붙어 있으면 상대 뒤 칸으로 넘음. 이 슬롯은 공격 불가"
+    },
+    {
+      "id": "dodge",
+      "name": "회피",
+      "category": "move",
+      "attackType": null,
+      "tags": [
+        "skill"
+      ],
+      "power": 0,
+      "hits": 1,
+      "guard": 0,
+      "pierce": 0,
+      "range": null,
+      "large": false,
+      "consumable": null,
+      "description": "뒤로 1칸"
+    },
+    {
+      "id": "retreat",
+      "name": "후퇴",
+      "category": "move",
+      "attackType": null,
+      "tags": [
+        "skill"
+      ],
+      "power": 0,
+      "hits": 1,
+      "guard": 0,
+      "pierce": 0,
+      "range": null,
+      "large": false,
+      "consumable": null,
+      "description": "뒤로 2칸"
+    },
+    {
+      "id": "leap",
+      "name": "도약",
+      "category": "move",
+      "attackType": null,
+      "tags": [
+        "skill"
+      ],
+      "power": 0,
+      "hits": 1,
+      "guard": 0,
+      "pierce": 0,
+      "range": null,
+      "large": false,
+      "consumable": null,
+      "description": "앞으로 최대 2칸(넘기 불가), 다음 슬롯 근접 무기 ×1.5"
+    },
+    {
+      "id": "aim",
+      "name": "정조준",
+      "category": "buff",
+      "attackType": null,
+      "tags": [
+        "skill"
+      ],
+      "power": 0,
+      "hits": 1,
+      "guard": 0,
+      "pierce": 0,
+      "range": null,
+      "large": false,
+      "consumable": null,
+      "description": "다음 슬롯 직선 사격 ×2, 소모품 소비 없음"
+    },
+    {
+      "id": "apply_poison",
+      "name": "독 바르기",
+      "category": "buff",
+      "attackType": null,
+      "tags": [
+        "skill"
+      ],
+      "power": 0,
+      "hits": 1,
+      "guard": 0,
+      "pierce": 0,
+      "range": null,
+      "large": false,
+      "consumable": null,
+      "description": "강화(이번 전투 동안 누적): 내 무기가 피해를 줄 때마다 독 +1"
+    },
+    {
+      "id": "sharpen",
+      "name": "날 세우기",
+      "category": "buff",
+      "attackType": null,
+      "tags": [
+        "skill"
+      ],
+      "power": 0,
+      "hits": 1,
+      "guard": 0,
+      "pierce": 0,
+      "range": null,
+      "large": false,
+      "consumable": null,
+      "description": "강화(이번 전투 동안 누적): 내 참격 무기가 피해를 줄 때마다 출혈 +1"
+    },
+    {
+      "id": "execution_strike",
+      "name": "처형 일격",
+      "category": "weapon",
+      "attackType": "melee",
+      "tags": [
+        "slash"
+      ],
+      "power": 9,
+      "hits": 1,
+      "guard": 0,
+      "pierce": 9,
+      "range": 1,
+      "large": false,
+      "consumable": null,
+      "description": "관통(9)"
+    },
+    {
+      "id": "vital_strike",
+      "name": "급소 타격",
+      "category": "weapon",
+      "attackType": "melee",
+      "tags": [
+        "skill"
+      ],
+      "power": 2,
+      "hits": 1,
+      "guard": 0,
+      "pierce": 0,
+      "range": 1,
+      "large": false,
+      "consumable": null,
+      "description": "피해 2. 배후일 때만 스턴·치명"
+    },
+    {
+      "id": "shield_charge",
+      "name": "방패 돌진",
+      "category": "shield",
+      "attackType": null,
+      "tags": [
+        "guard",
+        "skill"
+      ],
+      "power": 0,
+      "hits": 1,
+      "guard": 4,
+      "pierce": 0,
+      "range": null,
+      "large": false,
+      "consumable": null,
+      "description": "방어 4, 도약(1)"
+    },
+    {
+      "id": "rend_wound",
+      "name": "상처 헤집기",
+      "category": "weapon",
+      "attackType": "melee",
+      "tags": [
+        "skill"
+      ],
+      "power": 0,
+      "hits": 1,
+      "guard": 0,
+      "pierce": 0,
+      "range": 1,
+      "large": false,
+      "consumable": null,
+      "description": "상대 출혈 스택 ×2 피해, 출혈 유지"
+    },
+    {
+      "id": "shove",
+      "name": "밀치기",
+      "category": "weapon",
+      "attackType": "melee",
+      "tags": [
+        "skill"
+      ],
+      "power": 0,
+      "hits": 1,
+      "guard": 0,
+      "pierce": 0,
+      "range": 1,
+      "large": false,
+      "consumable": null,
+      "description": "같은 슬롯 상대를 1칸 뒤로 밀기(벽이면 불가)"
+    },
+    {
+      "id": "first_aid",
+      "name": "응급 처치",
+      "category": "heal",
+      "attackType": null,
+      "tags": [
+        "skill"
+      ],
+      "power": 0,
+      "hits": 1,
+      "guard": 0,
+      "pierce": 0,
+      "range": null,
+      "large": false,
+      "consumable": null,
+      "description": "체력 +4"
+    },
+    {
+      "id": "bandage",
+      "name": "붕대 감기",
+      "category": "heal",
+      "attackType": null,
+      "tags": [
+        "skill"
+      ],
+      "power": 0,
+      "hits": 1,
+      "guard": 0,
+      "pierce": 0,
+      "range": null,
+      "large": false,
+      "consumable": null,
+      "description": "체력 +2, 출혈 해제"
+    },
+    {
+      "id": "barrier",
+      "name": "방벽",
+      "category": "shield",
+      "attackType": null,
+      "tags": [
+        "skill"
+      ],
+      "power": 0,
+      "hits": 1,
+      "guard": 4,
+      "pierce": 0,
+      "range": null,
+      "large": false,
+      "consumable": null,
+      "description": "이번 슬롯과 다음 슬롯에 방어 4"
+    },
+    {
+      "id": "counter_stance",
+      "name": "반격 자세",
+      "category": "counter",
+      "attackType": null,
+      "tags": [
+        "skill"
+      ],
+      "power": 0,
+      "hits": 1,
+      "guard": 0,
+      "pierce": 0,
+      "range": null,
+      "large": false,
+      "consumable": null,
+      "description": "근접 공격을 받으면 받은 피해만큼 상대에게 반사"
+    },
+    {
+      "id": "advance",
+      "name": "전진",
+      "category": "move",
+      "attackType": null,
+      "tags": [
+        "skill"
+      ],
+      "power": 0,
+      "hits": 1,
+      "guard": 0,
+      "pierce": 0,
+      "range": null,
+      "large": false,
+      "consumable": null,
+      "description": "앞으로 1칸 (상대를 넘지 못함)"
+    },
+    {
+      "id": "vault",
+      "name": "뛰어넘기",
+      "category": "move",
+      "attackType": null,
+      "tags": [
+        "skill"
+      ],
+      "power": 0,
+      "hits": 1,
+      "guard": 0,
+      "pierce": 0,
+      "range": null,
+      "large": false,
+      "consumable": null,
+      "description": "앞 1칸, 붙어 있으면(거리 1) 상대를 넘어 뒤 2칸에 착지. 이 슬롯은 공격 불가, 넘은 슬롯에는 근접이 닿지 않음"
+    },
+    {
+      "id": "retreat_shot",
+      "name": "물러서며 쏘기",
+      "category": "weapon",
+      "attackType": "line",
+      "tags": [
+        "shot"
+      ],
+      "power": 3,
+      "hits": 1,
+      "guard": 0,
+      "pierce": 0,
+      "range": null,
+      "large": false,
+      "consumable": {
+        "id": "arrow",
+        "name": "화살",
+        "perUse": 1
+      },
+      "description": "직선, 뒤로 1칸 이동한 뒤 사격"
+    },
+    {
+      "id": "regroup",
+      "name": "재정비",
+      "category": "draw",
+      "attackType": null,
+      "tags": [
+        "skill"
+      ],
+      "power": 0,
+      "hits": 1,
+      "guard": 0,
+      "pierce": 0,
+      "range": null,
+      "large": false,
+      "consumable": null,
+      "description": "다음 라운드 드로우 1"
+    },
+    {
+      "id": "stockpile",
+      "name": "비축",
+      "category": "shield",
+      "attackType": null,
+      "tags": [
+        "guard",
+        "skill"
+      ],
+      "power": 0,
+      "hits": 1,
+      "guard": 3,
+      "pierce": 0,
+      "range": null,
+      "large": false,
+      "consumable": null,
+      "description": "방어 3, 다음 라운드 드로우 1"
+    },
+    {
+      "id": "catch_breath",
+      "name": "숨 고르기",
+      "category": "heal",
+      "attackType": null,
+      "tags": [
+        "skill"
+      ],
+      "power": 0,
+      "hits": 1,
+      "guard": 0,
+      "pierce": 0,
+      "range": null,
+      "large": false,
+      "consumable": null,
+      "description": "체력 +2, 다음 라운드 드로우 1"
+    },
+    {
+      "id": "rapid_bow",
+      "name": "연발 활",
+      "category": "weapon",
+      "attackType": "line",
+      "tags": [
+        "shot"
+      ],
+      "power": 2,
+      "hits": 2,
+      "guard": 0,
+      "pierce": 0,
+      "range": null,
+      "large": false,
+      "consumable": {
+        "id": "arrow",
+        "name": "화살",
+        "perUse": 2
+      },
+      "description": "직선, 연속(2), 화살 2개 소비"
+    },
+    {
+      "id": "stun_bow",
+      "name": "스턴 활",
+      "category": "weapon",
+      "attackType": "line",
+      "tags": [
+        "shot",
+        "blunt"
+      ],
+      "power": 2,
+      "hits": 1,
+      "guard": 0,
+      "pierce": 0,
+      "range": null,
+      "large": false,
+      "consumable": {
+        "id": "arrow",
+        "name": "화살",
+        "perUse": 1
+      },
+      "description": "직선, 스턴 (방어로 막지 못함)"
+    },
+    {
+      "id": "bow_swing",
+      "name": "활 휘두르기",
+      "category": "weapon",
+      "attackType": "melee",
+      "tags": [
+        "skill"
+      ],
+      "power": 2,
+      "hits": 1,
+      "guard": 0,
+      "pierce": 0,
+      "range": 1,
+      "large": false,
+      "consumable": null,
+      "description": "근접, 같은 슬롯 상대를 1칸 밀기"
+    },
+    {
+      "id": "pike",
+      "name": "파이크",
+      "category": "weapon",
+      "attackType": "melee",
+      "tags": [
+        "large",
+        "pierce"
+      ],
+      "power": 9,
+      "hits": 1,
+      "guard": 0,
+      "pierce": 3,
+      "range": 2,
+      "large": true,
+      "consumable": null,
+      "description": "2슬롯 점유, 사거리 2, 관통(3)"
+    },
+    {
+      "id": "hook_sickle",
+      "name": "갈고리 낫",
+      "category": "weapon",
+      "attackType": "melee",
+      "tags": [
+        "skill"
+      ],
+      "power": 3,
+      "hits": 1,
+      "guard": 0,
+      "pierce": 0,
+      "range": 3,
+      "large": false,
+      "consumable": null,
+      "description": "사거리 3, 거리 2 이상이면 맞은 상대를 1칸 끌어옴"
+    },
+    {
+      "id": "twin_axes",
+      "name": "쌍도끼",
+      "category": "weapon",
+      "attackType": "melee",
+      "tags": [
+        "slash"
+      ],
+      "power": 4,
+      "hits": 2,
+      "guard": 0,
+      "pierce": 0,
+      "range": 1,
+      "large": false,
+      "consumable": null,
+      "description": "연속(2)"
+    },
+    {
+      "id": "flail",
+      "name": "쇠사슬 철퇴",
+      "category": "weapon",
+      "attackType": "melee",
+      "tags": [
+        "thrust"
+      ],
+      "power": 5,
+      "hits": 1,
+      "guard": 0,
+      "pierce": 0,
+      "range": 2,
+      "large": false,
+      "consumable": null,
+      "description": "사거리 2, 거리 1에서는 피해 −2"
+    },
+    {
+      "id": "whirlwind_slash",
+      "name": "회전 베기",
+      "category": "weapon",
+      "attackType": "melee",
+      "tags": [
+        "large",
+        "slash"
+      ],
+      "power": 6,
+      "hits": 1,
+      "guard": 0,
+      "pierce": 0,
+      "range": 1,
+      "large": true,
+      "consumable": null,
+      "description": "2슬롯 점유, 두 슬롯 모두 공격"
+    },
+    {
+      "id": "dash_thrust",
+      "name": "질주 창격",
+      "category": "weapon",
+      "attackType": "melee",
+      "tags": [
+        "large",
+        "pierce"
+      ],
+      "power": 5,
+      "hits": 1,
+      "guard": 0,
+      "pierce": 3,
+      "range": 1,
+      "large": true,
+      "consumable": null,
+      "description": "2슬롯 점유, 두 슬롯 모두 도약(1) + 공격, 이동했으면 +2, 관통(3)"
+    },
+    {
+      "id": "venom_fang",
+      "name": "독 이빨",
+      "category": "weapon",
+      "attackType": "melee",
+      "tags": [
+        "poison"
+      ],
+      "power": 2,
+      "hits": 1,
+      "guard": 0,
+      "pierce": 0,
+      "range": 1,
+      "large": false,
+      "consumable": null,
+      "description": "피해가 들어가면 독 +2"
+    },
+    {
+      "id": "load_poison_arrow",
+      "name": "독 화살 장전",
+      "category": "buff",
+      "attackType": null,
+      "tags": [
+        "skill"
+      ],
+      "power": 0,
+      "hits": 1,
+      "guard": 0,
+      "pierce": 0,
+      "range": null,
+      "large": false,
+      "consumable": null,
+      "description": "다음 슬롯 직선 사격이 피해를 주면 독 +2"
+    },
+    {
+      "id": "poison_burst",
+      "name": "독 터뜨리기",
+      "category": "weapon",
+      "attackType": "melee",
+      "tags": [
+        "skill"
+      ],
+      "power": 0,
+      "hits": 1,
+      "guard": 0,
+      "pierce": 0,
+      "range": 1,
+      "large": false,
+      "consumable": null,
+      "description": "상대 독 스택 ×2 피해, 독 유지"
+    },
+    {
+      "id": "poison_mist",
+      "name": "독 안개",
+      "category": "move",
+      "attackType": null,
+      "tags": [
+        "skill"
+      ],
+      "power": 0,
+      "hits": 1,
+      "guard": 0,
+      "pierce": 0,
+      "range": null,
+      "large": false,
+      "consumable": null,
+      "description": "뒤로 1칸, 떠난 칸에 독 장판(3슬롯)"
+    },
+    {
+      "id": "gather_strength",
+      "name": "힘 모으기",
+      "category": "buff",
+      "attackType": null,
+      "tags": [
+        "enhance"
+      ],
+      "power": 0,
+      "hits": 1,
+      "guard": 0,
+      "pierce": 0,
+      "range": null,
+      "large": false,
+      "consumable": null,
+      "description": "강화(이번 전투 동안 누적): 내 근접 무기의 한 타 피해 +1"
+    },
+    {
+      "id": "focus",
+      "name": "집중",
+      "category": "buff",
+      "attackType": null,
+      "tags": [
+        "enhance"
+      ],
+      "power": 0,
+      "hits": 1,
+      "guard": 0,
+      "pierce": 0,
+      "range": null,
+      "large": false,
+      "consumable": null,
+      "description": "강화(이번 전투 동안 누적): 내 직선 사격의 한 타 피해 +1"
+    },
+    {
+      "id": "toughen",
+      "name": "단련",
+      "category": "buff",
+      "attackType": null,
+      "tags": [
+        "enhance"
+      ],
+      "power": 0,
+      "hits": 1,
+      "guard": 0,
+      "pierce": 0,
+      "range": null,
+      "large": false,
+      "consumable": null,
+      "description": "강화(이번 전투 동안 누적): 내 방패 카드의 방어 +1"
+    },
+    {
+      "id": "throw_training",
+      "name": "투척 훈련",
+      "category": "buff",
+      "attackType": null,
+      "tags": [
+        "enhance"
+      ],
+      "power": 0,
+      "hits": 1,
+      "guard": 0,
+      "pierce": 0,
+      "range": null,
+      "large": false,
+      "consumable": null,
+      "description": "강화(이번 전투 동안 누적): 내 투척 무기의 피해 +2"
+    },
+    {
+      "id": "breathing",
+      "name": "호흡",
+      "category": "buff",
+      "attackType": null,
+      "tags": [
+        "enhance"
+      ],
+      "power": 0,
+      "hits": 1,
+      "guard": 0,
+      "pierce": 0,
+      "range": null,
+      "large": false,
+      "consumable": null,
+      "description": "강화(이번 전투 동안 누적): 라운드가 끝날 때마다 체력 +1"
+    }
+  ]
+}

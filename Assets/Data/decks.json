@@ -1,0 +1,493 @@
+{
+  "source": "Design/card_battle_rulebook_v0.7.3.xlsx",
+  "version": "v0.7.3",
+  "decks": [
+    {
+      "id": "balanced",
+      "name": "균형형",
+      "totalCards": 20,
+      "maxCopies": 2,
+      "valid": true,
+      "cards": [
+        {
+          "card": "mace",
+          "count": 1
+        },
+        {
+          "card": "longsword",
+          "count": 2
+        },
+        {
+          "card": "dagger",
+          "count": 1
+        },
+        {
+          "card": "rapier",
+          "count": 1
+        },
+        {
+          "card": "crossbow",
+          "count": 1
+        },
+        {
+          "card": "charge_axe",
+          "count": 1
+        },
+        {
+          "card": "shove",
+          "count": 1
+        },
+        {
+          "card": "iron_shield",
+          "count": 1
+        },
+        {
+          "card": "spiked_shield",
+          "count": 1
+        },
+        {
+          "card": "wooden_shield",
+          "count": 1
+        },
+        {
+          "card": "shield_charge",
+          "count": 1
+        },
+        {
+          "card": "roll",
+          "count": 1
+        },
+        {
+          "card": "dodge",
+          "count": 1
+        },
+        {
+          "card": "retreat",
+          "count": 1
+        },
+        {
+          "card": "leap",
+          "count": 2
+        },
+        {
+          "card": "advance",
+          "count": 1
+        },
+        {
+          "card": "first_aid",
+          "count": 1
+        },
+        {
+          "card": "regroup",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "id": "assault",
+      "name": "돌격형",
+      "totalCards": 20,
+      "maxCopies": 2,
+      "valid": true,
+      "cards": [
+        {
+          "card": "charge_axe",
+          "count": 2
+        },
+        {
+          "card": "mace",
+          "count": 1
+        },
+        {
+          "card": "longsword",
+          "count": 1
+        },
+        {
+          "card": "spear",
+          "count": 1
+        },
+        {
+          "card": "twin_axes",
+          "count": 1
+        },
+        {
+          "card": "dash_thrust",
+          "count": 1
+        },
+        {
+          "card": "leap",
+          "count": 2
+        },
+        {
+          "card": "advance",
+          "count": 2
+        },
+        {
+          "card": "roll",
+          "count": 2
+        },
+        {
+          "card": "retreat",
+          "count": 1
+        },
+        {
+          "card": "iron_shield",
+          "count": 1
+        },
+        {
+          "card": "shield_charge",
+          "count": 2
+        },
+        {
+          "card": "shove",
+          "count": 1
+        },
+        {
+          "card": "gather_strength",
+          "count": 1
+        },
+        {
+          "card": "first_aid",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "id": "defense_counter",
+      "name": "수비 반격형",
+      "totalCards": 20,
+      "maxCopies": 2,
+      "valid": true,
+      "cards": [
+        {
+          "card": "iron_shield",
+          "count": 2
+        },
+        {
+          "card": "spiked_shield",
+          "count": 2
+        },
+        {
+          "card": "parry",
+          "count": 2
+        },
+        {
+          "card": "counter_stance",
+          "count": 1
+        },
+        {
+          "card": "longsword",
+          "count": 2
+        },
+        {
+          "card": "mace",
+          "count": 1
+        },
+        {
+          "card": "spear",
+          "count": 1
+        },
+        {
+          "card": "rapier",
+          "count": 1
+        },
+        {
+          "card": "dodge",
+          "count": 1
+        },
+        {
+          "card": "retreat",
+          "count": 1
+        },
+        {
+          "card": "leap",
+          "count": 2
+        },
+        {
+          "card": "shield_charge",
+          "count": 1
+        },
+        {
+          "card": "advance",
+          "count": 1
+        },
+        {
+          "card": "first_aid",
+          "count": 1
+        },
+        {
+          "card": "bandage",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "id": "bleed",
+      "name": "출혈형",
+      "totalCards": 20,
+      "maxCopies": 2,
+      "valid": true,
+      "cards": [
+        {
+          "card": "serrated_sword",
+          "count": 2
+        },
+        {
+          "card": "longsword",
+          "count": 1
+        },
+        {
+          "card": "dagger",
+          "count": 2
+        },
+        {
+          "card": "twin_axes",
+          "count": 1
+        },
+        {
+          "card": "sharpen",
+          "count": 2
+        },
+        {
+          "card": "rend_wound",
+          "count": 2
+        },
+        {
+          "card": "roll",
+          "count": 1
+        },
+        {
+          "card": "dodge",
+          "count": 1
+        },
+        {
+          "card": "leap",
+          "count": 2
+        },
+        {
+          "card": "advance",
+          "count": 1
+        },
+        {
+          "card": "iron_shield",
+          "count": 1
+        },
+        {
+          "card": "spiked_shield",
+          "count": 1
+        },
+        {
+          "card": "bandage",
+          "count": 2
+        },
+        {
+          "card": "first_aid",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "id": "poison",
+      "name": "독 덱",
+      "totalCards": 20,
+      "maxCopies": 2,
+      "valid": true,
+      "cards": [
+        {
+          "card": "venom_fang",
+          "count": 2
+        },
+        {
+          "card": "venom_dagger",
+          "count": 2
+        },
+        {
+          "card": "poison_jar",
+          "count": 2
+        },
+        {
+          "card": "apply_poison",
+          "count": 2
+        },
+        {
+          "card": "load_poison_arrow",
+          "count": 1
+        },
+        {
+          "card": "hunting_bow",
+          "count": 1
+        },
+        {
+          "card": "crossbow",
+          "count": 1
+        },
+        {
+          "card": "poison_burst",
+          "count": 1
+        },
+        {
+          "card": "poison_mist",
+          "count": 1
+        },
+        {
+          "card": "roll",
+          "count": 1
+        },
+        {
+          "card": "leap",
+          "count": 2
+        },
+        {
+          "card": "advance",
+          "count": 1
+        },
+        {
+          "card": "iron_shield",
+          "count": 1
+        },
+        {
+          "card": "spiked_shield",
+          "count": 1
+        },
+        {
+          "card": "first_aid",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "id": "ranged",
+      "name": "원거리형",
+      "totalCards": 20,
+      "maxCopies": 2,
+      "valid": true,
+      "cards": [
+        {
+          "card": "crossbow",
+          "count": 2
+        },
+        {
+          "card": "hunting_bow",
+          "count": 2
+        },
+        {
+          "card": "rapid_bow",
+          "count": 1
+        },
+        {
+          "card": "stun_bow",
+          "count": 1
+        },
+        {
+          "card": "aim",
+          "count": 2
+        },
+        {
+          "card": "retreat_shot",
+          "count": 2
+        },
+        {
+          "card": "retreat",
+          "count": 2
+        },
+        {
+          "card": "vault",
+          "count": 2
+        },
+        {
+          "card": "roll",
+          "count": 1
+        },
+        {
+          "card": "iron_shield",
+          "count": 1
+        },
+        {
+          "card": "wooden_shield",
+          "count": 1
+        },
+        {
+          "card": "focus",
+          "count": 1
+        },
+        {
+          "card": "first_aid",
+          "count": 1
+        },
+        {
+          "card": "regroup",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "id": "throwing",
+      "name": "투척형",
+      "totalCards": 20,
+      "maxCopies": 2,
+      "valid": true,
+      "cards": [
+        {
+          "card": "javelin",
+          "count": 2
+        },
+        {
+          "card": "throwing_axe",
+          "count": 2
+        },
+        {
+          "card": "firebomb",
+          "count": 1
+        },
+        {
+          "card": "poison_jar",
+          "count": 1
+        },
+        {
+          "card": "throwing_stone",
+          "count": 1
+        },
+        {
+          "card": "throwing_dagger",
+          "count": 1
+        },
+        {
+          "card": "retreat",
+          "count": 2
+        },
+        {
+          "card": "dodge",
+          "count": 2
+        },
+        {
+          "card": "roll",
+          "count": 1
+        },
+        {
+          "card": "iron_shield",
+          "count": 2
+        },
+        {
+          "card": "wooden_shield",
+          "count": 1
+        },
+        {
+          "card": "longsword",
+          "count": 1
+        },
+        {
+          "card": "throw_training",
+          "count": 1
+        },
+        {
+          "card": "first_aid",
+          "count": 1
+        },
+        {
+          "card": "regroup",
+          "count": 1
+        }
+      ]
+    }
+  ]
+}

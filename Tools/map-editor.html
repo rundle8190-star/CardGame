@@ -1,0 +1,602 @@
+<title>카드게임 맵 편집기</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* 레이아웃: 위 도구줄 + 왼쪽 팔레트 | 가운데 지도 | 오른쪽 속성·검사. 좁은 화면에서는 지도 아래로 쌓인다 */
+:root{
+  --bg:#eef0f2; --panel:#ffffff; --line:#d5dade; --fg:#1d2329; --muted:#5f6b76;
+  --accent:#2e5f8a; --accent-ink:#ffffff; --canvas:#1b2026;
+  --err:#b3261e; --err-bg:#fbe9e7; --warn:#8a5a00; --warn-bg:#fff4dc; --ok:#256b3a; --ok-bg:#e5f3e8;
+  --sans:"IBM Plex Sans KR",system-ui,-apple-system,"Malgun Gothic",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#14181c; --panel:#1c2228; --line:#2e363e; --fg:#e4e8ec; --muted:#93a0ab;
+  --accent:#6fa3cf; --accent-ink:#0e1418; --canvas:#0d1013;
+  --err:#ffb4ab; --err-bg:#3a1714; --warn:#f2c46b; --warn-bg:#33270f; --ok:#8fd19e; --ok-bg:#14301c; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#14181c; --panel:#1c2228; --line:#2e363e; --fg:#e4e8ec; --muted:#93a0ab;
+  --accent:#6fa3cf; --accent-ink:#0e1418; --canvas:#0d1013;
+  --err:#ffb4ab; --err-bg:#3a1714; --warn:#f2c46b; --warn-bg:#33270f; --ok:#8fd19e; --ok-bg:#14301c; color-scheme:dark}
+html,body{height:100%}
+body{background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:14px;margin:0;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:12px;box-sizing:border-box}
+*{box-sizing:border-box}
+.app{display:grid;grid-template-rows:auto 1fr;gap:10px;height:100%;min-height:560px}
+.bar{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.bar h1{font-size:16px;margin:0 8px 0 0;font-weight:700;letter-spacing:-0.01em}
+.file{font-family:var(--mono);font-size:12px;color:var(--muted);margin-left:auto;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:40ch}
+button,.btn{font:inherit;font-size:13px;border:1px solid var(--line);background:var(--panel);color:var(--fg);border-radius:6px;padding:6px 10px;cursor:pointer;line-height:1.2}
+button:hover,.btn:hover{border-color:var(--accent)}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+button.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+button:disabled{opacity:.45;cursor:default}
+.sep{width:1px;height:22px;background:var(--line)}
+.main{display:grid;grid-template-columns:220px minmax(0,1fr) 280px;gap:10px;min-height:0}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px;overflow:auto;min-height:0;display:flex;flex-direction:column;gap:14px}
+.panel h2{font-size:12px;margin:0 0 6px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-weight:500}
+.tools{display:grid;grid-template-columns:1fr 1fr;gap:4px}
+.tools button[aria-pressed="true"],.pal button[aria-pressed="true"]{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent);font-weight:700}
+.pal{display:flex;flex-direction:column;gap:3px}
+.pal button{display:flex;align-items:center;gap:8px;text-align:left;padding:5px 8px}
+.sw{width:16px;height:16px;border-radius:3px;flex:none;border:1px solid rgba(0,0,0,.25);display:grid;place-items:center;font-size:10px;font-weight:700}
+.pal small{color:var(--muted);margin-left:auto;font-family:var(--mono);font-size:11px}
+.stage{position:relative;background:var(--canvas);border-radius:8px;overflow:hidden;min-height:320px;touch-action:none}
+canvas{display:block;width:100%;height:100%;cursor:crosshair}
+.hud{position:absolute;left:10px;bottom:10px;font-family:var(--mono);font-size:12px;color:#dfe5ea;background:rgba(0,0,0,.55);padding:4px 8px;border-radius:4px;pointer-events:none}
+.zoom{position:absolute;right:10px;top:10px;display:flex;gap:4px}
+.zoom button{background:rgba(20,24,28,.8);color:#e4e8ec;border-color:#3a434c;padding:4px 9px}
+label.f{display:grid;grid-template-columns:84px minmax(0,1fr);align-items:center;gap:6px;font-size:13px}
+input[type=text],input[type=number],select,textarea{font:inherit;font-size:13px;background:var(--bg);color:var(--fg);border:1px solid var(--line);border-radius:5px;padding:5px 7px;width:100%;min-width:0}
+textarea{resize:vertical;min-height:52px}
+.fields{display:flex;flex-direction:column;gap:6px}
+.fam{display:grid;grid-template-columns:1fr 1fr;gap:2px 8px;font-size:13px}
+.fam label{display:flex;gap:6px;align-items:center}
+.row{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.row input[type=number]{width:64px}
+.muted{color:var(--muted);font-size:12px}
+.msg{font-size:12.5px;padding:6px 8px;border-radius:5px;line-height:1.4}
+.msg.err{background:var(--err-bg);color:var(--err)}
+.msg.warn{background:var(--warn-bg);color:var(--warn)}
+.msg.ok{background:var(--ok-bg);color:var(--ok)}
+.stats{display:grid;grid-template-columns:1fr auto;gap:2px 8px;font-size:13px;font-variant-numeric:tabular-nums}
+.stats span:nth-child(even){font-family:var(--mono);text-align:right}
+.toggle{display:flex;gap:6px;align-items:center;font-size:13px}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:8px 14px;border-radius:6px;font-size:13px;z-index:20}
+.dialog{position:fixed;inset:0;background:rgba(0,0,0,.45);display:grid;place-items:center;z-index:30;padding:16px}
+.hint code{font-family:var(--mono);font-size:11px;word-break:break-word}
+[hidden]{display:none !important}
+.dialog > div{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px;max-width:420px;width:100%;display:flex;flex-direction:column;gap:12px}
+.dialog textarea{min-height:200px;font-family:var(--mono);font-size:11px}
+@media (max-width:980px){
+  body{height:auto}
+  .app{height:auto}
+  .main{grid-template-columns:minmax(0,1fr);}
+  .stage{height:62vh;order:-1}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="app">
+  <div class="bar">
+    <h1>맵 편집기</h1>
+    <button id="bNew">새 맵</button>
+    <label class="btn" for="fileIn">파일 열기</label>
+    <input id="fileIn" type="file" accept=".json,application/json" hidden>
+    <button id="bSample">예시 평원</button>
+    <button id="bWorld">예시 전체맵</button>
+    <span class="sep"></span>
+    <button id="bSave" class="primary">내려받기 (.json)</button>
+    <button id="bCopy">JSON 복사</button>
+    <button id="bPaste">JSON 붙여넣기</button>
+    <span class="sep"></span>
+    <button id="bUndo" title="Ctrl+Z">되돌리기</button>
+    <button id="bRedo" title="Ctrl+Y">다시 하기</button>
+    <span class="sep"></span>
+    <button id="bView" aria-pressed="false">쿼터뷰 보기</button>
+    <span class="file" id="fileLabel"></span>
+  </div>
+  <div class="main">
+    <aside class="panel" aria-label="도구">
+      <section>
+        <h2>도구</h2>
+        <div class="tools" id="tools"></div>
+        <p class="muted" style="margin:8px 0 0">오른쪽 클릭: 노드 지우기 · Esc: 길 잇기 멈춤 · 가운데 드래그 또는 Space+드래그: 화면 옮기기 · 휠: 확대</p>
+      </section>
+      <section id="brushBox">
+        <h2>붓 크기</h2>
+        <div class="row"><input id="brush" type="range" min="1" max="7" value="1" style="flex:1"><span id="brushV" class="muted">1</span></div>
+      </section>
+      <section>
+        <h2 id="palTitle">지형</h2>
+        <div class="pal" id="pal"></div>
+      </section>
+    </aside>
+    <div class="stage" id="stage">
+      <canvas id="cv"></canvas>
+      <div class="zoom"><button id="zOut" aria-label="축소">−</button><button id="zFit">맞춤</button><button id="zIn" aria-label="확대">+</button></div>
+      <div class="hud" id="hud">-</div>
+    </div>
+    <aside class="panel" aria-label="속성">
+      <section>
+        <h2>맵 정보</h2>
+        <div class="fields">
+          <label class="f">맵 id<input id="mId" type="text" spellcheck="false"></label>
+          <label class="f">이름<input id="mName" type="text"></label>
+          <label class="f">맵 단계<select id="mTier"><option value="1">1 (평원)</option><option value="2">2 (숲·산지)</option><option value="3">3 (늪지·설원)</option></select></label>
+          <div class="muted">맵 기본 적 계열</div>
+          <div class="fam" id="mFam"></div>
+          <label class="f">랜덤 칸 후보<input id="mPool" type="text" spellcheck="false" placeholder="비우면 기본값"></label>
+          <div class="muted hint">종류:가중치[:최대 개수] 를 쉼표로. 기본값 <code id="defPool"></code></div>
+          <div class="row">크기 <input id="mW" type="number" min="3" max="200"> × <input id="mH" type="number" min="3" max="200"><button id="bResize">바꾸기</button></div>
+        </div>
+      </section>
+      <section>
+        <h2>고른 노드</h2>
+        <div id="nodeBox" class="fields"></div>
+      </section>
+      <section>
+        <h2>보기</h2>
+        <label class="toggle"><input id="tGrid" type="checkbox" checked> 칸 구분선</label>
+        <label class="toggle"><input id="tDist" type="checkbox"> 시작에서 걸음 수</label>
+        <label class="toggle"><input id="tLinks" type="checkbox" checked> 길 보이기</label>
+      </section>
+      <section>
+        <h2>랜덤 굴려 보기</h2>
+        <label class="toggle"><input id="tPrev" type="checkbox"> 랜덤 칸 결과로 보기</label>
+        <div class="row">시드 <input id="seed" type="number" min="1" value="1" style="width:90px"><button id="bRoll">다시 굴리기</button></div>
+        <div id="prevBox" class="muted"></div>
+      </section>
+      <section>
+        <h2>검사</h2>
+        <div id="report" class="fields"></div>
+      </section>
+    </aside>
+  </div>
+</div>
+<div class="toast" id="toast" hidden></div>
+<div class="dialog" id="dlg" hidden><div>
+  <strong id="dlgTitle"></strong>
+  <div id="dlgBody" class="muted"></div>
+  <textarea id="dlgText" hidden spellcheck="false"></textarea>
+  <div class="row" style="justify-content:flex-end"><button id="dlgNo">취소</button><button id="dlgYes" class="primary">확인</button></div>
+</div></div>
+
+<script>
+// 지형·노드·적 계열 목록. Unity 의 MapCatalog.cs 와 같아야 한다.
+const TERRAINS=[
+ ['.','field','들판',true,9,'#9CC56B'],['=','road','길',true,7,'#D8C48E'],['f','forest','숲',true,7,'#4E8B45'],
+ ['F','deep','깊은 숲',true,5,'#2F5E2E'],['h','hill','언덕',true,7,'#B59A62'],['s','swamp','늪',true,5,'#6B7A4A'],
+ ['n','snow','눈밭',true,9,'#E4ECF2'],['r','ruin','폐허',true,5,'#9A8F86'],['b','bridge','다리',true,5,'#A0703F'],
+ ['M','mountain','산 (막힘)',false,0,'#6E6259'],['w','water','물 (막힘)',false,0,'#4A86C5'],['#','void','맵 밖',false,0,'#202020']
+].map(([code,id,name,walk,cells,color])=>({code,id,name,walk,cells,color}));
+const NODES=[
+ ['start','시작 지점','S','#FFFFFF',0,0],['battle','전투','전','#D9534F',1,0],['elite','엘리트 전투','엘','#8E1F1B',1,0],
+ ['farm','파밍 지역','파','#E8A33D',0,0],['event','이벤트','?','#8E6CC8',0,0],['totem','토템','토','#3FB8AF',0,0],
+ ['ruin_village','폐허 마을','마','#7A6A5A',0,0],['merchant_camp','떠돌이 상인 야영지','상','#F2D04B',0,0],
+ ['small_dungeon','작은 던전','던','#5B5B9A',0,1],['big_dungeon','큰 던전 (보스)','보','#2B2B5E',0,1],
+ ['exit','탈출 후보','탈','#4CAF50',0,0],['map_gate','다른 맵으로 이동','→','#1E88E5',0,1],
+ ['random','랜덤 칸','랜','#B8B8C8',0,0,1]
+].map(([id,name,mark,color,battle,target,random])=>({id,name,mark,color,battle:!!battle,target:!!target,random:!!random}));
+const FAMILIES=[['charger','돌격형'],['shieldbearer','방패병'],['archer','사수'],['poison_hunter','독 사냥꾼'],['heavy','중장갑'],['assassin','암살자'],['spearman','창병'],['berserker','광전사']];
+const DIFFS=[['','자동 (깊이에 따라)'],['easy','쉬움'],['normal','보통'],['hard','어려움']];
+const SAMPLE={"version":1,"id":"plains","name":"평원","width":36,"height":24,"baseTier":1,"enemies":"charger,shieldbearer,archer","rows":["...................w......MMMMMMMMMM","......fffff........w......MMMMMMMMMM",".....fffffff.......ww....MMMMMMMMMMM","....fffffffff.......w.....MMMMMMMMMM","....ffFFFFffff......w...hhhhMMMMMMMM","...fffFFFFfff.......w..hhhhhhMMMMMMM","....fFFFFffff.......w...hhhhhhMMMMM.","....fffFfffff......ww...hhhhh.MMM...",".....fffffff.......w.....hhh........",".......ffff........w................","...................w................","...................w================",".==================bb...............","....................w...............","...........rrrr.....w........r......","...........rrrr.....w........rr.....","...........rrrr.....w....fffffr.....",".............hhhh...ww..fffffff.....","...MMMM....hhhhhh....w..ffffffff....",".MMMMMMM...hhhhhhh...w..ffffffff....",".MMMMMMMM...hhhhh....w.ffffffff.....","MMMMMMMMM...hhhh.....w..fffffff.....",".MMMMMMM............ww...fffff......","..MMMMMM............w..............."],"nodes":[{"x":1,"y":12,"type":"start","name":"거점 길목","battleCells":0,"difficulty":"","enemies":"","target":"","note":""},{"x":5,"y":10,"type":"battle","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":""},{"x":9,"y":13,"type":"battle","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":""},{"x":6,"y":16,"type":"battle","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":""},{"x":11,"y":9,"type":"battle","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":""},{"x":14,"y":11,"type":"battle","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":""},{"x":16,"y":15,"type":"battle","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":""},{"x":23,"y":10,"type":"battle","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":""},{"x":25,"y":14,"type":"battle","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":""},{"x":28,"y":9,"type":"battle","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":""},{"x":22,"y":17,"type":"battle","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":""},{"x":31,"y":12,"type":"battle","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":""},{"x":13,"y":6,"type":"battle","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":""},{"x":24,"y":4,"type":"battle","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":""},{"x":33,"y":17,"type":"battle","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":""},{"x":17,"y":8,"type":"elite","name":"","battleCells":0,"difficulty":"hard","enemies":"","target":"","note":""},{"x":27,"y":16,"type":"elite","name":"","battleCells":0,"difficulty":"hard","enemies":"","target":"","note":""},{"x":29,"y":6,"type":"elite","name":"","battleCells":0,"difficulty":"hard","enemies":"","target":"","note":""},{"x":8,"y":7,"type":"farm","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":""},{"x":12,"y":15,"type":"farm","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":""},{"x":26,"y":7,"type":"farm","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":""},{"x":20,"y":19,"type":"farm","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":""},{"x":30,"y":15,"type":"farm","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":""},{"x":4,"y":14,"type":"event","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":""},{"x":10,"y":4,"type":"event","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":""},{"x":15,"y":18,"type":"event","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":""},{"x":23,"y":13,"type":"event","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":""},{"x":29,"y":12,"type":"event","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":""},{"x":18,"y":21,"type":"event","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":""},{"x":7,"y":18,"type":"event","name":"강아지","battleCells":0,"difficulty":"","enemies":"","target":"","note":"인간 전용 이벤트"},{"x":16,"y":4,"type":"totem","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":""},{"x":32,"y":20,"type":"totem","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":""},{"x":11,"y":16,"type":"ruin_village","name":"버려진 마을","battleCells":0,"difficulty":"","enemies":"","target":"","note":""},{"x":25,"y":21,"type":"ruin_village","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":""},{"x":21,"y":9,"type":"merchant_camp","name":"떠돌이 상인","battleCells":0,"difficulty":"","enemies":"","target":"","note":""},{"x":6,"y":5,"type":"small_dungeon","name":"무너진 지하실","battleCells":0,"difficulty":"","enemies":"","target":"plains_cellar","note":""},{"x":28,"y":18,"type":"small_dungeon","name":"","battleCells":0,"difficulty":"","enemies":"","target":"plains_cave","note":""},{"x":24,"y":1,"type":"big_dungeon","name":"도적 요새","battleCells":0,"difficulty":"","enemies":"","target":"bandit_fortress","note":""},{"x":9,"y":10,"type":"exit","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":""},{"x":17,"y":20,"type":"exit","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":""},{"x":24,"y":11,"type":"exit","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":""},{"x":15,"y":2,"type":"exit","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":""},{"x":32,"y":14,"type":"exit","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":""},{"x":35,"y":11,"type":"map_gate","name":"숲으로","battleCells":0,"difficulty":"","enemies":"","target":"forest","note":""},{"x":18,"y":0,"type":"map_gate","name":"산지로","battleCells":0,"difficulty":"","enemies":"","target":"mountain","note":""}]};
+const WORLD={"version":1,"id":"wildlands","name":"변방 전체맵","width":72,"height":48,"baseTier":2,"enemies":"charger,shieldbearer,archer,spearman","randomPool":"","rows":["...MMMMMMMMMhh.....fffff..........ffffff..................hhMMMMMMMMM...",".MMMMMMMMMMMMhhhh..ffffff.........ffffff............w...hhMMMMMMMMMMMM..","MMMMMMMMMMMMMMMhhh.ffff............fffff............whhhhMMMMMMMMMMMMMMh",".MMMMMMMMMMMMMMhhhhffff.............................bfhhhMMMMMMMMMMMMMMM","MMMMMMMMMMMMMMMMhhfhfff.........fffff..............hwhhhhMMMMMMMMMMMMMMM","MMMMMMMMMMMMMMMMhhhfffff.......fffffff..............whhhhMMMMMMMMMMMMMMM","MMMMMMMMMMMMMMMMhhhhfff.r..fffffffffff.............hwhhhhMMMMMMMMMMMMMMM","MMMMMMMMMMMMMMMhhhhfhfrrrrrfffffffffff.............hwMhhhMMMMMMMMMMMMMMM","MMMMMMMMMMMMMMhhhhh.hrrrrrrfffffffffff............hhhMhhhhMMMMMMMMMMMMMM","hhMMMMMMMMMMMhhhhhhhhfrrrrrffffhMMhh..h............hhMhhMhMMMMMMMMMMMMhh","hhhhMMMMMMMMhhhhhhhfhfffrff.ffMMMMMMhhhh.hh......f..hMhhMhhhhMMMMMMMMMMM","hMMMMMhhMhhhhhhhhhhhfffffffhh.MMMMMMMhMhhhhhh..ffffhhMwhMhhhhhhMhhhMMMMM","MMMMMMMhhhhhhhhhhhhhffffffhfhhMMMMMMMMMMMhhhhhfffffhhhwhMhhhhhhhhhMMMMMM","hMMMMMhhhhhhhhhhhhhfffffffhhhMMMMMMMMMMMMMMhhhhfffffhhwhMhhhhhhhhhhMMMMM","h.hMhhhhhhhhhhhhhfhfffffhhhhMMMMMMMMMMMMMMMMhhhhffffffhwMhhhhhhhhhhMMMMM","..h.hhhhhhrhhhh.hffff.wwwwwhMMMMMMMMMMMMMMMMhMhhhffffffwhhhhhhhhhhhhhh.h","....h.hhrrrrr.hh..fffwwwwwwMMMMMMMMMMMMMMMMMMMhhhf.fffwfhhhhhhhhhhhhh...",".......hrrrrrh...ffff.wwwwwMMMMMMMMMMMMMMMMMMMhhhhh..wwf....hffhfffff...",".......frrrrr...f.fff.hhhhhMMMMMMMMMMMMMMMMMMMhhhh...w........fffff.....","www...ffff.....fff....hhhhMMMMMMMMMMMMMMMMMMMMhhhhhhw..wwwwwwwbff.......","..wwwwffffff....ff.....hhhhMMMMMMMMMMMMMMMMMMMhhh.ww.rrrff....wwwwwwww..",".....fwwwfff...........hhhMMMMMMMMMMMMMMMMMMMMhhhwh.rrrrff.......ffff.ww",".....fffwwb...........h.hhhMMMMMMMMMMMMMMMMMMhhwwhh..rrr........fffffff.",".....f.FFFwww..........hhhhhMMMMMMMMMMMMMMMMMhwwhhfff...........fffffff.","........F....ww......ffhhhhhMMMMMMMMMMMMMMMMwbhhhfffff.......fffffffff..",".....ff........w...ffffhfhhhhhMMMMMMMMMMMMwwwhhhhffff.......fffffffff...","....ffffff......w.ffffffhhhhhhhMMMMMMMMMhwwhhhhhffff........fffffffff...","...fffffff.ffff..wfffffffhhhhhhhhhMhMhhhhwhhhhhffff..ffff....ffrrrrr....","..ffffffffffffff..wfffffffffhhhhhhhhhhhhwhwwwwwwwwwffffff....frrrrrr....","...ffffffffffffff..wfffff..hhhhhhhhhhhhhwwwwwwwwwwwwwffffffffffrrrrrfff.","....fffffffffffffffwfffM.....f.hhhhfhhFwwwwwwwwwwwwwwwffffffffff...ffff.","......f...fffffffffMwffM........hffhffwwwwwhhhwwwwwwwwwffffffffffffffff.","...........fffff...MMw.MM.........fff.wwwwwwwwwwwwwwwwwwffffhhhhhfhff...",".............fff....Mw..M............wwwwwwwwwwrrrwwwwwfffffhhhhhhhhMM..","....................Mww.M............w.wwwwwwwwwwwwwwwwfffhhhhhhhhhhMMMM","....fhhf..hh........MMw...............wwwwwwwwwwwwwwwfhhhhhhhhhhhhhMMMMM","..hhhfhhhhhhhhhh......b.................b.wwwwwwww...ffhhhhhhhhhhhMMMMMM",".hhMhhhhhhhhhhhh.h.....w.....rrrrr......w....fffff....hhhhhhhhhhhhhMMMMM","h.MMMhhhhhhhhhhhhhff...w...rrrrrrrrfff...w....fff....hhhhhhhhhMMMhhMMMMM","hhMMMhhhhhhhhhhhhhfh...w....rrrrrrfffff..w..........hhhhhhhhMMMMMMMMMMMh","hhMMMhhhhhhhhhhhhhhh...bw....fff.ffffff..w..........hhhhhhMMMMMMMMMMMMMM","hhhhhhMMMMhhhhhhhhhh....w....ffffffffff..w....www...hhhhMMMMMMMMMMMMMMMM","hhMMMMMMMMMMMMMhhhh.hh..w........fffff...w...wwwww....hMMMMMMMMMMMMMMMMM","hMMMMMMMMMMMMMMMhhh.....w................w....www....hhMMMMMMMMMMMMMMMMM","MMMMMMMMMMMMMMMMMhhhhf..w................w.............MMMMMMMMMMMMMMMMM","MMMMMMMMMMMMMMMMMMhffff..w...............w............hhMMMMMMMMMMMMMMMM","MMMMMMMMMMMMMMMMM..ffff..w................w.............hMMMMMMMMMMMMMMM","fMMMMMMMMMMMMMMMM.h......w................w................MMMMMMMMMM..."],"nodes":[{"x":4,"y":27,"type":"start","name":"변방 야영지","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":8,"y":12,"type":"small_dungeon","name":"북서 동굴","battleCells":0,"difficulty":"","enemies":"","target":"cave_nw","note":"","pool":""},{"x":66,"y":11,"type":"small_dungeon","name":"북동 동굴","battleCells":0,"difficulty":"","enemies":"","target":"cave_ne","note":"","pool":""},{"x":8,"y":40,"type":"small_dungeon","name":"남서 동굴","battleCells":0,"difficulty":"","enemies":"","target":"cave_sw","note":"","pool":""},{"x":66,"y":38,"type":"small_dungeon","name":"남동 동굴","battleCells":0,"difficulty":"","enemies":"","target":"cave_se","note":"","pool":""},{"x":24,"y":8,"type":"big_dungeon","name":"무너진 고성","battleCells":0,"difficulty":"","enemies":"","target":"ruined_castle","note":"","pool":""},{"x":10,"y":17,"type":"ruin_village","name":"서쪽 폐허","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":31,"y":38,"type":"ruin_village","name":"남쪽 유적","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":54,"y":22,"type":"event","name":"강가 망루","battleCells":0,"difficulty":"","enemies":"","target":"","note":"망루에 오르면 주변 노드가 보이는 이벤트 후보","pool":""},{"x":65,"y":28,"type":"totem","name":"선돌","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":28,"y":26,"type":"merchant_camp","name":"큰 산 아래 상인","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":58,"y":30,"type":"merchant_camp","name":"호숫가 상인","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":24,"y":13,"type":"elite","name":"고성 문지기","battleCells":0,"difficulty":"hard","enemies":"","target":"","note":"","pool":""},{"x":20,"y":9,"type":"elite","name":"","battleCells":0,"difficulty":"hard","enemies":"","target":"","note":"","pool":""},{"x":25,"y":14,"type":"event","name":"고요한 연못","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":47,"y":40,"type":"event","name":"작은 연못","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":1,"y":30,"type":"exit","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":35,"y":47,"type":"exit","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":70,"y":26,"type":"exit","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":36,"y":1,"type":"exit","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":14,"y":1,"type":"exit","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":71,"y":22,"type":"map_gate","name":"동쪽 강 하류로","battleCells":0,"difficulty":"","enemies":"","target":"river_lands","note":"","pool":""},{"x":0,"y":18,"type":"map_gate","name":"서쪽 평원으로","battleCells":0,"difficulty":"","enemies":"","target":"plains","note":"","pool":""},{"x":41,"y":47,"type":"map_gate","name":"남쪽 늪지로","battleCells":0,"difficulty":"","enemies":"","target":"swamp","note":"","pool":""},{"x":56,"y":16,"type":"random","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":53,"y":36,"type":"random","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":27,"y":35,"type":"random","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":54,"y":41,"type":"random","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":48,"y":45,"type":"random","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":28,"y":3,"type":"random","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":21,"y":44,"type":"random","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":1,"y":23,"type":"random","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":13,"y":35,"type":"random","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":48,"y":26,"type":"random","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":1,"y":42,"type":"random","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":15,"y":14,"type":"random","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":60,"y":12,"type":"random","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":47,"y":11,"type":"random","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":61,"y":20,"type":"random","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":41,"y":9,"type":"random","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":47,"y":19,"type":"random","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":49,"y":15,"type":"random","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":19,"y":38,"type":"random","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":18,"y":31,"type":"random","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":23,"y":0,"type":"random","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":57,"y":8,"type":"random","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":35,"y":34,"type":"random","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":35,"y":6,"type":"random","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":64,"y":16,"type":"random","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":11,"y":31,"type":"random","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":22,"y":33,"type":"random","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":24,"y":24,"type":"random","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":9,"y":24,"type":"random","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":42,"y":4,"type":"random","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":71,"y":16,"type":"random","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":44,"y":37,"type":"random","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":51,"y":0,"type":"random","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":38,"y":44,"type":"random","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":63,"y":35,"type":"random","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":67,"y":33,"type":"random","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":17,"y":6,"type":"random","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":16,"y":20,"type":"random","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":29,"y":11,"type":"random","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":5,"y":34,"type":"random","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":19,"y":2,"type":"random","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":20,"y":15,"type":"random","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":14,"y":9,"type":"random","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":53,"y":27,"type":"random","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":28,"y":47,"type":"random","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":37,"y":39,"type":"random","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":60,"y":26,"type":"random","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":53,"y":13,"type":"random","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":39,"y":29,"type":"random","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":53,"y":5,"type":"random","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":52,"y":18,"type":"random","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":15,"y":26,"type":"random","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":32,"y":43,"type":"random","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":56,"y":47,"type":"random","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":68,"y":19,"type":"random","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":28,"y":41,"type":"random","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":4,"y":15,"type":"random","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":29,"y":31,"type":"random","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":34,"y":28,"type":"random","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":14,"y":41,"type":"random","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":37,"y":11,"type":"random","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":42,"y":42,"type":"random","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":48,"y":3,"type":"random","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":22,"y":19,"type":"random","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":59,"y":39,"type":"random","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":5,"y":21,"type":"random","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":57,"y":1,"type":"random","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":20,"y":27,"type":"random","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":66,"y":23,"type":"random","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":45,"y":23,"type":"random","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":45,"y":0,"type":"random","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":45,"y":7,"type":"random","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":43,"y":27,"type":"random","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":0,"y":37,"type":"random","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":71,"y":31,"type":"random","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":50,"y":8,"type":"random","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":18,"y":47,"type":"random","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":23,"y":40,"type":"random","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":44,"y":14,"type":"random","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":25,"y":29,"type":"random","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""},{"x":31,"y":0,"type":"random","name":"","battleCells":0,"difficulty":"","enemies":"","target":"","note":"","pool":""}],"links":[{"ax":4,"ay":27,"bx":1,"by":30},{"ax":4,"ay":27,"bx":1,"by":23},{"ax":1,"ay":23,"bx":5,"by":21},{"ax":5,"ay":21,"bx":9,"by":24},{"ax":4,"ay":27,"bx":5,"by":34},{"ax":1,"ay":30,"bx":0,"by":37},{"ax":0,"ay":37,"bx":1,"by":42},{"ax":9,"ay":24,"bx":15,"by":26},{"ax":15,"ay":26,"bx":18,"by":31},{"ax":18,"ay":31,"bx":11,"by":31},{"ax":11,"ay":31,"bx":13,"by":35},{"ax":13,"ay":35,"bx":14,"by":41},{"ax":14,"ay":41,"bx":8,"by":40},{"ax":18,"ay":31,"bx":19,"by":38},{"ax":19,"ay":38,"bx":23,"by":40},{"ax":23,"ay":40,"bx":21,"by":44},{"ax":21,"ay":44,"bx":18,"by":47},{"ax":19,"ay":38,"bx":22,"by":33},{"ax":22,"ay":33,"bx":27,"by":35},{"ax":27,"ay":35,"bx":29,"by":31},{"ax":29,"ay":31,"bx":28,"by":26},{"ax":28,"ay":26,"bx":24,"by":24},{"ax":28,"ay":26,"bx":25,"by":29},{"ax":27,"ay":35,"bx":31,"by":38},{"ax":31,"ay":38,"bx":32,"by":43},{"ax":31,"ay":38,"bx":28,"by":41},{"ax":28,"ay":41,"bx":28,"by":47},{"ax":31,"ay":38,"bx":37,"by":39},{"ax":37,"ay":39,"bx":38,"by":44},{"ax":38,"ay":44,"bx":35,"by":47},{"ax":35,"ay":47,"bx":41,"by":47},{"ax":24,"ay":24,"bx":22,"by":19},{"ax":22,"ay":19,"bx":20,"by":15},{"ax":20,"ay":15,"bx":24,"by":13},{"ax":24,"ay":13,"bx":25,"by":14},{"ax":24,"ay":13,"bx":24,"by":8},{"ax":24,"ay":8,"bx":20,"by":9},{"ax":20,"ay":9,"bx":17,"by":6},{"ax":20,"ay":9,"bx":14,"by":9},{"ax":17,"ay":6,"bx":19,"by":2},{"ax":19,"ay":2,"bx":14,"by":1},{"ax":19,"ay":2,"bx":23,"by":0},{"ax":20,"ay":15,"bx":15,"by":14},{"ax":24,"ay":13,"bx":29,"by":11},{"ax":15,"ay":14,"bx":16,"by":20},{"ax":24,"ay":24,"bx":20,"by":27},{"ax":37,"ay":39,"bx":35,"by":34},{"ax":35,"ay":34,"bx":34,"by":28},{"ax":34,"ay":28,"bx":39,"by":29},{"ax":15,"ay":14,"bx":10,"by":17},{"ax":10,"ay":17,"bx":8,"by":12},{"ax":8,"ay":12,"bx":4,"by":15},{"ax":4,"ay":15,"bx":0,"by":18},{"ax":23,"ay":0,"bx":28,"by":3},{"ax":28,"ay":3,"bx":31,"by":0},{"ax":31,"ay":0,"bx":36,"by":1},{"ax":36,"ay":1,"bx":35,"by":6},{"ax":35,"ay":6,"bx":37,"by":11},{"ax":37,"ay":11,"bx":41,"by":9},{"ax":41,"ay":9,"bx":42,"by":4},{"ax":41,"ay":9,"bx":45,"by":7},{"ax":45,"ay":7,"bx":47,"by":11},{"ax":47,"ay":11,"bx":49,"by":15},{"ax":47,"ay":11,"bx":50,"by":8},{"ax":47,"ay":11,"bx":44,"by":14},{"ax":49,"ay":15,"bx":47,"by":19},{"ax":47,"ay":19,"bx":52,"by":18},{"ax":47,"ay":19,"bx":45,"by":23},{"ax":49,"ay":15,"bx":53,"by":13},{"ax":45,"ay":23,"bx":48,"by":26},{"ax":48,"ay":26,"bx":53,"by":27},{"ax":48,"ay":26,"bx":43,"by":27},{"ax":53,"ay":27,"bx":54,"by":22},{"ax":42,"ay":4,"bx":48,"by":3},{"ax":48,"ay":3,"bx":51,"by":0},{"ax":51,"ay":0,"bx":45,"by":0},{"ax":51,"ay":0,"bx":53,"by":5},{"ax":51,"ay":0,"bx":57,"by":1},{"ax":53,"ay":5,"bx":57,"by":8},{"ax":57,"ay":8,"bx":60,"by":12},{"ax":60,"ay":12,"bx":66,"by":11},{"ax":66,"ay":11,"bx":64,"by":16},{"ax":64,"ay":16,"bx":71,"by":16},{"ax":71,"ay":16,"bx":68,"by":19},{"ax":54,"ay":22,"bx":56,"by":16},{"ax":53,"ay":27,"bx":58,"by":30},{"ax":58,"ay":30,"bx":60,"by":26},{"ax":60,"ay":26,"bx":65,"by":28},{"ax":65,"ay":28,"bx":66,"by":23},{"ax":66,"ay":23,"bx":71,"by":22},{"ax":71,"ay":22,"bx":70,"by":26},{"ax":70,"ay":26,"bx":71,"by":31},{"ax":71,"ay":31,"bx":67,"by":33},{"ax":67,"ay":33,"bx":63,"by":35},{"ax":63,"ay":35,"bx":66,"by":38},{"ax":60,"ay":26,"bx":61,"by":20},{"ax":63,"ay":35,"bx":59,"by":39},{"ax":59,"ay":39,"bx":54,"by":41},{"ax":54,"ay":41,"bx":53,"by":36},{"ax":54,"ay":41,"bx":47,"by":40},{"ax":47,"ay":40,"bx":44,"by":37},{"ax":47,"ay":40,"bx":42,"by":42},{"ax":54,"ay":41,"bx":56,"by":47},{"ax":42,"ay":42,"bx":48,"by":45},{"ax":4,"ay":27,"bx":5,"by":21},{"ax":66,"ay":38,"bx":67,"by":33},{"ax":24,"ay":8,"bx":29,"by":11},{"ax":10,"ay":17,"bx":4,"by":15},{"ax":31,"ay":38,"bx":35,"by":34},{"ax":65,"ay":28,"bx":70,"by":26},{"ax":28,"ay":26,"bx":34,"by":28},{"ax":24,"ay":13,"bx":20,"by":9},{"ax":20,"ay":9,"bx":20,"by":15},{"ax":25,"ay":14,"bx":20,"by":15},{"ax":1,"ay":30,"bx":1,"by":23},{"ax":35,"ay":47,"bx":28,"by":47},{"ax":70,"ay":26,"bx":66,"by":23},{"ax":14,"ay":1,"bx":17,"by":6},{"ax":41,"ay":47,"bx":38,"by":44},{"ax":56,"ay":16,"bx":60,"by":12},{"ax":27,"ay":35,"bx":28,"by":41},{"ax":21,"ay":44,"bx":19,"by":38},{"ax":15,"ay":14,"bx":14,"by":9},{"ax":60,"ay":12,"bx":64,"by":16},{"ax":47,"ay":11,"bx":41,"by":9},{"ax":61,"ay":20,"bx":66,"by":23},{"ax":41,"ay":9,"bx":44,"by":14},{"ax":47,"ay":19,"bx":47,"by":11},{"ax":49,"ay":15,"bx":52,"by":18},{"ax":19,"ay":38,"bx":14,"by":41},{"ax":23,"ay":0,"bx":31,"by":0},{"ax":64,"ay":16,"bx":68,"by":19},{"ax":22,"ay":33,"bx":25,"by":29},{"ax":24,"ay":24,"bx":25,"by":29},{"ax":9,"ay":24,"bx":4,"by":27},{"ax":42,"ay":4,"bx":45,"by":7},{"ax":44,"ay":37,"bx":42,"by":42},{"ax":38,"ay":44,"bx":32,"by":43},{"ax":67,"ay":33,"bx":65,"by":28},{"ax":17,"ay":6,"bx":14,"by":9},{"ax":16,"ay":20,"bx":22,"by":19},{"ax":29,"ay":11,"bx":25,"by":14},{"ax":5,"ay":34,"bx":1,"by":30},{"ax":19,"ay":2,"bx":20,"by":9},{"ax":53,"ay":27,"bx":60,"by":26},{"ax":28,"ay":47,"bx":32,"by":43},{"ax":53,"ay":13,"bx":52,"by":18},{"ax":53,"ay":5,"bx":48,"by":3},{"ax":32,"ay":43,"bx":28,"by":41},{"ax":29,"ay":31,"bx":25,"by":29},{"ax":34,"ay":28,"bx":29,"by":31},{"ax":48,"ay":3,"bx":45,"by":0},{"ax":57,"ay":1,"bx":53,"by":5},{"ax":20,"ay":27,"bx":25,"by":29},{"ax":45,"ay":23,"bx":43,"by":27},{"ax":45,"ay":0,"bx":42,"by":4},{"ax":45,"ay":7,"bx":50,"by":8},{"ax":0,"ay":37,"bx":5,"by":34},{"ax":50,"ay":8,"bx":48,"by":3},{"ax":44,"ay":14,"bx":47,"by":19},{"ax":25,"ay":29,"bx":27,"by":35}]};
+const T=c=>TERRAINS.find(t=>t.code===c)||TERRAINS[0];
+const N=id=>NODES.find(n=>n.id===id);
+const $=id=>document.getElementById(id);
+
+let map, fileName='', tool='terrain', terrainIdx=0, nodeIdx=1, brush=1, selected=null;
+let zoom=24, panX=20, panY=20, iso=false, showGrid=true, showDist=false;
+let undo=[], redo=[], report=null, hover=null, dirty=false;
+
+// ───── 데이터 ─────
+function blank(id,name,w,h){return {version:1,id,name,width:w,height:h,baseTier:1,enemies:'',randomPool:'',rows:Array.from({length:h},()=>'.'.repeat(w)),nodes:[],links:[]};}
+function normalize(m){
+  const o=Object.assign(blank('new_map','새 맵',30,20),m);
+  o.width=Math.max(1,o.width|0); o.height=Math.max(1,o.height|0);
+  o.rows=Array.from({length:o.height},(_,y)=>{let r=(m.rows&&m.rows[y])||'';r=r.slice(0,o.width);return r+'.'.repeat(o.width-r.length);});
+  o.nodes=(m.nodes||[]).filter(n=>n&&n.x>=0&&n.y>=0&&n.x<o.width&&n.y<o.height).map(n=>Object.assign({x:0,y:0,type:'battle',name:'',battleCells:0,difficulty:'',enemies:'',target:'',note:'',pool:''},n));
+  o.links=[];for(const l of (m.links||[]))if(l&&o.nodes.some(n=>n.x===l.ax&&n.y===l.ay)&&o.nodes.some(n=>n.x===l.bx&&n.y===l.by)&&!(l.ax===l.bx&&l.ay===l.by)
+    &&!o.links.some(k=>sameLink(k,l.ax,l.ay,l.bx,l.by)))o.links.push({ax:l.ax|0,ay:l.ay|0,bx:l.bx|0,by:l.by|0});
+  return o;
+}
+// ───── 길 (노드끼리 잇는 선). 끝점은 노드 좌표로 저장한다 ─────
+const sameLink=(l,ax,ay,bx,by)=>(l.ax===ax&&l.ay===ay&&l.bx===bx&&l.by===by)||(l.ax===bx&&l.ay===by&&l.bx===ax&&l.by===ay);
+const findLink=(a,b)=>map.links.find(l=>sameLink(l,a.x,a.y,b.x,b.y));
+function toggleLink(a,b){const l=findLink(a,b);if(l){map.links=map.links.filter(o=>o!==l);return false;}map.links.push({ax:a.x,ay:a.y,bx:b.x,by:b.y});return true;}
+const touches=(l,x,y)=>(l.ax===x&&l.ay===y)||(l.bx===x&&l.by===y);
+function fixLinks(){map.links=map.links.filter(l=>nodeAt(l.ax,l.ay)&&nodeAt(l.bx,l.by));}
+function dropLinksAt(x,y){map.links=map.links.filter(l=>!touches(l,x,y));}
+function moveLinks(ox,oy,nx,ny){for(const l of map.links){if(l.ax===ox&&l.ay===oy){l.ax=nx;l.ay=ny;}if(l.bx===ox&&l.by===oy){l.bx=nx;l.by=ny;}}}
+function neighbors(x,y){const out=[];for(const l of map.links){if(l.ax===x&&l.ay===y)out.push([l.bx,l.by]);else if(l.bx===x&&l.by===y)out.push([l.ax,l.ay]);}return out;}
+function hops(st){const d=new Map();if(!st)return d;d.set(st.x+','+st.y,0);const q=[[st.x,st.y]];
+  for(let i=0;i<q.length;i++){const [x,y]=q[i],k=d.get(x+','+y);for(const [nx,ny] of neighbors(x,y)){const key=nx+','+ny;if(!d.has(key)){d.set(key,k+1);q.push([nx,ny]);}}}return d;}
+// 자동 연결: 걸어서 가까운 노드끼리 모두 이어지게(최소 신장 트리) 한 뒤, 노드마다 가까운 이웃을 하나 더 잇는다.
+// 강이나 산을 넘는 길은 다리·돌아가는 길 기준으로 멀게 친다. 다른 길과 엇갈리는 덧붙임 길은 만들지 않는다. 이미 있는 길은 그대로 둔다.
+// Unity 의 MapLinks.AutoLink 와 같은 규칙.
+const AUTO_EXTRA_MAX_STEPS=8;
+function segCross(a,b,c,d){if(a===c||a===d||b===c||b===d)return false;
+  const o=(p,q,r)=>Math.sign((q.x-p.x)*(r.y-p.y)-(q.y-p.y)*(r.x-p.x));
+  return o(a,b,c)*o(a,b,d)<0&&o(c,d,a)*o(c,d,b)<0;}
+function autoLink(){const ns=map.nodes.filter(n=>walk(n.x,n.y));if(ns.length<2)return 0;const before=map.links.length;
+  const D=ns.map(n=>distances(n.x,n.y));
+  const wd=(i,j)=>{const v=D[i][ns[j].y][ns[j].x];return v<0?Infinity:v;};
+  const at=(l,end)=>ns.find(n=>end?n.x===l.bx&&n.y===l.by:n.x===l.ax&&n.y===l.ay)||{x:end?l.bx:l.ax,y:end?l.by:l.ay};
+  const crosses=(a,b)=>map.links.some(l=>segCross(a,b,at(l,0),at(l,1)));
+  const add=(a,b)=>{if(a!==b&&!findLink(a,b))map.links.push({ax:a.x,ay:a.y,bx:b.x,by:b.y});};
+  const inT=new Set([0]);
+  while(inT.size<ns.length){let best=null;
+    for(const i of inT)for(let j=0;j<ns.length;j++){if(inT.has(j))continue;const v=wd(i,j);if(v===Infinity)continue;
+      if(!best||v<best[0]||(v===best[0]&&(i<best[1]||(i===best[1]&&j<best[2]))))best=[v,i,j];}
+    if(!best){const j=[...Array(ns.length).keys()].find(k=>!inT.has(k));inT.add(j);continue;} // 못 가는 노드는 건너뛴다
+    add(ns[best[1]],ns[best[2]]);inT.add(best[2]);}
+  for(let i=0;i<ns.length;i++){let best=null;
+    for(let j=0;j<ns.length;j++){if(i===j||findLink(ns[i],ns[j]))continue;const v=wd(i,j);if(v>AUTO_EXTRA_MAX_STEPS)continue;
+      if(crosses(ns[i],ns[j]))continue;if(!best||v<best[0])best=[v,j];}
+    if(best)add(ns[i],ns[best[1]]);}
+  return map.links.length-before;}
+const inB=(x,y)=>x>=0&&y>=0&&x<map.width&&y<map.height;
+const terr=(x,y)=>inB(x,y)?map.rows[y][x]:'#';
+const walk=(x,y)=>inB(x,y)&&T(terr(x,y)).walk;
+const nodeAt=(x,y)=>map.nodes.find(n=>n.x===x&&n.y===y);
+function setTerr(x,y,c){if(!inB(x,y)||map.rows[y][x]===c)return false;const r=map.rows[y];map.rows[y]=r.slice(0,x)+c+r.slice(x+1);return true;}
+const split=s=>(s||'').split(',').map(v=>v.trim()).filter(Boolean);
+function toJson(){ // Unity JsonUtility 와 같은 필드 순서
+  return JSON.stringify({version:map.version||1,id:map.id,name:map.name,width:map.width,height:map.height,baseTier:map.baseTier,enemies:map.enemies,randomPool:map.randomPool||'',rows:map.rows,
+    nodes:map.nodes.map(n=>({x:n.x,y:n.y,type:n.type,name:n.name,battleCells:n.battleCells|0,difficulty:n.difficulty,enemies:n.enemies,target:n.target,note:n.note,pool:n.pool||''})),
+    links:map.links.map(l=>({ax:l.ax,ay:l.ay,bx:l.bx,by:l.by}))},null,4);
+}
+
+// ───── 랜덤 칸 생성기 (Unity RandomNodeGenerator.cs 와 같은 순서·같은 난수) ─────
+const DEFAULT_POOL='battle:40, elite:8:3, farm:15, event:20, totem:6:3, ruin_village:5:2, merchant_camp:4:1';
+const ELITE_MIN_STEPS=6, SPREAD_RADIUS=2;
+function parsePool(spec,bad){const out=[];
+  for(const raw of (spec||'').split(',')){const part=raw.trim();if(!part)continue;const b=part.split(':');
+    const e={type:b[0].trim(),weight:1,max:0};
+    if(b.length>1&&/^\s*-?\d+\s*$/.test(b[1]))e.weight=Math.max(0,parseInt(b[1],10));
+    if(b.length>2&&/^\s*-?\d+\s*$/.test(b[2]))e.max=Math.max(0,parseInt(b[2],10));
+    const d=N(e.type);if(!d||d.random||e.type==='start'){if(bad)bad.push("'"+e.type+"'");continue;}out.push(e);}
+  return out;}
+function poolOf(n){let p=parsePool(n.pool);if(!p.length)p=parsePool(map.randomPool);if(!p.length)p=parsePool(DEFAULT_POOL);return p;}
+function resolveRandom(seed){
+  const nodes=map.nodes.map(n=>Object.assign({},n,{fromRandom:false}));
+  let s=(seed>>>0)||0x9E3779B9;const next=()=>{s^=s<<13;s>>>=0;s^=s>>>17;s^=s<<5;s>>>=0;return s;};
+  let st=null;for(const n of nodes)if(n.type==='start')st=n;
+  const dist=st?distances(st.x,st.y):null;
+  const counts={},rnd=[];
+  for(const n of nodes){const d=N(n.type);if(d&&d.random)rnd.push(n);else counts[n.type]=(counts[n.type]||0)+1;}
+  rnd.sort((a,b)=>a.y!==b.y?a.y-b.y:a.x-b.x);
+  for(const n of rnd){const pool=poolOf(n);const w=[];let total=0;
+    for(const e of pool){let v=e.weight*4;const have=counts[e.type]||0;
+      if(e.max>0&&have>=e.max)v=0;
+      if(e.type==='elite'&&dist&&inB(n.x,n.y)&&dist[n.y][n.x]>=0&&dist[n.y][n.x]<ELITE_MIN_STEPS)v=0;
+      if(v>0&&nodes.some(o=>o!==n&&o.type===e.type&&Math.abs(o.x-n.x)+Math.abs(o.y-n.y)<=SPREAD_RADIUS))v=e.weight;
+      w.push(v);total+=v;}
+    let chosen='battle';
+    if(total>0){let r=next()%total;for(let i=0;i<pool.length;i++){if(r<w[i]){chosen=pool[i].type;break;}r-=w[i];}}
+    n.type=chosen;n.pool='';n.fromRandom=true;counts[chosen]=(counts[chosen]||0)+1;}
+  return nodes;}
+let preview=false, seed=1, previewNodes=null;
+function updatePreview(){previewNodes=preview?resolveRandom(seed):null;renderPreview();}
+const shownNodes=()=>previewNodes||map.nodes;
+const shownAt=(x,y)=>shownNodes().find(n=>n.x===x&&n.y===y);
+
+// ───── 되돌리기 ─────
+function snap(){undo.push(JSON.stringify(map)); if(undo.length>100)undo.shift(); redo=[]; markDirty();}
+function restore(s){const sx=selected?selected.x:-1,sy=selected?selected.y:-1;map=JSON.parse(s);linkFrom=null;selected=nodeAt(sx,sy)||null;markDirty();renderAll();}
+function doUndo(){if(!undo.length)return;redo.push(JSON.stringify(map));restore(undo.pop());}
+function doRedo(){if(!redo.length)return;undo.push(JSON.stringify(map));restore(redo.pop());}
+let lastFieldSnap=null;
+function snapOnce(key){if(lastFieldSnap===key)return;snap();lastFieldSnap=key;}
+
+// ───── 검사 (Unity MapValidator 와 같은 규칙) ─────
+function distances(sx,sy){
+  const d=Array.from({length:map.height},()=>new Array(map.width).fill(-1));
+  if(!walk(sx,sy))return d; d[sy][sx]=0; const q=[[sx,sy]];
+  for(let i=0;i<q.length;i++){const [x,y]=q[i];for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1]]){const nx=x+dx,ny=y+dy;if(walk(nx,ny)&&d[ny][nx]<0){d[ny][nx]=d[y][x]+1;q.push([nx,ny]);}}}
+  return d;
+}
+const label=n=>(n.name||(N(n.type)?N(n.type).name:n.type))+' ('+n.x+', '+n.y+')';
+function check(){
+  const r={err:[],warn:[],counts:{},dist:null,far:-1,walk:0};
+  for(let y=0;y<map.height;y++)for(let x=0;x<map.width;x++)if(walk(x,y))r.walk++;
+  const starts=map.nodes.filter(n=>n.type==='start');
+  for(const n of map.nodes)r.counts[n.type]=(r.counts[n.type]||0)+1;
+  if(!starts.length)r.err.push('시작 지점이 없어요.'); else if(starts.length>1)r.err.push('시작 지점이 '+starts.length+'개예요. 1개만 두세요.');
+  for(const n of map.nodes){const d=N(n.type);
+    if(!d)r.err.push(label(n)+': 모르는 노드 종류 "'+n.type+'"');
+    if(!walk(n.x,n.y))r.err.push(label(n)+': 지나갈 수 없는 지형 위에 있어요.');
+    if(d&&d.target&&!n.target)r.warn.push(label(n)+': 이동할 맵이나 던전 id가 비어 있어요.');
+    if(d&&d.random&&n.pool){const bad=[];if(!parsePool(n.pool,bad).length)bad.push('(쓸 수 있는 후보 없음, 맵 기본값을 써요)');if(bad.length)r.warn.push(label(n)+': 랜덤 후보에 모르는 종류 '+bad.join(', '));}}
+  if(map.randomPool){const bad=[];if(!parsePool(map.randomPool,bad).length)bad.push('(쓸 수 있는 후보 없음, 기본값을 써요)');if(bad.length)r.warn.push('맵 랜덤 후보에 모르는 종류 '+bad.join(', '));}
+  const ex=r.counts.exit||0; if(ex<2)r.warn.push('탈출 후보가 '+ex+'개예요. 탐험마다 2곳을 열려면 3곳 이상을 추천해요.');
+  r.links=map.links.length;r.farHops=-1;
+  if(!map.links.length){if(map.nodes.length>1)r.warn.push('노드끼리 이은 길이 아직 없어요. 길 도구(5)로 잇거나 \'자동 연결\'을 눌러 보세요.');}
+  else if(starts[0]){const h=hops(starts[0]);
+    for(const n of map.nodes){const k=h.get(n.x+','+n.y);if(k===undefined)r.err.push(label(n)+': 시작 지점에서 길로 이어져 있지 않아요.');else if(k>r.farHops)r.farHops=k;}}
+  if(starts[0]){r.dist=distances(starts[0].x,starts[0].y);
+    for(const n of map.nodes){const d=r.dist[n.y][n.x];if(d<0)r.err.push(label(n)+': 시작 지점에서 갈 수 없어요.');else if(d>r.far)r.far=d;}}
+  return r;
+}
+
+// ───── 그리기 ─────
+const cv=$('cv'), ctx=cv.getContext('2d'), stage=$('stage');
+function resize(){const r=stage.getBoundingClientRect(),dpr=window.devicePixelRatio||1;cv.width=Math.max(1,r.width*dpr);cv.height=Math.max(1,r.height*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);draw();}
+function isoW(){return zoom*1.4;} // 쿼터뷰 마름모 가로
+function cellToScreen(x,y){ // 칸 가운데 화면 좌표
+  if(!iso)return [panX+(x+.5)*zoom,panY+(y+.5)*zoom];
+  const w=isoW(),h=w/2; return [panX+(x-y)*w/2+map.height*w/2, panY+(x+y)*h/2+h/2];
+}
+function screenToCell(px,py){
+  if(!iso)return [Math.floor((px-panX)/zoom),Math.floor((py-panY)/zoom)];
+  const w=isoW(),h=w/2; const a=(px-panX-map.height*w/2)/(w/2), b=(py-panY-h/2)/(h/2);
+  return [Math.round((a+b)/2),Math.round((b-a)/2)];
+}
+function lum(hex){const v=parseInt(hex.slice(1),16);return (0.299*(v>>16&255)+0.587*(v>>8&255)+0.114*(v&255))/255;}
+function draw(){
+  if(!map)return;
+  const W=cv.clientWidth,H=cv.clientHeight; ctx.clearRect(0,0,W,H);
+  const gap=showGrid&&zoom>=8?1:0;
+  const dist=showDist&&report?report.dist:null;
+  ctx.textAlign='center';ctx.textBaseline='middle';
+  if(!iso){
+    const x0=Math.max(0,Math.floor(-panX/zoom)),y0=Math.max(0,Math.floor(-panY/zoom));
+    const x1=Math.min(map.width-1,Math.ceil((W-panX)/zoom)),y1=Math.min(map.height-1,Math.ceil((H-panY)/zoom));
+    for(let y=y0;y<=y1;y++)for(let x=x0;x<=x1;x++){ctx.fillStyle=T(terr(x,y)).color;ctx.fillRect(panX+x*zoom,panY+y*zoom,zoom-gap,zoom-gap);}
+    if(dist){ctx.font='500 '+Math.max(8,zoom/3|0)+'px '+getComputedStyle(document.body).getPropertyValue('--mono');ctx.fillStyle='rgba(0,0,0,.55)';
+      for(let y=y0;y<=y1;y++)for(let x=x0;x<=x1;x++){const d=dist[y][x];if(d>0&&!shownAt(x,y))ctx.fillText(d,panX+(x+.5)*zoom,panY+(y+.5)*zoom);}}
+    drawLinks((x,y)=>[panX+(x+.5)*zoom,panY+(y+.5)*zoom],Math.max(2,zoom/7));
+    const pad=Math.max(2,zoom/8);
+    ctx.font='700 '+Math.max(9,zoom/2|0)+'px "IBM Plex Sans KR",sans-serif';
+    for(const n of shownNodes()){const d=N(n.type),c=d?d.color:'#ff00ff';const x=panX+n.x*zoom,y=panY+n.y*zoom;
+      ctx.fillStyle=c;ctx.fillRect(x+pad,y+pad,zoom-pad*2-gap,zoom-pad*2-gap);
+      if(n.fromRandom){ctx.setLineDash([3,2]);ctx.strokeStyle='#fff';ctx.lineWidth=1.5;ctx.strokeRect(x+pad-1.5,y+pad-1.5,zoom-pad*2-gap+3,zoom-pad*2-gap+3);ctx.setLineDash([]);}
+      ctx.fillStyle=lum(c)>.6?'#000':'#fff';ctx.fillText(d?d.mark:'!',x+zoom/2,y+zoom/2+1);
+      if(selected&&n.x===selected.x&&n.y===selected.y&&n!==selected){ctx.strokeStyle='#ffd400';ctx.lineWidth=2;ctx.strokeRect(x+1,y+1,zoom-2-gap,zoom-2-gap);}
+      if(n===selected){ctx.strokeStyle='#ffd400';ctx.lineWidth=2;ctx.strokeRect(x+1,y+1,zoom-2-gap,zoom-2-gap);}}
+    if(hover&&inB(hover[0],hover[1])){const r0=tool==='terrain'?(brush-1)>>1:0,r1=tool==='terrain'?brush>>1:0;
+      ctx.strokeStyle='rgba(255,255,255,.85)';ctx.lineWidth=1;ctx.strokeRect(panX+(hover[0]-r0)*zoom+.5,panY+(hover[1]-r0)*zoom+.5,(r0+r1+1)*zoom-gap-1,(r0+r1+1)*zoom-gap-1);}
+  } else {
+    const w=isoW(),h=w/2;
+    const diamond=(cx,cy,s)=>{ctx.beginPath();ctx.moveTo(cx,cy-h/2*s);ctx.lineTo(cx+w/2*s,cy);ctx.lineTo(cx,cy+h/2*s);ctx.lineTo(cx-w/2*s,cy);ctx.closePath();};
+    for(let s=0;s<map.width+map.height-1;s++)for(let x=0;x<=s;x++){const y=s-x;if(!inB(x,y))continue;
+      const [cx,cy]=cellToScreen(x,y);if(cx<-w||cx>W+w||cy<-h*3||cy>H+h)continue;
+      const t=T(terr(x,y));ctx.fillStyle=t.color;diamond(cx,cy,1);ctx.fill();if(gap){ctx.strokeStyle='rgba(0,0,0,.18)';ctx.lineWidth=1;ctx.stroke();}
+      if(!t.walk&&t.id!=='void'){ // 막힌 지형은 위로 솟은 덩어리로
+        const lift=t.id==='mountain'?h*1.1:0;if(lift){ctx.fillStyle=shade(t.color,-.18);ctx.beginPath();ctx.moveTo(cx-w/2,cy);ctx.lineTo(cx,cy+h/2);ctx.lineTo(cx,cy+h/2-lift);ctx.lineTo(cx-w/2,cy-lift);ctx.fill();
+          ctx.fillStyle=shade(t.color,-.32);ctx.beginPath();ctx.moveTo(cx+w/2,cy);ctx.lineTo(cx,cy+h/2);ctx.lineTo(cx,cy+h/2-lift);ctx.lineTo(cx+w/2,cy-lift);ctx.fill();
+          ctx.fillStyle=t.color;diamond(cx,cy-lift,1);ctx.fill();}}
+      if(!shownAt(x,y)&&dist&&dist[y][x]>0){ctx.font='500 '+Math.max(8,h*.4|0)+'px monospace';ctx.fillStyle='rgba(0,0,0,.55)';ctx.fillText(dist[y][x],cx,cy);}
+    }
+    drawLinks((x,y)=>{const [cx,cy]=cellToScreen(x,y);return [cx,cy-h*.15];},Math.max(2,h/4));
+    // 노드는 지형을 다 그린 뒤에 위에 그린다 (길 선이 노드 밑으로 가게)
+    const order=[...shownNodes()].sort((a,b)=>(a.x+a.y)-(b.x+b.y));
+    for(const n of order){const [cx,cy]=cellToScreen(n.x,n.y);const d=N(n.type),c=d?d.color:'#ff00ff';ctx.fillStyle=c;diamond(cx,cy-h*.15,.55);ctx.fill();
+        if(n.fromRandom){ctx.setLineDash([3,2]);ctx.strokeStyle='#fff';ctx.lineWidth=1.2;diamond(cx,cy-h*.15,.62);ctx.stroke();ctx.setLineDash([]);}
+        ctx.font='700 '+Math.max(8,h*.5|0)+'px "IBM Plex Sans KR",sans-serif';ctx.fillStyle=lum(c)>.6?'#000':'#fff';ctx.fillText(d?d.mark:'!',cx,cy-h*.13);
+        if(selected&&n.x===selected.x&&n.y===selected.y){ctx.strokeStyle='#ffd400';ctx.lineWidth=2;diamond(cx,cy,1);ctx.stroke();}}
+    if(hover&&inB(hover[0],hover[1])){const [cx,cy]=cellToScreen(hover[0],hover[1]);ctx.strokeStyle='rgba(255,255,255,.9)';ctx.lineWidth=1.5;diamond(cx,cy,1);ctx.stroke();}
+  }
+}
+function drawLinks(pos,lw){
+  if(!showLinks&&tool!=='link')return;
+  ctx.lineCap='round';
+  for(const l of map.links){const [x1,y1]=pos(l.ax,l.ay),[x2,y2]=pos(l.bx,l.by);const hot=hoverLink===l;
+    ctx.strokeStyle='rgba(0,0,0,.55)';ctx.lineWidth=lw+2;ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();
+    ctx.strokeStyle=hot?'#ff6b6b':'#fff4d6';ctx.lineWidth=lw;ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();}
+  if(tool==='link'&&linkFrom&&hover){const [x1,y1]=pos(linkFrom.x,linkFrom.y),[x2,y2]=pos(hover[0],hover[1]);
+    ctx.setLineDash([6,4]);ctx.strokeStyle='#ffd400';ctx.lineWidth=lw;ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();ctx.setLineDash([]);}
+  linkPos=pos;
+}
+let showLinks=true, linkFrom=null, hoverLink=null, linkPos=null;
+// 화면 좌표에서 가까운 길 찾기 (길 도구에서 선을 눌러 지울 때)
+function linkNear(px,py){if(!linkPos)return null;let best=null;
+  for(const l of map.links){const [x1,y1]=linkPos(l.ax,l.ay),[x2,y2]=linkPos(l.bx,l.by);const dx=x2-x1,dy=y2-y1,len=dx*dx+dy*dy||1;
+    const t=Math.max(0,Math.min(1,((px-x1)*dx+(py-y1)*dy)/len));const ex=x1+t*dx-px,ey=y1+t*dy-py,d=Math.sqrt(ex*ex+ey*ey);
+    if(d<8&&t>0.08&&t<0.92&&(!best||d<best[0]))best=[d,l];}
+  return best?best[1]:null;}
+function shade(hex,k){const v=parseInt(hex.slice(1),16);const f=c=>Math.max(0,Math.min(255,Math.round(c*(1+k))));return 'rgb('+f(v>>16&255)+','+f(v>>8&255)+','+f(v&255)+')';}
+function fit(){const r=stage.getBoundingClientRect();
+  if(!iso){zoom=Math.max(6,Math.min(48,Math.floor(Math.min((r.width-20)/map.width,(r.height-20)/map.height))));panX=(r.width-map.width*zoom)/2;panY=(r.height-map.height*zoom)/2;}
+  else{const k=Math.min((r.width-20)/((map.width+map.height)*0.7),(r.height-20)/((map.width+map.height)*0.35));zoom=Math.max(6,Math.min(48,k));
+    const w=isoW();panX=(r.width-(map.width+map.height)*w/2)/2;panY=(r.height-(map.width+map.height)*w/4)/2;}
+  draw();}
+
+// ───── 입력 ─────
+let drag=null, spaceDown=false;
+function apply(x,y,isDrag){
+  if(!inB(x,y))return;
+  if(tool==='terrain'){const c=TERRAINS[terrainIdx].code,r0=(brush-1)>>1,r1=brush>>1;let ch=false;
+    for(let yy=y-r0;yy<=y+r1;yy++)for(let xx=x-r0;xx<=x+r1;xx++)ch=setTerr(xx,yy,c)||ch; if(ch)changed();}
+  else if(tool==='node'){if(isDrag)return;const d=NODES[nodeIdx];let n=nodeAt(x,y);
+    if(!n){n={x,y,type:d.id,name:'',battleCells:0,difficulty:'',enemies:'',target:'',note:'',pool:''};map.nodes.push(n);}else n.type=d.id;
+    if(d.id==='start'){map.nodes=map.nodes.filter(o=>o===n||o.type!=='start');fixLinks();}
+    selected=n;changed();renderNode();}
+  else if(tool==='erase')eraseAt(x,y);
+}
+function eraseAt(x,y){const n=nodeAt(x,y);if(!n)return;map.nodes=map.nodes.filter(o=>o!==n);dropLinksAt(n.x,n.y);if(linkFrom===n)linkFrom=null;if(selected===n){selected=null;renderNode();}changed();}
+cv.addEventListener('contextmenu',e=>e.preventDefault());
+cv.addEventListener('pointerdown',e=>{
+  cv.setPointerCapture(e.pointerId);lastFieldSnap=null;
+  const r=cv.getBoundingClientRect(),px=e.clientX-r.left,py=e.clientY-r.top,[x,y]=screenToCell(px,py);
+  if(e.button===1||spaceDown){drag={mode:'pan',sx:e.clientX,sy:e.clientY,px:panX,py:panY};e.preventDefault();return;}
+  if(e.button===2){snap();drag={mode:'erase'};eraseAt(x,y);return;}
+  if(e.button!==0)return;
+  if(tool==='link'){const n=nodeAt(x,y);
+    if(n){if(linkFrom&&linkFrom!==n){snap();const added=toggleLink(linkFrom,n);toast(added?'길을 이었어요.':'길을 끊었어요.');changed();}
+      linkFrom=n;selected=n;renderNode();}
+    else{const l=linkNear(px,py);if(l){snap();map.links=map.links.filter(o=>o!==l);hoverLink=null;changed();toast('길을 지웠어요.');}else linkFrom=null;}
+    refresh();return;}
+  if(tool==='select'){selected=nodeAt(x,y)||null;renderNode();drag={mode:'move',node:selected,pushed:false};draw();return;}
+  if(!inB(x,y))return;
+  snap();drag={mode:'paint'};apply(x,y,false);
+});
+cv.addEventListener('pointermove',e=>{
+  const r=cv.getBoundingClientRect(),px=e.clientX-r.left,py=e.clientY-r.top,[x,y]=screenToCell(px,py);
+  hover=inB(x,y)?[x,y]:null;
+  hoverLink=tool==='link'&&!nodeAt(x,y)?linkNear(px,py):null;
+  $('hud').textContent=hover?('('+x+', '+y+') '+T(terr(x,y)).name+(nodeAt(x,y)?' · '+N(nodeAt(x,y).type).name:'')+(report&&report.dist&&report.dist[y][x]>=0?' · '+report.dist[y][x]+'걸음':'')):'-';
+  if(drag){
+    if(drag.mode==='pan'){panX=drag.px+e.clientX-drag.sx;panY=drag.py+e.clientY-drag.sy;}
+    else if(drag.mode==='paint'&&hover)apply(x,y,true);
+    else if(drag.mode==='erase'&&hover)eraseAt(x,y);
+    else if(drag.mode==='move'&&drag.node&&hover&&!nodeAt(x,y)){if(!drag.pushed){snap();drag.pushed=true;}moveLinks(drag.node.x,drag.node.y,x,y);drag.node.x=x;drag.node.y=y;changed();renderNode();}
+  }
+  draw();
+});
+const endDrag=()=>{if(drag&&drag.mode!=='pan')refresh();drag=null;};
+cv.addEventListener('pointerup',endDrag);cv.addEventListener('pointercancel',endDrag);
+cv.addEventListener('pointerleave',()=>{hover=null;draw();});
+cv.addEventListener('wheel',e=>{e.preventDefault();const r=cv.getBoundingClientRect();zoomAt(e.deltaY<0?1.12:1/1.12,e.clientX-r.left,e.clientY-r.top);},{passive:false});
+function zoomAt(k,px,py){const old=zoom;zoom=Math.max(5,Math.min(64,zoom*k));const s=zoom/old;panX=px-(px-panX)*s;panY=py-(py-panY)*s;draw();}
+$('zIn').onclick=()=>{const r=cv.getBoundingClientRect();zoomAt(1.25,r.width/2,r.height/2);};
+$('zOut').onclick=()=>{const r=cv.getBoundingClientRect();zoomAt(1/1.25,r.width/2,r.height/2);};
+$('zFit').onclick=fit;
+const typing=()=>/INPUT|TEXTAREA|SELECT/.test(document.activeElement&&document.activeElement.tagName);
+addEventListener('keydown',e=>{
+  if(e.code==='Space'&&!typing()){spaceDown=true;e.preventDefault();}
+  if(typing())return;
+  const k=e.key.toLowerCase();
+  if((e.ctrlKey||e.metaKey)&&k==='z'){e.preventDefault();e.shiftKey?doRedo():doUndo();}
+  else if((e.ctrlKey||e.metaKey)&&k==='y'){e.preventDefault();doRedo();}
+  else if((e.ctrlKey||e.metaKey)&&k==='s'){e.preventDefault();save();}
+  else if(!e.ctrlKey&&!e.metaKey&&'12345'.includes(k)){setTool(['terrain','node','select','erase','link'][+k-1]);}
+  else if(k==='escape'){linkFrom=null;draw();}
+  else if((k==='delete'||k==='backspace')&&selected){snap();map.nodes=map.nodes.filter(n=>n!==selected);dropLinksAt(selected.x,selected.y);selected=null;changed();renderNode();refresh();}
+});
+addEventListener('keyup',e=>{if(e.code==='Space')spaceDown=false;});
+
+// ───── 패널 ─────
+function setTool(t){tool=t;if(t!=='link')linkFrom=null;renderTools();draw();}
+function renderTools(){
+  const names={terrain:'지형 (1)',node:'노드 (2)',select:'선택 (3)',erase:'지우기 (4)',link:'길 (5)'};
+  $('tools').replaceChildren(...Object.keys(names).map(k=>{const b=document.createElement('button');b.textContent=names[k];b.setAttribute('aria-pressed',tool===k);b.onclick=()=>setTool(k);return b;}));
+  $('brushBox').hidden=tool!=='terrain';
+  const pal=$('pal');pal.replaceChildren();
+  if(tool==='terrain'){ $('palTitle').textContent='지형';
+    TERRAINS.forEach((t,i)=>{const b=document.createElement('button');b.setAttribute('aria-pressed',i===terrainIdx);
+      b.innerHTML='<span class="sw" style="background:'+t.color+'"></span><span></span><small>'+(t.walk?t.cells+'칸':'막힘')+'</small>';b.children[1].textContent=t.name;b.onclick=()=>{terrainIdx=i;renderTools();};pal.append(b);});}
+  else if(tool==='node'){ $('palTitle').textContent='노드';
+    NODES.forEach((n,i)=>{const b=document.createElement('button');b.setAttribute('aria-pressed',i===nodeIdx);
+      b.innerHTML='<span class="sw" style="background:'+n.color+';color:'+(lum(n.color)>.6?'#000':'#fff')+'"></span><span></span>';b.children[0].textContent=n.mark;b.children[1].textContent=n.name;b.onclick=()=>{nodeIdx=i;renderTools();};pal.append(b);});}
+  else if(tool==='link'){ $('palTitle').textContent='길';
+    const p=document.createElement('p');p.className='muted';p.style.margin=0;
+    p.textContent='노드를 차례로 누르면 앞 노드와 이어져요. 이미 이어진 두 노드를 누르면 끊어요. 선을 누르면 그 길을 지워요. 빈 칸이나 Esc로 잇기를 멈춰요.';pal.append(p);
+    const a=document.createElement('button');a.textContent='가까운 노드 자동 연결';a.onclick=()=>{snap();const c=autoLink();changed();refresh();toast(c?'길 '+c+'개를 이었어요. 마음에 안 드는 길은 눌러서 지우세요.':'더 이을 길이 없어요.');};
+    const c=document.createElement('button');c.textContent='길 모두 지우기';c.onclick=async()=>{if(!map.links.length)return;if(!await ask('길을 모두 지울까요?','길 '+map.links.length+'개가 지워져요. 되돌리기로 살릴 수 있어요.',{yes:'모두 지우기'}))return;snap();map.links=[];linkFrom=null;changed();refresh();};
+    pal.append(a,c);}
+  else { $('palTitle').textContent=tool==='select'?'선택':'지우기';
+    const p=document.createElement('p');p.className='muted';p.style.margin=0;p.textContent=tool==='select'?'노드를 눌러 고르고, 끌어서 옮겨요. 이어진 길도 같이 따라와요. Delete 키로 지워요.':'누르거나 끈 칸의 노드를 지워요. 그 노드의 길도 같이 지워져요.';pal.append(p);}
+}
+function famBox(container,value,onChange){
+  const set=new Set(split(value));container.replaceChildren(...FAMILIES.map(([id,name])=>{const l=document.createElement('label');const c=document.createElement('input');c.type='checkbox';c.checked=set.has(id);
+    c.onchange=()=>{c.checked?set.add(id):set.delete(id);const known=FAMILIES.map(f=>f[0]);onChange([...known.filter(k=>set.has(k)),...[...set].filter(k=>!known.includes(k))].join(','));};
+    l.append(c,document.createTextNode(name));return l;}));
+}
+function renderMapInfo(){
+  $('mId').value=map.id;$('mName').value=map.name;$('mTier').value=String(map.baseTier||1);$('mW').value=map.width;$('mH').value=map.height;
+  famBox($('mFam'),map.enemies,v=>{snapOnce('menemies');map.enemies=v;changed();});
+  if(document.activeElement!==$('mPool'))$('mPool').value=map.randomPool||'';
+  $('fileLabel').textContent=(fileName||map.id+'.json')+(dirty?' · 저장 안 됨':'');
+}
+$('mId').oninput=e=>{snapOnce('mid');map.id=e.target.value.trim();changed();};
+$('mName').oninput=e=>{snapOnce('mname');map.name=e.target.value;changed();};
+$('mPool').oninput=e=>{snapOnce('mpool');map.randomPool=e.target.value;changed();};
+$('defPool').textContent=DEFAULT_POOL;
+$('tPrev').onchange=e=>{preview=e.target.checked;updatePreview();draw();};
+$('seed').oninput=e=>{seed=Math.max(1,parseInt(e.target.value,10)||1);if(preview){updatePreview();draw();}};
+$('bRoll').onclick=()=>{seed=1+Math.floor(Math.random()*999999);$('seed').value=seed;preview=true;$('tPrev').checked=true;updatePreview();draw();};
+function renderPreview(){const box=$('prevBox');const rc=map.nodes.filter(n=>N(n.type)&&N(n.type).random).length;
+  if(!previewNodes){box.textContent=rc?'랜덤 칸 '+rc+'곳. 켜면 탐험 한 번의 결과를 미리 볼 수 있어요. (점선 테두리가 랜덤에서 나온 노드)':'랜덤 칸이 아직 없어요. 노드 도구에서 「랜」 칸을 찍으세요.';return;}
+  const c={};previewNodes.filter(n=>n.fromRandom).forEach(n=>c[n.type]=(c[n.type]||0)+1);
+  const parts=NODES.filter(d=>c[d.id]).map(d=>d.name+' '+c[d.id]);
+  box.textContent='시드 '+seed+' · 랜덤 칸 '+rc+'곳 → '+(parts.join(', ')||'없음')+'. 같은 시드면 게임에서도 같은 결과예요.';}
+$('mTier').onchange=e=>{snap();map.baseTier=+e.target.value;changed();};
+$('bResize').onclick=()=>{const w=Math.max(3,Math.min(200,+$('mW').value||map.width)),h=Math.max(3,Math.min(200,+$('mH').value||map.height));
+  snap();map.rows=Array.from({length:h},(_,y)=>Array.from({length:w},(_,x)=>x<map.width&&y<map.height?map.rows[y][x]:'.').join(''));
+  map.width=w;map.height=h;map.nodes=map.nodes.filter(n=>inB(n.x,n.y));if(selected&&!map.nodes.includes(selected))selected=null;changed();renderAll();fit();};
+function field(labelText,el){const l=document.createElement('label');l.className='f';l.append(document.createTextNode(labelText),el);return l;}
+function renderNode(){
+  const box=$('nodeBox');box.replaceChildren();
+  if(!selected||!map.nodes.includes(selected)){selected=null;const p=document.createElement('div');p.className='muted';p.textContent='선택 도구(3)로 노드를 눌러 고르세요.';box.append(p);return;}
+  const n=selected,d=N(n.type),key='node'+map.nodes.indexOf(n);
+  const pos=document.createElement('div');pos.className='muted';pos.textContent='('+n.x+', '+n.y+') · 지형 '+T(terr(n.x,n.y)).name;box.append(pos);
+  const sel=document.createElement('select');sel.id='nType';NODES.forEach(o=>sel.add(new Option(o.name,o.id)));sel.value=n.type;
+  sel.onchange=()=>{snap();n.type=sel.value;if(n.type==='start'){map.nodes=map.nodes.filter(o=>o===n||o.type!=='start');fixLinks();}changed();renderNode();refresh();};
+  box.append(field('종류',sel));
+  const nm=document.createElement('input');nm.type='text';nm.id='nName';nm.value=n.name;nm.oninput=()=>{snapOnce(key+'name');n.name=nm.value;changed();};box.append(field('이름',nm));
+  if(d&&d.random){
+    const pl=document.createElement('input');pl.type='text';pl.id='nPool';pl.spellcheck=false;pl.placeholder='비우면 맵 기본값';pl.value=n.pool||'';
+    pl.oninput=()=>{snapOnce(key+'pool');n.pool=pl.value;changed();};box.append(field('이 칸 후보',pl));
+    const m=document.createElement('div');m.className='muted';m.textContent='예) battle:3, farm:1 · 전투가 나오면 아래 설정을 써요';box.append(m);}
+  if(d&&(d.battle||d.random)){
+    const tc=T(terr(n.x,n.y)).cells;const bc=document.createElement('select');bc.id='nCells';[[0,'지형 기본 ('+tc+'칸)'],[5,'5칸'],[7,'7칸'],[9,'9칸']].forEach(([v,t])=>bc.add(new Option(t,v)));bc.value=String(n.battleCells|0);
+    bc.onchange=()=>{snap();n.battleCells=+bc.value;changed();};box.append(field('전투 칸',bc));
+    const df=document.createElement('select');df.id='nDiff';DIFFS.forEach(([v,t])=>df.add(new Option(t,v)));df.value=n.difficulty||'';
+    df.onchange=()=>{snap();n.difficulty=df.value;changed();};box.append(field('난이도',df));
+    const m=document.createElement('div');m.className='muted';m.textContent='적 계열 (모두 끄면 맵 기본값)';box.append(m);
+    const f=document.createElement('div');f.className='fam';famBox(f,n.enemies,v=>{snapOnce(key+'en');n.enemies=v;changed();});box.append(f);}
+  if(d&&d.target){const t=document.createElement('input');t.type='text';t.id='nTarget';t.spellcheck=false;t.value=n.target;t.oninput=()=>{snapOnce(key+'t');n.target=t.value.trim();changed();};box.append(field(n.type==='map_gate'?'갈 맵 id':'던전 id',t));}
+  const note=document.createElement('textarea');note.id='nNote';note.value=n.note;note.oninput=()=>{snapOnce(key+'note');n.note=note.value;changed();};box.append(field('메모',note));
+  const del=document.createElement('button');del.textContent='이 노드 지우기';del.onclick=()=>{snap();map.nodes=map.nodes.filter(o=>o!==n);dropLinksAt(n.x,n.y);selected=null;changed();renderNode();refresh();};box.append(del);
+}
+function renderReport(){
+  const box=$('report');box.replaceChildren();const r=report;
+  const msg=(cls,t)=>{const d=document.createElement('div');d.className='msg '+cls;d.textContent=t;box.append(d);};
+  r.err.forEach(t=>msg('err',t));r.warn.forEach(t=>msg('warn',t));if(!r.err.length&&!r.warn.length)msg('ok','문제 없음');
+  const s=document.createElement('div');s.className='stats';
+  const add=(a,b)=>{const x=document.createElement('span');x.textContent=a;const y=document.createElement('span');y.textContent=b;s.append(x,y);};
+  add('지나갈 수 있는 칸',r.walk);add('가장 먼 노드까지',r.far>=0?r.far+'걸음':'-');add('노드 수',map.nodes.length);add('길 수',r.links);if(r.links)add('가장 먼 노드까지 (길)',r.farHops>=0?r.farHops+'번 이동':'-');
+  NODES.forEach(d=>{if(r.counts[d.id])add('  '+d.name,r.counts[d.id]);});box.append(s);
+}
+function changed(){report=check();if(preview)previewNodes=resolveRandom(seed);renderPreview();markDirty();draw();}
+function refresh(){report=check();renderReport();renderMapInfo();draw();saveDraft();}
+let draftTimer=0;
+function markDirty(){dirty=true;$('fileLabel').textContent=(fileName||map.id+'.json')+' · 저장 안 됨';$('bUndo').disabled=!undo.length;$('bRedo').disabled=!redo.length;clearTimeout(draftTimer);draftTimer=setTimeout(()=>{saveDraft();renderReport();},300);}
+function renderAll(){report=check();updatePreview();renderTools();renderMapInfo();renderNode();renderReport();$('bUndo').disabled=!undo.length;$('bRedo').disabled=!redo.length;draw();}
+$('tGrid').onchange=e=>{showGrid=e.target.checked;draw();};
+$('tDist').onchange=e=>{showDist=e.target.checked;draw();};
+$('tLinks').onchange=e=>{showLinks=e.target.checked;draw();};
+$('brush').oninput=e=>{brush=+e.target.value;$('brushV').textContent=brush;};
+$('bView').onclick=()=>{iso=!iso;$('bView').setAttribute('aria-pressed',iso);$('bView').textContent=iso?'격자 보기':'쿼터뷰 보기';fit();};
+$('bUndo').onclick=doUndo;$('bRedo').onclick=doRedo;
+
+// ───── 파일 ─────
+function load(m,name){map=normalize(m);fileName=name||'';selected=null;undo=[];redo=[];dirty=false;renderAll();fit();$('fileLabel').textContent=(fileName||map.id+'.json');saveDraft();}
+function toast(t){const el=$('toast');el.textContent=t;el.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>el.hidden=true,2400);}
+function ask(title,body,{text=null,yes='확인'}={}){return new Promise(res=>{const d=$('dlg');$('dlgTitle').textContent=title;$('dlgBody').textContent=body;
+  const ta=$('dlgText');ta.hidden=text===null;if(text!==null)ta.value=text;$('dlgYes').textContent=yes;d.hidden=false;if(text!==null)ta.focus();
+  $('dlgYes').onclick=()=>{d.hidden=true;res(text===null?true:ta.value);};$('dlgNo').onclick=()=>{d.hidden=true;res(false);};});}
+async function confirmDiscard(){return !dirty||await ask('저장하지 않은 변경이 있어요','지금 맵을 버리고 계속할까요? 먼저 내려받으려면 취소를 누르세요.',{yes:'버리고 계속'});}
+$('fileIn').onchange=async e=>{const f=e.target.files[0];e.target.value='';if(!f)return;if(!await confirmDiscard())return;
+  try{load(JSON.parse(await f.text()),f.name);toast(f.name+'을 열었어요.');}catch(err){toast('맵 파일이 아니에요: '+err.message);}};
+$('bSample').onclick=async()=>{if(await confirmDiscard()){load(SAMPLE,'plains.json');toast('예시 평원을 불러왔어요.');}};
+$('bWorld').onclick=async()=>{if(await confirmDiscard()){load(WORLD,'wildlands.json');toast('예시 전체맵을 불러왔어요. 노드 105곳, 길 161개예요.');}};
+$('bNew').onclick=async()=>{if(!await confirmDiscard())return;load(blank('new_map','새 맵',30,20),'');
+  map.nodes.push({x:2,y:10,type:'start',name:'',battleCells:0,difficulty:'',enemies:'',target:'',note:''});refresh();};
+let downloads=null;
+(async()=>{try{downloads=window.claude&&await window.claude.use('downloads');}catch(e){downloads=null;}})();
+async function save(){
+  const name=(map.id||'map')+'.json';
+  if(downloads){try{await downloads.save({filename:name,data:toJson()});dirty=false;renderMapInfo();toast(name+'을 내려받았어요. Unity의 Assets/Data/Maps 에 넣으세요.');return;}
+    catch(e){if(e&&e.code==='declined'){toast('내려받기를 취소했어요.');return;}}}
+  copy(true);
+}
+async function copy(fromSave){
+  const txt=toJson();
+  try{await navigator.clipboard.writeText(txt);if(fromSave){dirty=false;renderMapInfo();}toast('JSON을 복사했어요. 메모장에 붙여 '+(map.id||'map')+'.json 으로 저장하세요.');}
+  catch(e){await ask('JSON 복사','아래 내용을 모두 선택해 복사하세요.',{text:txt,yes:'닫기'});}
+}
+$('bSave').onclick=save;$('bCopy').onclick=()=>copy(false);
+$('bPaste').onclick=async()=>{const t=await ask('JSON 붙여넣기','맵 파일 내용을 붙여넣으세요. 지금 맵은 바뀌어요.',{text:'',yes:'불러오기'});
+  if(!t)return;try{load(JSON.parse(t),'');toast('붙여넣은 맵을 불러왔어요.');}catch(err){toast('맵 형식이 아니에요: '+err.message);}};
+function saveDraft(){try{localStorage.setItem('mapEditorDraft',JSON.stringify({map,fileName,dirty}));}catch(e){}}
+window.addEventListener('beforeunload',saveDraft);
+
+// ───── 시작 ─────
+let draft=null;try{draft=JSON.parse(localStorage.getItem('mapEditorDraft')||'null');}catch(e){}
+new ResizeObserver(resize).observe(stage);
+if(draft&&draft.map){load(draft.map,draft.fileName);dirty=!!draft.dirty;renderMapInfo();}else load(SAMPLE,'plains.json');
+</script>

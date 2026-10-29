@@ -1,0 +1,128 @@
+{
+  "source": "Design/card_battle_rulebook_v0.7.3.xlsx",
+  "version": "v0.7.3",
+  "monsters": [
+    {
+      "id": "charger",
+      "no": 1,
+      "name": "돌격형",
+      "hp": 40,
+      "startCell": 6,
+      "concept": "접근 압박, 돌진과 구르기를 섞은 근접 연타",
+      "cards": [
+        "charge_axe",
+        "dash_thrust",
+        "longsword",
+        "dagger",
+        "mace",
+        "serrated_sword",
+        "leap",
+        "roll",
+        "advance",
+        "shove"
+      ]
+    },
+    {
+      "id": "shieldbearer",
+      "no": 2,
+      "name": "방패병",
+      "hp": 40,
+      "startCell": 6,
+      "concept": "수비 반격, 방패 돌진",
+      "cards": [
+        "iron_shield",
+        "spiked_shield",
+        "parry",
+        "counter_stance",
+        "spear",
+        "mace",
+        "shield_charge",
+        "halberd",
+        "longsword",
+        "leap",
+        "barrier"
+      ]
+    },
+    {
+      "id": "archer",
+      "no": 3,
+      "name": "사수",
+      "hp": 26,
+      "startCell": 7,
+      "concept": "거리 유지, 원거리 사격",
+      "cards": [
+        "crossbow",
+        "hunting_bow",
+        "longbow",
+        "javelin",
+        "aim",
+        "retreat",
+        "retreat_shot",
+        "vault",
+        "poison_jar",
+        "throwing_axe",
+        "throwing_dagger",
+        "firebomb",
+        "roll"
+      ]
+    },
+    {
+      "id": "poison_hunter",
+      "no": 4,
+      "name": "독 사냥꾼",
+      "hp": 34,
+      "startCell": 6,
+      "concept": "독과 장판, 지속 피해",
+      "cards": [
+        "poison_jar",
+        "venom_dagger",
+        "venom_fang",
+        "apply_poison",
+        "poison_burst",
+        "poison_mist",
+        "roll",
+        "dodge",
+        "spiked_shield"
+      ]
+    },
+    {
+      "id": "heavy",
+      "no": 5,
+      "name": "중장갑",
+      "hp": 50,
+      "startCell": 6,
+      "concept": "대형 무기, 2슬롯 점유",
+      "cards": [
+        "battle_axe",
+        "war_hammer",
+        "halberd",
+        "whirlwind_slash",
+        "dash_thrust",
+        "tower_shield",
+        "leap",
+        "advance",
+        "shove"
+      ]
+    },
+    {
+      "id": "assassin",
+      "no": 6,
+      "name": "암살자",
+      "hp": 30,
+      "startCell": 6,
+      "concept": "뒤잡기, 급소 타격",
+      "cards": [
+        "roll",
+        "vault",
+        "leap",
+        "assassin_dagger",
+        "vital_strike",
+        "dagger",
+        "serrated_sword",
+        "sharpen",
+        "dodge",
+        "retreat"
+      ]
+    }
+  ]
+}

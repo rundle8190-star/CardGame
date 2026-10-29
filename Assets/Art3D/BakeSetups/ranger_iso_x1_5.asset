@@ -1,0 +1,385 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d6bfe379add6db74e9d5ef064f44611f, type: 3}
+  m_Name: ranger_iso_x1_5
+  m_EditorClassIdentifier: 
+  baseModel: {fileID: 919132149155446097, guid: baca02d327213954e930ea27d68c1eb3, type: 3}
+  parts:
+  - {fileID: 919132149155446097, guid: 3edc9867ea5979e428a0c5da0fabd54d, type: 3}
+  bodyDepthPush: 0.03
+  hideBodyUnderClothes: 1
+  keepBodyBones:
+  - Head
+  - neck_01
+  noPushRenderers:
+  - Eyes
+  - Eyebrows
+  heightScale: 1
+  flattenFeet: 1
+  flattenFeetAmount: 1
+  straightenHips: 1
+  straightenHipsAmount: 1
+  keepAboveGround: 1
+  plantFeet: 1
+  plantDistance: 0.08
+  groundLockHeight: 0.2
+  textureRules:
+  - materialNameContains: MI_Superhero_Male
+    texture: {fileID: 2800000, guid: 99b11bbaa20d0e3428ddfa55cd744724, type: 3}
+    tint: {r: 1, g: 1, b: 1, a: 1}
+  - materialNameContains: MI_Superhero_Female
+    texture: {fileID: 2800000, guid: 4e010c2ea7148314eaf7b88c9dcd0b72, type: 3}
+    tint: {r: 1, g: 1, b: 1, a: 1}
+  - materialNameContains: MI_Eyes
+    texture: {fileID: 2800000, guid: 4e34bc5ae5f3451449dd8424f0521165, type: 3}
+    tint: {r: 1, g: 1, b: 1, a: 1}
+  - materialNameContains: MI_Hair_1
+    texture: {fileID: 2800000, guid: 5129cef671b840d4991272bd79134928, type: 3}
+    tint: {r: 1, g: 1, b: 1, a: 1}
+  - materialNameContains: MI_Hair_2
+    texture: {fileID: 2800000, guid: b8921e4c6bfdc8f44bb8581a4cfbdb0a, type: 3}
+    tint: {r: 1, g: 1, b: 1, a: 1}
+  - materialNameContains: MI_Peasant
+    texture: {fileID: 2800000, guid: 51f0502bb78efe349bcd4b8370c60a9d, type: 3}
+    tint: {r: 1, g: 1, b: 1, a: 1}
+  - materialNameContains: MI_Ranger
+    texture: {fileID: 2800000, guid: a0804c139eca07345ad5a871bc0c8a26, type: 3}
+    tint: {r: 1, g: 1, b: 1, a: 1}
+  - materialNameContains: MI_Regular_Male
+    texture: {fileID: 2800000, guid: aee2c91cad1cb2f409aa96b9f6e193ce, type: 3}
+    tint: {r: 1, g: 1, b: 1, a: 1}
+  - materialNameContains: MI_Regular_Female
+    texture: {fileID: 2800000, guid: 68dab5049734ea04e9770c1bb5f4a7df, type: 3}
+    tint: {r: 1, g: 1, b: 1, a: 1}
+  weapon:
+    prefab: {fileID: 919132149155446097, guid: 9a7a5063e26379b43bc0e3ec02e40264, type: 3}
+    boneName: hand_r
+    autoGrip: 1
+    flipGrip: 0
+    extraPosition: {x: 0, y: 0, z: 0}
+    extraRotation: {x: 0, y: 0, z: 0}
+    scale: 1
+  shield:
+    useTempShield: 1
+    prefab: {fileID: 0}
+    boneName: lowerarm_l
+    diameter: 0.6
+    thickness: 0.05
+    color: {r: 0.47843137, g: 0.30588236, b: 0.17254902, a: 1}
+    extraPosition: {x: 0, y: 0, z: 0}
+    extraRotation: {x: 0, y: 0, z: 0}
+  clips:
+  - bake: 1
+    clip: {fileID: 8324860437086164814, guid: 99c143f3cf058264fae22a14b7eda1b4, type: 3}
+    outputName: 
+    findHitFrame: 0
+    hitFrameOverride: -1
+  - bake: 1
+    clip: {fileID: -2807887025256620907, guid: 99c143f3cf058264fae22a14b7eda1b4, type: 3}
+    outputName: 
+    findHitFrame: 1
+    hitFrameOverride: -1
+  - bake: 1
+    clip: {fileID: -245273357908900549, guid: 99c143f3cf058264fae22a14b7eda1b4, type: 3}
+    outputName: 
+    findHitFrame: 0
+    hitFrameOverride: -1
+  - bake: 1
+    clip: {fileID: 3532616527226485280, guid: 99c143f3cf058264fae22a14b7eda1b4, type: 3}
+    outputName: 
+    findHitFrame: 0
+    hitFrameOverride: -1
+  - bake: 1
+    clip: {fileID: -203655887218126122, guid: 49607f0e34a9a004cb4f62f361aaca0b, type: 3}
+    outputName: 
+    findHitFrame: 0
+    hitFrameOverride: -1
+  - bake: 1
+    clip: {fileID: -203655887218126122, guid: 9ee3e656afa598f44bc776e0d43d50bb, type: 3}
+    outputName: 
+    findHitFrame: 0
+    hitFrameOverride: -1
+  - bake: 1
+    clip: {fileID: -203655887218126122, guid: ada6298fcefc1a54f9cdd1de4774387a, type: 3}
+    outputName: 
+    findHitFrame: 0
+    hitFrameOverride: -1
+  - bake: 1
+    clip: {fileID: -203655887218126122, guid: f407c15abd23f2c4b8acdc2439d8f784, type: 3}
+    outputName: 
+    findHitFrame: 0
+    hitFrameOverride: -1
+  - bake: 1
+    clip: {fileID: -203655887218126122, guid: 7841d90eff0d53d428b8611663002815, type: 3}
+    outputName: 
+    findHitFrame: 1
+    hitFrameOverride: -1
+  - bake: 1
+    clip: {fileID: -203655887218126122, guid: d5ba89d687cb7fb409469318dd09f2e5, type: 3}
+    outputName: 
+    findHitFrame: 1
+    hitFrameOverride: -1
+  - bake: 1
+    clip: {fileID: -203655887218126122, guid: 67ed23f5906741f4b94a15b302d49903, type: 3}
+    outputName: 
+    findHitFrame: 1
+    hitFrameOverride: -1
+  - bake: 1
+    clip: {fileID: -203655887218126122, guid: 538419f3848e32b49be2209622d5601a, type: 3}
+    outputName: 
+    findHitFrame: 1
+    hitFrameOverride: -1
+  - bake: 1
+    clip: {fileID: -203655887218126122, guid: 6840f82f194c4d1428b7556fb66d0266, type: 3}
+    outputName: 
+    findHitFrame: 1
+    hitFrameOverride: 14
+  - bake: 1
+    clip: {fileID: -203655887218126122, guid: 43b5b1a0aa9246447aaa5fb1def6c9a4, type: 3}
+    outputName: 
+    findHitFrame: 1
+    hitFrameOverride: 16
+  - bake: 1
+    clip: {fileID: -203655887218126122, guid: 7774e40506a205e4783db3df16739d9f, type: 3}
+    outputName: 
+    findHitFrame: 1
+    hitFrameOverride: -1
+  - bake: 1
+    clip: {fileID: -203655887218126122, guid: 3383bfb4d711e8a4b8b80cdae9d1b71e, type: 3}
+    outputName: 
+    findHitFrame: 1
+    hitFrameOverride: -1
+  - bake: 1
+    clip: {fileID: -203655887218126122, guid: bab6d268f610553469ccb522c48f2b32, type: 3}
+    outputName: 
+    findHitFrame: 1
+    hitFrameOverride: -1
+  - bake: 1
+    clip: {fileID: -203655887218126122, guid: 66257d69bcbb61f4ba83a6ede03a26fe, type: 3}
+    outputName: 
+    findHitFrame: 1
+    hitFrameOverride: -1
+  - bake: 1
+    clip: {fileID: -203655887218126122, guid: 79976993d54efd14fb05eb18f3226a7b, type: 3}
+    outputName: 
+    findHitFrame: 0
+    hitFrameOverride: -1
+  - bake: 1
+    clip: {fileID: -203655887218126122, guid: 9a2732e30b6e140458e7642f02cadeba, type: 3}
+    outputName: 
+    findHitFrame: 0
+    hitFrameOverride: -1
+  - bake: 1
+    clip: {fileID: -203655887218126122, guid: f465a085d55b0a141afa13d396ddcc5a, type: 3}
+    outputName: 
+    findHitFrame: 0
+    hitFrameOverride: -1
+  - bake: 1
+    clip: {fileID: -203655887218126122, guid: de78866533292cf4394a0ec8d586d53b, type: 3}
+    outputName: 
+    findHitFrame: 0
+    hitFrameOverride: -1
+  - bake: 1
+    clip: {fileID: -203655887218126122, guid: 24f4589a5b22a864f957332e6041be6b, type: 3}
+    outputName: 
+    findHitFrame: 0
+    hitFrameOverride: -1
+  - bake: 1
+    clip: {fileID: -203655887218126122, guid: 5da4294d2d4aa5d45a02cd4373688e20, type: 3}
+    outputName: 
+    findHitFrame: 0
+    hitFrameOverride: -1
+  - bake: 1
+    clip: {fileID: -203655887218126122, guid: 815650a499e230e49a8f2b09a4691bef, type: 3}
+    outputName: 
+    findHitFrame: 0
+    hitFrameOverride: -1
+  - bake: 1
+    clip: {fileID: -203655887218126122, guid: d1f57138f4dfc8a41ae99a5e38597900, type: 3}
+    outputName: 
+    findHitFrame: 0
+    hitFrameOverride: -1
+  - bake: 1
+    clip: {fileID: -203655887218126122, guid: 1604aeec9b615f1408093aa7ffe12362, type: 3}
+    outputName: 
+    findHitFrame: 0
+    hitFrameOverride: -1
+  - bake: 1
+    clip: {fileID: -203655887218126122, guid: 5b6af8a5a5794a243a754d0e82921df1, type: 3}
+    outputName: 
+    findHitFrame: 0
+    hitFrameOverride: -1
+  - bake: 1
+    clip: {fileID: -203655887218126122, guid: a2d817a8d276d5947b5a5c60b46e8f1e, type: 3}
+    outputName: 
+    findHitFrame: 0
+    hitFrameOverride: -1
+  - bake: 1
+    clip: {fileID: -203655887218126122, guid: 1356362858d5bc740af4708156313fac, type: 3}
+    outputName: 
+    findHitFrame: 0
+    hitFrameOverride: -1
+  - bake: 1
+    clip: {fileID: -203655887218126122, guid: f992154dcad4a1e4dbf7a1d737e61ba7, type: 3}
+    outputName: 
+    findHitFrame: 0
+    hitFrameOverride: -1
+  - bake: 1
+    clip: {fileID: -203655887218126122, guid: 34f919974601a4e4da2be892395b093b, type: 3}
+    outputName: 
+    findHitFrame: 0
+    hitFrameOverride: -1
+  - bake: 1
+    clip: {fileID: -203655887218126122, guid: ff21ccc87afeb3f448e183507a171f4f, type: 3}
+    outputName: 
+    findHitFrame: 0
+    hitFrameOverride: -1
+  - bake: 1
+    clip: {fileID: -203655887218126122, guid: fd2baaece9b9f1547ad01bdf5d8d9eee, type: 3}
+    outputName: 
+    findHitFrame: 0
+    hitFrameOverride: -1
+  - bake: 1
+    clip: {fileID: -203655887218126122, guid: a85e3e3138ae05c4eba81c32e74e0522, type: 3}
+    outputName: 
+    findHitFrame: 0
+    hitFrameOverride: -1
+  - bake: 1
+    clip: {fileID: -203655887218126122, guid: 643c92d503abc944496f395489684d35, type: 3}
+    outputName: 
+    findHitFrame: 0
+    hitFrameOverride: -1
+  - bake: 1
+    clip: {fileID: -203655887218126122, guid: 468e3c4dad0efb349bf0804cf953dabd, type: 3}
+    outputName: 
+    findHitFrame: 0
+    hitFrameOverride: -1
+  - bake: 1
+    clip: {fileID: -203655887218126122, guid: 3f04827d60049b949a5104b9c5e2f2e3, type: 3}
+    outputName: 
+    findHitFrame: 0
+    hitFrameOverride: -1
+  - bake: 1
+    clip: {fileID: -203655887218126122, guid: 9d127603af1489c48bf9a41c56e33faa, type: 3}
+    outputName: 
+    findHitFrame: 0
+    hitFrameOverride: -1
+  - bake: 1
+    clip: {fileID: -203655887218126122, guid: c00f3ea15013fec4fb842743065fa540, type: 3}
+    outputName: 
+    findHitFrame: 0
+    hitFrameOverride: -1
+  - bake: 1
+    clip: {fileID: -203655887218126122, guid: 7da3d7e02e12a764ea172f3e10d82aa4, type: 3}
+    outputName: 
+    findHitFrame: 0
+    hitFrameOverride: -1
+  - bake: 1
+    clip: {fileID: -203655887218126122, guid: 7dcc75aeb9f53de43bc85e2d14c8f635, type: 3}
+    outputName: 
+    findHitFrame: 0
+    hitFrameOverride: -1
+  - bake: 1
+    clip: {fileID: -203655887218126122, guid: ee80786c42a604844b32b773207e7960, type: 3}
+    outputName: 
+    findHitFrame: 0
+    hitFrameOverride: -1
+  - bake: 1
+    clip: {fileID: -203655887218126122, guid: 345fe2f9d0b98d344a853e5531adc095, type: 3}
+    outputName: 
+    findHitFrame: 0
+    hitFrameOverride: -1
+  - bake: 1
+    clip: {fileID: -203655887218126122, guid: 411199ac701a07c4cac9a5aa5e2649dc, type: 3}
+    outputName: 
+    findHitFrame: 0
+    hitFrameOverride: -1
+  - bake: 1
+    clip: {fileID: -203655887218126122, guid: 98c38e43880f4984394df1e1049109b9, type: 3}
+    outputName: 
+    findHitFrame: 0
+    hitFrameOverride: -1
+  - bake: 1
+    clip: {fileID: -203655887218126122, guid: e0d6954b6e222ba4a98eabcb21dfed48, type: 3}
+    outputName: 
+    findHitFrame: 0
+    hitFrameOverride: -1
+  - bake: 1
+    clip: {fileID: -203655887218126122, guid: b3c21dbaa69d41641ba355e172ee5a3d, type: 3}
+    outputName: 
+    findHitFrame: 0
+    hitFrameOverride: -1
+  - bake: 1
+    clip: {fileID: -203655887218126122, guid: 78de05ec43cea634d8e86179e94627a2, type: 3}
+    outputName: 
+    findHitFrame: 0
+    hitFrameOverride: -1
+  - bake: 1
+    clip: {fileID: -203655887218126122, guid: 9b9247e1967b8604c8c0d22b9dd97eb1, type: 3}
+    outputName: 
+    findHitFrame: 1
+    hitFrameOverride: 72
+  - bake: 1
+    clip: {fileID: -203655887218126122, guid: 974b79c17ff8c574da7717c3759dad01, type: 3}
+    outputName: 
+    findHitFrame: 0
+    hitFrameOverride: -1
+  - bake: 1
+    clip: {fileID: -203655887218126122, guid: 6c6d476a2e35d674196f4a84afd39517, type: 3}
+    outputName: 
+    findHitFrame: 0
+    hitFrameOverride: -1
+  - bake: 1
+    clip: {fileID: -203655887218126122, guid: 424a6806e5c62ea4784135ff50193412, type: 3}
+    outputName: 
+    findHitFrame: 0
+    hitFrameOverride: -1
+  - bake: 1
+    clip: {fileID: -203655887218126122, guid: c42e00e70f7ee6c438bf0657c24e1e6f, type: 3}
+    outputName: 
+    findHitFrame: 0
+    hitFrameOverride: -1
+  - bake: 1
+    clip: {fileID: -203655887218126122, guid: 8c719d0f223bf6c4f99a417f8eb1cc2c, type: 3}
+    outputName: 
+    findHitFrame: 0
+    hitFrameOverride: -1
+  yawToFront: 45
+  pitch: 30
+  pixelsPerMeter: 54
+  frameWidth: 192
+  frameHeight: 144
+  groundPixel: 9
+  fps: 24
+  maxFrames: 240
+  autoExpandFrame: 1
+  flipY: 0
+  lightFromScreen: {x: -0.5, y: 0.8, z: 0.6}
+  litThreshold: 0.35
+  midThreshold: -0.15
+  midBrightness: 0.82
+  shadowBrightness: 0.62
+  palette: {fileID: 0}
+  outline: 1
+  outlineColor: {r: 0.101960786, g: 0.07058824, b: 0.11764706, a: 1}
+  autoPalette: 1
+  autoPaletteColors: 24
+  superSample: 4
+  textureMipBias: 2
+  hideTinyPartsPixels: 1.5
+  snapToPixel: 1
+  flickerFilter: 1
+  flickerMaxSpeed: 4
+  directPlayback: 0
+  groundFromFirstFrame: 0
+  outputFolder: Assets/Art/characters/ranger_iso_x1_5
+  spritePixelsPerUnit: 64

@@ -1,0 +1,2290 @@
+{
+    "version": 1,
+    "id": "wildlands",
+    "name": "변방 전체맵",
+    "width": 72,
+    "height": 48,
+    "baseTier": 2,
+    "enemies": "charger,shieldbearer,archer,spearman",
+    "randomPool": "",
+    "rows": [
+        "...MMMMMMMMMhh.....fffff..........ffffff..................hhMMMMMMMMM...",
+        ".MMMMMMMMMMMMhhhh..ffffff.........ffffff............w...hhMMMMMMMMMMMM..",
+        "MMMMMMMMMMMMMMMhhh.ffff............fffff............whhhhMMMMMMMMMMMMMMh",
+        ".MMMMMMMMMMMMMMhhhhffff.............................bfhhhMMMMMMMMMMMMMMM",
+        "MMMMMMMMMMMMMMMMhhfhfff.........fffff..............hwhhhhMMMMMMMMMMMMMMM",
+        "MMMMMMMMMMMMMMMMhhhfffff.......fffffff..............whhhhMMMMMMMMMMMMMMM",
+        "MMMMMMMMMMMMMMMMhhhhfff.r..fffffffffff.............hwhhhhMMMMMMMMMMMMMMM",
+        "MMMMMMMMMMMMMMMhhhhfhfrrrrrfffffffffff.............hwMhhhMMMMMMMMMMMMMMM",
+        "MMMMMMMMMMMMMMhhhhh.hrrrrrrfffffffffff............hhhMhhhhMMMMMMMMMMMMMM",
+        "hhMMMMMMMMMMMhhhhhhhhfrrrrrffffhMMhh..h............hhMhhMhMMMMMMMMMMMMhh",
+        "hhhhMMMMMMMMhhhhhhhfhfffrff.ffMMMMMMhhhh.hh......f..hMhhMhhhhMMMMMMMMMMM",
+        "hMMMMMhhMhhhhhhhhhhhfffffffhh.MMMMMMMhMhhhhhh..ffffhhMwhMhhhhhhMhhhMMMMM",
+        "MMMMMMMhhhhhhhhhhhhhffffffhfhhMMMMMMMMMMMhhhhhfffffhhhwhMhhhhhhhhhMMMMMM",
+        "hMMMMMhhhhhhhhhhhhhfffffffhhhMMMMMMMMMMMMMMhhhhfffffhhwhMhhhhhhhhhhMMMMM",
+        "h.hMhhhhhhhhhhhhhfhfffffhhhhMMMMMMMMMMMMMMMMhhhhffffffhwMhhhhhhhhhhMMMMM",
+        "..h.hhhhhhrhhhh.hffff.wwwwwhMMMMMMMMMMMMMMMMhMhhhffffffwhhhhhhhhhhhhhh.h",
+        "....h.hhrrrrr.hh..fffwwwwwwMMMMMMMMMMMMMMMMMMMhhhf.fffwfhhhhhhhhhhhhh...",
+        ".......hrrrrrh...ffff.wwwwwMMMMMMMMMMMMMMMMMMMhhhhh..wwf....hffhfffff...",
+        ".......frrrrr...f.fff.hhhhhMMMMMMMMMMMMMMMMMMMhhhh...w........fffff.....",
+        "www...ffff.....fff....hhhhMMMMMMMMMMMMMMMMMMMMhhhhhhw..wwwwwwwbff.......",
+        "..wwwwffffff....ff.....hhhhMMMMMMMMMMMMMMMMMMMhhh.ww.rrrff....wwwwwwww..",
+        ".....fwwwfff...........hhhMMMMMMMMMMMMMMMMMMMMhhhwh.rrrrff.......ffff.ww",
+        ".....fffwwb...........h.hhhMMMMMMMMMMMMMMMMMMhhwwhh..rrr........fffffff.",
+        ".....f.FFFwww..........hhhhhMMMMMMMMMMMMMMMMMhwwhhfff...........fffffff.",
+        "........F....ww......ffhhhhhMMMMMMMMMMMMMMMMwbhhhfffff.......fffffffff..",
+        ".....ff........w...ffffhfhhhhhMMMMMMMMMMMMwwwhhhhffff.......fffffffff...",
+        "....ffffff......w.ffffffhhhhhhhMMMMMMMMMhwwhhhhhffff........fffffffff...",
+        "...fffffff.ffff..wfffffffhhhhhhhhhMhMhhhhwhhhhhffff..ffff....ffrrrrr....",
+        "..ffffffffffffff..wfffffffffhhhhhhhhhhhhwhwwwwwwwwwffffff....frrrrrr....",
+        "...ffffffffffffff..wfffff..hhhhhhhhhhhhhwwwwwwwwwwwwwffffffffffrrrrrfff.",
+        "....fffffffffffffffwfffM.....f.hhhhfhhFwwwwwwwwwwwwwwwffffffffff...ffff.",
+        "......f...fffffffffMwffM........hffhffwwwwwhhhwwwwwwwwwffffffffffffffff.",
+        "...........fffff...MMw.MM.........fff.wwwwwwwwwwwwwwwwwwffffhhhhhfhff...",
+        ".............fff....Mw..M............wwwwwwwwwwrrrwwwwwfffffhhhhhhhhMM..",
+        "....................Mww.M............w.wwwwwwwwwwwwwwwwfffhhhhhhhhhhMMMM",
+        "....fhhf..hh........MMw...............wwwwwwwwwwwwwwwfhhhhhhhhhhhhhMMMMM",
+        "..hhhfhhhhhhhhhh......b.................b.wwwwwwww...ffhhhhhhhhhhhMMMMMM",
+        ".hhMhhhhhhhhhhhh.h.....w.....rrrrr......w....fffff....hhhhhhhhhhhhhMMMMM",
+        "h.MMMhhhhhhhhhhhhhff...w...rrrrrrrrfff...w....fff....hhhhhhhhhMMMhhMMMMM",
+        "hhMMMhhhhhhhhhhhhhfh...w....rrrrrrfffff..w..........hhhhhhhhMMMMMMMMMMMh",
+        "hhMMMhhhhhhhhhhhhhhh...bw....fff.ffffff..w..........hhhhhhMMMMMMMMMMMMMM",
+        "hhhhhhMMMMhhhhhhhhhh....w....ffffffffff..w....www...hhhhMMMMMMMMMMMMMMMM",
+        "hhMMMMMMMMMMMMMhhhh.hh..w........fffff...w...wwwww....hMMMMMMMMMMMMMMMMM",
+        "hMMMMMMMMMMMMMMMhhh.....w................w....www....hhMMMMMMMMMMMMMMMMM",
+        "MMMMMMMMMMMMMMMMMhhhhf..w................w.............MMMMMMMMMMMMMMMMM",
+        "MMMMMMMMMMMMMMMMMMhffff..w...............w............hhMMMMMMMMMMMMMMMM",
+        "MMMMMMMMMMMMMMMMM..ffff..w................w.............hMMMMMMMMMMMMMMM",
+        "fMMMMMMMMMMMMMMMM.h......w................w................MMMMMMMMMM..."
+    ],
+    "nodes": [
+        {
+            "x": 4,
+            "y": 27,
+            "type": "start",
+            "name": "변방 야영지",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 8,
+            "y": 12,
+            "type": "small_dungeon",
+            "name": "북서 동굴",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "cave_nw",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 66,
+            "y": 11,
+            "type": "small_dungeon",
+            "name": "북동 동굴",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "cave_ne",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 8,
+            "y": 40,
+            "type": "small_dungeon",
+            "name": "남서 동굴",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "cave_sw",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 66,
+            "y": 38,
+            "type": "small_dungeon",
+            "name": "남동 동굴",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "cave_se",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 24,
+            "y": 8,
+            "type": "big_dungeon",
+            "name": "무너진 고성",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "ruined_castle",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 10,
+            "y": 17,
+            "type": "ruin_village",
+            "name": "서쪽 폐허",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 31,
+            "y": 38,
+            "type": "ruin_village",
+            "name": "남쪽 유적",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 54,
+            "y": 22,
+            "type": "event",
+            "name": "강가 망루",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "망루에 오르면 주변 노드가 보이는 이벤트 후보",
+            "pool": ""
+        },
+        {
+            "x": 65,
+            "y": 28,
+            "type": "totem",
+            "name": "선돌",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 28,
+            "y": 26,
+            "type": "merchant_camp",
+            "name": "큰 산 아래 상인",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 58,
+            "y": 30,
+            "type": "merchant_camp",
+            "name": "호숫가 상인",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 24,
+            "y": 13,
+            "type": "elite",
+            "name": "고성 문지기",
+            "battleCells": 0,
+            "difficulty": "hard",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 20,
+            "y": 9,
+            "type": "elite",
+            "name": "",
+            "battleCells": 0,
+            "difficulty": "hard",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 25,
+            "y": 14,
+            "type": "event",
+            "name": "고요한 연못",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 47,
+            "y": 40,
+            "type": "event",
+            "name": "작은 연못",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 1,
+            "y": 30,
+            "type": "exit",
+            "name": "",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 35,
+            "y": 47,
+            "type": "exit",
+            "name": "",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 70,
+            "y": 26,
+            "type": "exit",
+            "name": "",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 36,
+            "y": 1,
+            "type": "exit",
+            "name": "",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 14,
+            "y": 1,
+            "type": "exit",
+            "name": "",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 71,
+            "y": 22,
+            "type": "map_gate",
+            "name": "동쪽 강 하류로",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "river_lands",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 0,
+            "y": 18,
+            "type": "map_gate",
+            "name": "서쪽 평원으로",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "plains",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 41,
+            "y": 47,
+            "type": "map_gate",
+            "name": "남쪽 늪지로",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "swamp",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 56,
+            "y": 16,
+            "type": "random",
+            "name": "",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 53,
+            "y": 36,
+            "type": "random",
+            "name": "",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 27,
+            "y": 35,
+            "type": "random",
+            "name": "",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 54,
+            "y": 41,
+            "type": "random",
+            "name": "",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 48,
+            "y": 45,
+            "type": "random",
+            "name": "",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 28,
+            "y": 3,
+            "type": "random",
+            "name": "",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 21,
+            "y": 44,
+            "type": "random",
+            "name": "",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 1,
+            "y": 23,
+            "type": "random",
+            "name": "",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 13,
+            "y": 35,
+            "type": "random",
+            "name": "",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 48,
+            "y": 26,
+            "type": "random",
+            "name": "",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 1,
+            "y": 42,
+            "type": "random",
+            "name": "",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 15,
+            "y": 14,
+            "type": "random",
+            "name": "",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 60,
+            "y": 12,
+            "type": "random",
+            "name": "",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 47,
+            "y": 11,
+            "type": "random",
+            "name": "",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 61,
+            "y": 20,
+            "type": "random",
+            "name": "",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 41,
+            "y": 9,
+            "type": "random",
+            "name": "",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 47,
+            "y": 19,
+            "type": "random",
+            "name": "",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 49,
+            "y": 15,
+            "type": "random",
+            "name": "",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 19,
+            "y": 38,
+            "type": "random",
+            "name": "",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 18,
+            "y": 31,
+            "type": "random",
+            "name": "",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 23,
+            "y": 0,
+            "type": "random",
+            "name": "",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 57,
+            "y": 8,
+            "type": "random",
+            "name": "",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 35,
+            "y": 34,
+            "type": "random",
+            "name": "",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 35,
+            "y": 6,
+            "type": "random",
+            "name": "",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 64,
+            "y": 16,
+            "type": "random",
+            "name": "",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 11,
+            "y": 31,
+            "type": "random",
+            "name": "",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 22,
+            "y": 33,
+            "type": "random",
+            "name": "",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 24,
+            "y": 24,
+            "type": "random",
+            "name": "",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 9,
+            "y": 24,
+            "type": "random",
+            "name": "",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 42,
+            "y": 4,
+            "type": "random",
+            "name": "",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 71,
+            "y": 16,
+            "type": "random",
+            "name": "",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 44,
+            "y": 37,
+            "type": "random",
+            "name": "",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 51,
+            "y": 0,
+            "type": "random",
+            "name": "",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 38,
+            "y": 44,
+            "type": "random",
+            "name": "",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 63,
+            "y": 35,
+            "type": "random",
+            "name": "",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 67,
+            "y": 33,
+            "type": "random",
+            "name": "",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 17,
+            "y": 6,
+            "type": "random",
+            "name": "",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 16,
+            "y": 20,
+            "type": "random",
+            "name": "",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 29,
+            "y": 11,
+            "type": "random",
+            "name": "",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 5,
+            "y": 34,
+            "type": "random",
+            "name": "",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 19,
+            "y": 2,
+            "type": "random",
+            "name": "",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 20,
+            "y": 15,
+            "type": "random",
+            "name": "",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 14,
+            "y": 9,
+            "type": "random",
+            "name": "",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 53,
+            "y": 27,
+            "type": "random",
+            "name": "",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 28,
+            "y": 47,
+            "type": "random",
+            "name": "",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 37,
+            "y": 39,
+            "type": "random",
+            "name": "",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 60,
+            "y": 26,
+            "type": "random",
+            "name": "",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 53,
+            "y": 13,
+            "type": "random",
+            "name": "",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 39,
+            "y": 29,
+            "type": "random",
+            "name": "",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 53,
+            "y": 5,
+            "type": "random",
+            "name": "",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 52,
+            "y": 18,
+            "type": "random",
+            "name": "",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 15,
+            "y": 26,
+            "type": "random",
+            "name": "",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 32,
+            "y": 43,
+            "type": "random",
+            "name": "",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 56,
+            "y": 47,
+            "type": "random",
+            "name": "",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 68,
+            "y": 19,
+            "type": "random",
+            "name": "",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 28,
+            "y": 41,
+            "type": "random",
+            "name": "",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 4,
+            "y": 15,
+            "type": "random",
+            "name": "",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 29,
+            "y": 31,
+            "type": "random",
+            "name": "",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 34,
+            "y": 28,
+            "type": "random",
+            "name": "",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 14,
+            "y": 41,
+            "type": "random",
+            "name": "",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 37,
+            "y": 11,
+            "type": "random",
+            "name": "",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 42,
+            "y": 42,
+            "type": "random",
+            "name": "",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 48,
+            "y": 3,
+            "type": "random",
+            "name": "",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 22,
+            "y": 19,
+            "type": "random",
+            "name": "",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 59,
+            "y": 39,
+            "type": "random",
+            "name": "",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 5,
+            "y": 21,
+            "type": "random",
+            "name": "",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 57,
+            "y": 1,
+            "type": "random",
+            "name": "",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 20,
+            "y": 27,
+            "type": "random",
+            "name": "",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 66,
+            "y": 23,
+            "type": "random",
+            "name": "",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 45,
+            "y": 23,
+            "type": "random",
+            "name": "",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 45,
+            "y": 0,
+            "type": "random",
+            "name": "",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 45,
+            "y": 7,
+            "type": "random",
+            "name": "",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 43,
+            "y": 27,
+            "type": "random",
+            "name": "",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 0,
+            "y": 37,
+            "type": "random",
+            "name": "",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 71,
+            "y": 31,
+            "type": "random",
+            "name": "",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 50,
+            "y": 8,
+            "type": "random",
+            "name": "",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 18,
+            "y": 47,
+            "type": "random",
+            "name": "",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 23,
+            "y": 40,
+            "type": "random",
+            "name": "",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 44,
+            "y": 14,
+            "type": "random",
+            "name": "",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 25,
+            "y": 29,
+            "type": "random",
+            "name": "",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        },
+        {
+            "x": 31,
+            "y": 0,
+            "type": "random",
+            "name": "",
+            "battleCells": 0,
+            "difficulty": "",
+            "enemies": "",
+            "target": "",
+            "note": "",
+            "pool": ""
+        }
+    ],
+    "links": [
+        {
+            "ax": 4,
+            "ay": 27,
+            "bx": 1,
+            "by": 30
+        },
+        {
+            "ax": 4,
+            "ay": 27,
+            "bx": 1,
+            "by": 23
+        },
+        {
+            "ax": 1,
+            "ay": 23,
+            "bx": 5,
+            "by": 21
+        },
+        {
+            "ax": 5,
+            "ay": 21,
+            "bx": 9,
+            "by": 24
+        },
+        {
+            "ax": 4,
+            "ay": 27,
+            "bx": 5,
+            "by": 34
+        },
+        {
+            "ax": 1,
+            "ay": 30,
+            "bx": 0,
+            "by": 37
+        },
+        {
+            "ax": 0,
+            "ay": 37,
+            "bx": 1,
+            "by": 42
+        },
+        {
+            "ax": 9,
+            "ay": 24,
+            "bx": 15,
+            "by": 26
+        },
+        {
+            "ax": 15,
+            "ay": 26,
+            "bx": 18,
+            "by": 31
+        },
+        {
+            "ax": 18,
+            "ay": 31,
+            "bx": 11,
+            "by": 31
+        },
+        {
+            "ax": 11,
+            "ay": 31,
+            "bx": 13,
+            "by": 35
+        },
+        {
+            "ax": 13,
+            "ay": 35,
+            "bx": 14,
+            "by": 41
+        },
+        {
+            "ax": 14,
+            "ay": 41,
+            "bx": 8,
+            "by": 40
+        },
+        {
+            "ax": 18,
+            "ay": 31,
+            "bx": 19,
+            "by": 38
+        },
+        {
+            "ax": 19,
+            "ay": 38,
+            "bx": 23,
+            "by": 40
+        },
+        {
+            "ax": 23,
+            "ay": 40,
+            "bx": 21,
+            "by": 44
+        },
+        {
+            "ax": 21,
+            "ay": 44,
+            "bx": 18,
+            "by": 47
+        },
+        {
+            "ax": 19,
+            "ay": 38,
+            "bx": 22,
+            "by": 33
+        },
+        {
+            "ax": 22,
+            "ay": 33,
+            "bx": 27,
+            "by": 35
+        },
+        {
+            "ax": 27,
+            "ay": 35,
+            "bx": 29,
+            "by": 31
+        },
+        {
+            "ax": 29,
+            "ay": 31,
+            "bx": 28,
+            "by": 26
+        },
+        {
+            "ax": 28,
+            "ay": 26,
+            "bx": 24,
+            "by": 24
+        },
+        {
+            "ax": 28,
+            "ay": 26,
+            "bx": 25,
+            "by": 29
+        },
+        {
+            "ax": 27,
+            "ay": 35,
+            "bx": 31,
+            "by": 38
+        },
+        {
+            "ax": 31,
+            "ay": 38,
+            "bx": 32,
+            "by": 43
+        },
+        {
+            "ax": 31,
+            "ay": 38,
+            "bx": 28,
+            "by": 41
+        },
+        {
+            "ax": 28,
+            "ay": 41,
+            "bx": 28,
+            "by": 47
+        },
+        {
+            "ax": 31,
+            "ay": 38,
+            "bx": 37,
+            "by": 39
+        },
+        {
+            "ax": 37,
+            "ay": 39,
+            "bx": 38,
+            "by": 44
+        },
+        {
+            "ax": 38,
+            "ay": 44,
+            "bx": 35,
+            "by": 47
+        },
+        {
+            "ax": 35,
+            "ay": 47,
+            "bx": 41,
+            "by": 47
+        },
+        {
+            "ax": 24,
+            "ay": 24,
+            "bx": 22,
+            "by": 19
+        },
+        {
+            "ax": 22,
+            "ay": 19,
+            "bx": 20,
+            "by": 15
+        },
+        {
+            "ax": 20,
+            "ay": 15,
+            "bx": 24,
+            "by": 13
+        },
+        {
+            "ax": 24,
+            "ay": 13,
+            "bx": 25,
+            "by": 14
+        },
+        {
+            "ax": 24,
+            "ay": 13,
+            "bx": 24,
+            "by": 8
+        },
+        {
+            "ax": 24,
+            "ay": 8,
+            "bx": 20,
+            "by": 9
+        },
+        {
+            "ax": 20,
+            "ay": 9,
+            "bx": 17,
+            "by": 6
+        },
+        {
+            "ax": 20,
+            "ay": 9,
+            "bx": 14,
+            "by": 9
+        },
+        {
+            "ax": 17,
+            "ay": 6,
+            "bx": 19,
+            "by": 2
+        },
+        {
+            "ax": 19,
+            "ay": 2,
+            "bx": 14,
+            "by": 1
+        },
+        {
+            "ax": 19,
+            "ay": 2,
+            "bx": 23,
+            "by": 0
+        },
+        {
+            "ax": 20,
+            "ay": 15,
+            "bx": 15,
+            "by": 14
+        },
+        {
+            "ax": 24,
+            "ay": 13,
+            "bx": 29,
+            "by": 11
+        },
+        {
+            "ax": 15,
+            "ay": 14,
+            "bx": 16,
+            "by": 20
+        },
+        {
+            "ax": 24,
+            "ay": 24,
+            "bx": 20,
+            "by": 27
+        },
+        {
+            "ax": 37,
+            "ay": 39,
+            "bx": 35,
+            "by": 34
+        },
+        {
+            "ax": 35,
+            "ay": 34,
+            "bx": 34,
+            "by": 28
+        },
+        {
+            "ax": 34,
+            "ay": 28,
+            "bx": 39,
+            "by": 29
+        },
+        {
+            "ax": 15,
+            "ay": 14,
+            "bx": 10,
+            "by": 17
+        },
+        {
+            "ax": 10,
+            "ay": 17,
+            "bx": 8,
+            "by": 12
+        },
+        {
+            "ax": 8,
+            "ay": 12,
+            "bx": 4,
+            "by": 15
+        },
+        {
+            "ax": 4,
+            "ay": 15,
+            "bx": 0,
+            "by": 18
+        },
+        {
+            "ax": 23,
+            "ay": 0,
+            "bx": 28,
+            "by": 3
+        },
+        {
+            "ax": 28,
+            "ay": 3,
+            "bx": 31,
+            "by": 0
+        },
+        {
+            "ax": 31,
+            "ay": 0,
+            "bx": 36,
+            "by": 1
+        },
+        {
+            "ax": 36,
+            "ay": 1,
+            "bx": 35,
+            "by": 6
+        },
+        {
+            "ax": 35,
+            "ay": 6,
+            "bx": 37,
+            "by": 11
+        },
+        {
+            "ax": 37,
+            "ay": 11,
+            "bx": 41,
+            "by": 9
+        },
+        {
+            "ax": 41,
+            "ay": 9,
+            "bx": 42,
+            "by": 4
+        },
+        {
+            "ax": 41,
+            "ay": 9,
+            "bx": 45,
+            "by": 7
+        },
+        {
+            "ax": 45,
+            "ay": 7,
+            "bx": 47,
+            "by": 11
+        },
+        {
+            "ax": 47,
+            "ay": 11,
+            "bx": 49,
+            "by": 15
+        },
+        {
+            "ax": 47,
+            "ay": 11,
+            "bx": 50,
+            "by": 8
+        },
+        {
+            "ax": 47,
+            "ay": 11,
+            "bx": 44,
+            "by": 14
+        },
+        {
+            "ax": 49,
+            "ay": 15,
+            "bx": 47,
+            "by": 19
+        },
+        {
+            "ax": 47,
+            "ay": 19,
+            "bx": 52,
+            "by": 18
+        },
+        {
+            "ax": 47,
+            "ay": 19,
+            "bx": 45,
+            "by": 23
+        },
+        {
+            "ax": 49,
+            "ay": 15,
+            "bx": 53,
+            "by": 13
+        },
+        {
+            "ax": 45,
+            "ay": 23,
+            "bx": 48,
+            "by": 26
+        },
+        {
+            "ax": 48,
+            "ay": 26,
+            "bx": 53,
+            "by": 27
+        },
+        {
+            "ax": 48,
+            "ay": 26,
+            "bx": 43,
+            "by": 27
+        },
+        {
+            "ax": 53,
+            "ay": 27,
+            "bx": 54,
+            "by": 22
+        },
+        {
+            "ax": 42,
+            "ay": 4,
+            "bx": 48,
+            "by": 3
+        },
+        {
+            "ax": 48,
+            "ay": 3,
+            "bx": 51,
+            "by": 0
+        },
+        {
+            "ax": 51,
+            "ay": 0,
+            "bx": 45,
+            "by": 0
+        },
+        {
+            "ax": 51,
+            "ay": 0,
+            "bx": 53,
+            "by": 5
+        },
+        {
+            "ax": 51,
+            "ay": 0,
+            "bx": 57,
+            "by": 1
+        },
+        {
+            "ax": 53,
+            "ay": 5,
+            "bx": 57,
+            "by": 8
+        },
+        {
+            "ax": 57,
+            "ay": 8,
+            "bx": 60,
+            "by": 12
+        },
+        {
+            "ax": 60,
+            "ay": 12,
+            "bx": 66,
+            "by": 11
+        },
+        {
+            "ax": 66,
+            "ay": 11,
+            "bx": 64,
+            "by": 16
+        },
+        {
+            "ax": 64,
+            "ay": 16,
+            "bx": 71,
+            "by": 16
+        },
+        {
+            "ax": 71,
+            "ay": 16,
+            "bx": 68,
+            "by": 19
+        },
+        {
+            "ax": 54,
+            "ay": 22,
+            "bx": 56,
+            "by": 16
+        },
+        {
+            "ax": 53,
+            "ay": 27,
+            "bx": 58,
+            "by": 30
+        },
+        {
+            "ax": 58,
+            "ay": 30,
+            "bx": 60,
+            "by": 26
+        },
+        {
+            "ax": 60,
+            "ay": 26,
+            "bx": 65,
+            "by": 28
+        },
+        {
+            "ax": 65,
+            "ay": 28,
+            "bx": 66,
+            "by": 23
+        },
+        {
+            "ax": 66,
+            "ay": 23,
+            "bx": 71,
+            "by": 22
+        },
+        {
+            "ax": 71,
+            "ay": 22,
+            "bx": 70,
+            "by": 26
+        },
+        {
+            "ax": 70,
+            "ay": 26,
+            "bx": 71,
+            "by": 31
+        },
+        {
+            "ax": 71,
+            "ay": 31,
+            "bx": 67,
+            "by": 33
+        },
+        {
+            "ax": 67,
+            "ay": 33,
+            "bx": 63,
+            "by": 35
+        },
+        {
+            "ax": 63,
+            "ay": 35,
+            "bx": 66,
+            "by": 38
+        },
+        {
+            "ax": 60,
+            "ay": 26,
+            "bx": 61,
+            "by": 20
+        },
+        {
+            "ax": 63,
+            "ay": 35,
+            "bx": 59,
+            "by": 39
+        },
+        {
+            "ax": 59,
+            "ay": 39,
+            "bx": 54,
+            "by": 41
+        },
+        {
+            "ax": 54,
+            "ay": 41,
+            "bx": 53,
+            "by": 36
+        },
+        {
+            "ax": 54,
+            "ay": 41,
+            "bx": 47,
+            "by": 40
+        },
+        {
+            "ax": 47,
+            "ay": 40,
+            "bx": 44,
+            "by": 37
+        },
+        {
+            "ax": 47,
+            "ay": 40,
+            "bx": 42,
+            "by": 42
+        },
+        {
+            "ax": 54,
+            "ay": 41,
+            "bx": 56,
+            "by": 47
+        },
+        {
+            "ax": 42,
+            "ay": 42,
+            "bx": 48,
+            "by": 45
+        },
+        {
+            "ax": 4,
+            "ay": 27,
+            "bx": 5,
+            "by": 21
+        },
+        {
+            "ax": 66,
+            "ay": 38,
+            "bx": 67,
+            "by": 33
+        },
+        {
+            "ax": 24,
+            "ay": 8,
+            "bx": 29,
+            "by": 11
+        },
+        {
+            "ax": 10,
+            "ay": 17,
+            "bx": 4,
+            "by": 15
+        },
+        {
+            "ax": 31,
+            "ay": 38,
+            "bx": 35,
+            "by": 34
+        },
+        {
+            "ax": 65,
+            "ay": 28,
+            "bx": 70,
+            "by": 26
+        },
+        {
+            "ax": 28,
+            "ay": 26,
+            "bx": 34,
+            "by": 28
+        },
+        {
+            "ax": 24,
+            "ay": 13,
+            "bx": 20,
+            "by": 9
+        },
+        {
+            "ax": 20,
+            "ay": 9,
+            "bx": 20,
+            "by": 15
+        },
+        {
+            "ax": 25,
+            "ay": 14,
+            "bx": 20,
+            "by": 15
+        },
+        {
+            "ax": 1,
+            "ay": 30,
+            "bx": 1,
+            "by": 23
+        },
+        {
+            "ax": 35,
+            "ay": 47,
+            "bx": 28,
+            "by": 47
+        },
+        {
+            "ax": 70,
+            "ay": 26,
+            "bx": 66,
+            "by": 23
+        },
+        {
+            "ax": 14,
+            "ay": 1,
+            "bx": 17,
+            "by": 6
+        },
+        {
+            "ax": 41,
+            "ay": 47,
+            "bx": 38,
+            "by": 44
+        },
+        {
+            "ax": 56,
+            "ay": 16,
+            "bx": 60,
+            "by": 12
+        },
+        {
+            "ax": 27,
+            "ay": 35,
+            "bx": 28,
+            "by": 41
+        },
+        {
+            "ax": 21,
+            "ay": 44,
+            "bx": 19,
+            "by": 38
+        },
+        {
+            "ax": 15,
+            "ay": 14,
+            "bx": 14,
+            "by": 9
+        },
+        {
+            "ax": 60,
+            "ay": 12,
+            "bx": 64,
+            "by": 16
+        },
+        {
+            "ax": 47,
+            "ay": 11,
+            "bx": 41,
+            "by": 9
+        },
+        {
+            "ax": 61,
+            "ay": 20,
+            "bx": 66,
+            "by": 23
+        },
+        {
+            "ax": 41,
+            "ay": 9,
+            "bx": 44,
+            "by": 14
+        },
+        {
+            "ax": 47,
+            "ay": 19,
+            "bx": 47,
+            "by": 11
+        },
+        {
+            "ax": 49,
+            "ay": 15,
+            "bx": 52,
+            "by": 18
+        },
+        {
+            "ax": 19,
+            "ay": 38,
+            "bx": 14,
+            "by": 41
+        },
+        {
+            "ax": 23,
+            "ay": 0,
+            "bx": 31,
+            "by": 0
+        },
+        {
+            "ax": 64,
+            "ay": 16,
+            "bx": 68,
+            "by": 19
+        },
+        {
+            "ax": 22,
+            "ay": 33,
+            "bx": 25,
+            "by": 29
+        },
+        {
+            "ax": 24,
+            "ay": 24,
+            "bx": 25,
+            "by": 29
+        },
+        {
+            "ax": 9,
+            "ay": 24,
+            "bx": 4,
+            "by": 27
+        },
+        {
+            "ax": 42,
+            "ay": 4,
+            "bx": 45,
+            "by": 7
+        },
+        {
+            "ax": 44,
+            "ay": 37,
+            "bx": 42,
+            "by": 42
+        },
+        {
+            "ax": 38,
+            "ay": 44,
+            "bx": 32,
+            "by": 43
+        },
+        {
+            "ax": 67,
+            "ay": 33,
+            "bx": 65,
+            "by": 28
+        },
+        {
+            "ax": 17,
+            "ay": 6,
+            "bx": 14,
+            "by": 9
+        },
+        {
+            "ax": 16,
+            "ay": 20,
+            "bx": 22,
+            "by": 19
+        },
+        {
+            "ax": 29,
+            "ay": 11,
+            "bx": 25,
+            "by": 14
+        },
+        {
+            "ax": 5,
+            "ay": 34,
+            "bx": 1,
+            "by": 30
+        },
+        {
+            "ax": 19,
+            "ay": 2,
+            "bx": 20,
+            "by": 9
+        },
+        {
+            "ax": 53,
+            "ay": 27,
+            "bx": 60,
+            "by": 26
+        },
+        {
+            "ax": 28,
+            "ay": 47,
+            "bx": 32,
+            "by": 43
+        },
+        {
+            "ax": 53,
+            "ay": 13,
+            "bx": 52,
+            "by": 18
+        },
+        {
+            "ax": 53,
+            "ay": 5,
+            "bx": 48,
+            "by": 3
+        },
+        {
+            "ax": 32,
+            "ay": 43,
+            "bx": 28,
+            "by": 41
+        },
+        {
+            "ax": 29,
+            "ay": 31,
+            "bx": 25,
+            "by": 29
+        },
+        {
+            "ax": 34,
+            "ay": 28,
+            "bx": 29,
+            "by": 31
+        },
+        {
+            "ax": 48,
+            "ay": 3,
+            "bx": 45,
+            "by": 0
+        },
+        {
+            "ax": 57,
+            "ay": 1,
+            "bx": 53,
+            "by": 5
+        },
+        {
+            "ax": 20,
+            "ay": 27,
+            "bx": 25,
+            "by": 29
+        },
+        {
+            "ax": 45,
+            "ay": 23,
+            "bx": 43,
+            "by": 27
+        },
+        {
+            "ax": 45,
+            "ay": 0,
+            "bx": 42,
+            "by": 4
+        },
+        {
+            "ax": 45,
+            "ay": 7,
+            "bx": 50,
+            "by": 8
+        },
+        {
+            "ax": 0,
+            "ay": 37,
+            "bx": 5,
+            "by": 34
+        },
+        {
+            "ax": 50,
+            "ay": 8,
+            "bx": 48,
+            "by": 3
+        },
+        {
+            "ax": 44,
+            "ay": 14,
+            "bx": 47,
+            "by": 19
+        },
+        {
+            "ax": 25,
+            "ay": 29,
+            "bx": 27,
+            "by": 35
+        }
+    ]
+}

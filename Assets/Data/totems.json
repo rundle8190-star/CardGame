@@ -1,0 +1,118 @@
+{
+  "source": "Design/card_battle_rulebook_v0.7.3.xlsx",
+  "version": "v0.7.3",
+  "totems": [
+    {
+      "id": "steel",
+      "no": 1,
+      "name": "강철의 토템",
+      "family": "철",
+      "effect": "스턴 무기(철퇴, 전투 망치, 스턴 활, 돌 투척)의 피해 +2"
+    },
+    {
+      "id": "blade",
+      "no": 2,
+      "name": "칼날의 토템",
+      "family": "철",
+      "effect": "근접 무기의 한 타 피해 +1"
+    },
+    {
+      "id": "giant",
+      "no": 3,
+      "name": "거인의 토템",
+      "family": "철",
+      "effect": "2슬롯 대형 무기의 피해 +2"
+    },
+    {
+      "id": "guardian",
+      "no": 4,
+      "name": "수호의 토템",
+      "family": "수호",
+      "effect": "라운드 시작 시 1번 슬롯에 방어 3을 얻는다"
+    },
+    {
+      "id": "ironwall",
+      "no": 5,
+      "name": "철벽의 토템",
+      "family": "수호",
+      "effect": "방패 카드의 방어 +1"
+    },
+    {
+      "id": "thorn",
+      "no": 6,
+      "name": "가시의 토템",
+      "family": "수호",
+      "effect": "가시 방패와 반격 자세의 반사 피해 +2"
+    },
+    {
+      "id": "life",
+      "no": 7,
+      "name": "생명의 토템",
+      "family": "생명",
+      "effect": "최대 체력 +10"
+    },
+    {
+      "id": "healing",
+      "no": 8,
+      "name": "치유의 토템",
+      "family": "생명",
+      "effect": "응급 처치, 붕대 감기, 숨 고르기의 회복량 +2"
+    },
+    {
+      "id": "cycle",
+      "no": 9,
+      "name": "순환의 토템",
+      "family": "시간",
+      "effect": "매 라운드 다음 라운드 드로우 +1 (손패 최대 9장 유지)"
+    },
+    {
+      "id": "sprint",
+      "no": 10,
+      "name": "질주의 토템",
+      "family": "시간",
+      "effect": "이동 카드(전진, 도약, 구르기 등) 다음 슬롯의 무기 피해 +1"
+    },
+    {
+      "id": "marksman",
+      "no": 11,
+      "name": "사수의 토템",
+      "family": "사격",
+      "effect": "직선 사격의 한 타 피해 +1, 전투마다 첫 사격은 화살을 쓰지 않는다"
+    },
+    {
+      "id": "throwing",
+      "no": 12,
+      "name": "투척의 토템",
+      "family": "투척",
+      "effect": "투척 무기의 피해 +2 (독 단지는 독 +1)"
+    },
+    {
+      "id": "poison",
+      "no": 13,
+      "name": "독의 토템",
+      "family": "독",
+      "effect": "독을 부여할 때마다 독 +1"
+    },
+    {
+      "id": "bleed",
+      "no": 14,
+      "name": "출혈의 토템",
+      "family": "출혈",
+      "effect": "출혈을 부여할 때마다 출혈 +1"
+    },
+    {
+      "id": "shadow",
+      "no": 15,
+      "name": "그림자의 토템",
+      "family": "기동",
+      "effect": "등 뒤 공격(구르기·뛰어넘기 뒤 치명타)의 피해 +3"
+    },
+    {
+      "id": "greed",
+      "no": 16,
+      "name": "탐욕의 토템",
+      "family": "탐욕",
+      "effect": "전투 승리 시 카드 보상 선택지 +1, 인벤토리 +2칸"
+    }
+  ]
+}

@@ -1,0 +1,995 @@
+{
+  "source": "Design/card_battle_rulebook_v0.7.3.xlsx",
+  "version": "v0.7.3",
+  "patterns": [
+    {
+      "monster": "charger",
+      "name": "기본 연타",
+      "isDefault": true,
+      "conditionText": "기본",
+      "conditions": [
+        {
+          "type": "default"
+        }
+      ],
+      "slots": [
+        "leap",
+        "longsword",
+        "roll",
+        "dagger",
+        "mace"
+      ],
+      "description": "어느 거리에서나 쓰는 기본 연타. 중간에 구르기로 위치를 뒤집음"
+    },
+    {
+      "monster": "charger",
+      "name": "선제 돌진",
+      "isDefault": false,
+      "conditionText": "거리 떨어짐(2↑)",
+      "conditions": [
+        {
+          "type": "distance",
+          "op": ">=",
+          "value": 2
+        }
+      ],
+      "slots": [
+        "leap",
+        "charge_axe",
+        "longsword",
+        "roll",
+        "dagger"
+      ],
+      "description": "한 칸이라도 떨어져 있으면 돌진으로 시작"
+    },
+    {
+      "monster": "charger",
+      "name": "근접 압박",
+      "isDefault": false,
+      "conditionText": "거리 붙음(1)",
+      "conditions": [
+        {
+          "type": "distance",
+          "op": "==",
+          "value": 1
+        }
+      ],
+      "slots": [
+        "longsword",
+        "roll",
+        "dagger",
+        "mace",
+        "longsword"
+      ],
+      "description": "붙어 있어도 구르기로 뒤를 노리며 연타"
+    },
+    {
+      "monster": "charger",
+      "name": "스턴 연계",
+      "isDefault": false,
+      "conditionText": "직전 방어 3장↑",
+      "conditions": [
+        {
+          "type": "lastRoundGuardCards",
+          "op": ">=",
+          "value": 3
+        }
+      ],
+      "slots": [
+        "leap",
+        "mace",
+        "longsword",
+        "roll",
+        "mace"
+      ],
+      "description": "방어 위주로 버티는 상대를 스턴으로 뚫음"
+    },
+    {
+      "monster": "charger",
+      "name": "추격",
+      "isDefault": false,
+      "conditionText": "직전 이동 2장↑",
+      "conditions": [
+        {
+          "type": "lastRoundMoveCards",
+          "op": ">=",
+          "value": 2
+        }
+      ],
+      "slots": [
+        "advance",
+        "leap",
+        "charge_axe",
+        "advance",
+        "longsword"
+      ],
+      "description": "이동으로 거리를 벌리는 상대를 쫓음"
+    },
+    {
+      "monster": "charger",
+      "name": "광폭",
+      "isDefault": false,
+      "conditionText": "적 체력 40%↓",
+      "conditions": [
+        {
+          "type": "monsterHpPercent",
+          "op": "<=",
+          "value": 40
+        }
+      ],
+      "slots": [
+        "dash_thrust",
+        null,
+        "charge_axe",
+        "roll",
+        "longsword"
+      ],
+      "description": "체력이 낮아지면 질주 창격과 돌격을 반복"
+    },
+    {
+      "monster": "charger",
+      "name": "벽 몰이",
+      "isDefault": false,
+      "conditionText": "플레이어가 벽",
+      "conditions": [
+        {
+          "type": "playerAtWall"
+        }
+      ],
+      "slots": [
+        "leap",
+        "mace",
+        "longsword",
+        "dagger",
+        "serrated_sword"
+      ],
+      "description": "벽에 몰린 상대는 도망칠 곳이 없다"
+    },
+    {
+      "monster": "shieldbearer",
+      "name": "방어 태세",
+      "isDefault": true,
+      "conditionText": "기본",
+      "conditions": [
+        {
+          "type": "default"
+        }
+      ],
+      "slots": [
+        "shield_charge",
+        "spear",
+        "spiked_shield",
+        "mace",
+        "longsword"
+      ],
+      "description": "기본 태세. 방패로 다가서며 3번 공격한다"
+    },
+    {
+      "monster": "shieldbearer",
+      "name": "반격 함정",
+      "isDefault": false,
+      "conditionText": "플레이어 체력 70%↑",
+      "conditions": [
+        {
+          "type": "playerHpPercent",
+          "op": ">=",
+          "value": 70
+        }
+      ],
+      "slots": [
+        "counter_stance",
+        "iron_shield",
+        "mace",
+        "spear",
+        "longsword"
+      ],
+      "description": "체력이 높은 상대가 공격적으로 들어올 때 반격 후 연타"
+    },
+    {
+      "monster": "shieldbearer",
+      "name": "방패 돌진",
+      "isDefault": false,
+      "conditionText": "거리 떨어짐(2↑)",
+      "conditions": [
+        {
+          "type": "distance",
+          "op": ">=",
+          "value": 2
+        }
+      ],
+      "slots": [
+        "shield_charge",
+        "leap",
+        "mace",
+        "spear",
+        "longsword"
+      ],
+      "description": "한 칸이라도 떨어져 있으면 방패를 들고 먼저 붙는다"
+    },
+    {
+      "monster": "shieldbearer",
+      "name": "근접 압박",
+      "isDefault": false,
+      "conditionText": "거리 붙음(1)",
+      "conditions": [
+        {
+          "type": "distance",
+          "op": "==",
+          "value": 1
+        }
+      ],
+      "slots": [
+        "mace",
+        "spear",
+        "spiked_shield",
+        "longsword",
+        "mace"
+      ],
+      "description": "붙어 있으면 스턴으로 시작해 연타"
+    },
+    {
+      "monster": "shieldbearer",
+      "name": "관통 압박",
+      "isDefault": false,
+      "conditionText": "직전 방어 3장↑",
+      "conditions": [
+        {
+          "type": "lastRoundGuardCards",
+          "op": ">=",
+          "value": 3
+        }
+      ],
+      "slots": [
+        "halberd",
+        null,
+        "iron_shield",
+        "spear",
+        "mace"
+      ],
+      "description": "방어 위주 상대를 관통으로 압박"
+    },
+    {
+      "monster": "shieldbearer",
+      "name": "결사 반격",
+      "isDefault": false,
+      "conditionText": "적 체력 30%↓",
+      "conditions": [
+        {
+          "type": "monsterHpPercent",
+          "op": "<=",
+          "value": 30
+        }
+      ],
+      "slots": [
+        "spiked_shield",
+        "mace",
+        "spear",
+        "shield_charge",
+        "longsword"
+      ],
+      "description": "체력이 위험할 때도 방어만 하지 않고 반격한다"
+    },
+    {
+      "monster": "shieldbearer",
+      "name": "원거리 대응",
+      "isDefault": false,
+      "conditionText": "직전 사거리2↑ 2장↑",
+      "conditions": [
+        {
+          "type": "lastRoundRange2Cards",
+          "op": ">=",
+          "value": 2
+        }
+      ],
+      "slots": [
+        "shield_charge",
+        "leap",
+        "mace",
+        "spear",
+        "longsword"
+      ],
+      "description": "원거리 위주 상대에게는 방패로 달려든다"
+    },
+    {
+      "monster": "shieldbearer",
+      "name": "벽 압박",
+      "isDefault": false,
+      "conditionText": "플레이어가 벽",
+      "conditions": [
+        {
+          "type": "playerAtWall"
+        }
+      ],
+      "slots": [
+        "shield_charge",
+        "mace",
+        "spear",
+        "mace",
+        "longsword"
+      ],
+      "description": "벽에 몰린 상대를 방패로 밀어붙임"
+    },
+    {
+      "monster": "archer",
+      "name": "기본 사격",
+      "isDefault": true,
+      "conditionText": "기본",
+      "conditions": [
+        {
+          "type": "default"
+        }
+      ],
+      "slots": [
+        "crossbow",
+        "hunting_bow",
+        "crossbow",
+        "aim",
+        "hunting_bow"
+      ],
+      "description": "기본 사격. 거리가 있으면 물러나지 않고 계속 쏜다"
+    },
+    {
+      "monster": "archer",
+      "name": "정조준 저격",
+      "isDefault": false,
+      "conditionText": "거리 원(≥4)",
+      "conditions": [
+        {
+          "type": "distance",
+          "op": ">=",
+          "value": 4
+        }
+      ],
+      "slots": [
+        "aim",
+        "longbow",
+        "crossbow",
+        "hunting_bow",
+        "crossbow"
+      ],
+      "description": "멀리서 정조준 후 저격"
+    },
+    {
+      "monster": "archer",
+      "name": "안정 사격",
+      "isDefault": false,
+      "conditionText": "거리 중(=3)",
+      "conditions": [
+        {
+          "type": "distance",
+          "op": "==",
+          "value": 3
+        }
+      ],
+      "slots": [
+        "crossbow",
+        "hunting_bow",
+        "longbow",
+        "crossbow",
+        "hunting_bow"
+      ],
+      "description": "거리가 충분하면 물러나지 않고 쏜다"
+    },
+    {
+      "monster": "archer",
+      "name": "후퇴 사격",
+      "isDefault": false,
+      "conditionText": "거리 붙음(1) + 몬스터 뒤 2칸↑",
+      "conditions": [
+        {
+          "type": "distance",
+          "op": "==",
+          "value": 1
+        },
+        {
+          "type": "monsterBackSpace",
+          "op": ">=",
+          "value": 2
+        }
+      ],
+      "slots": [
+        "retreat_shot",
+        "retreat_shot",
+        "crossbow",
+        "hunting_bow",
+        "crossbow"
+      ],
+      "description": "붙었고 뒤에 공간이 있으면 물러나며 쏜다"
+    },
+    {
+      "monster": "archer",
+      "name": "거리 벌리기",
+      "isDefault": false,
+      "conditionText": "거리 근(≤2) + 몬스터 뒤 2칸↑",
+      "conditions": [
+        {
+          "type": "distance",
+          "op": "<=",
+          "value": 2
+        },
+        {
+          "type": "monsterBackSpace",
+          "op": ">=",
+          "value": 2
+        }
+      ],
+      "slots": [
+        "retreat",
+        "crossbow",
+        "hunting_bow",
+        "crossbow",
+        "hunting_bow"
+      ],
+      "description": "가까운데 뒤에 공간이 있으면 한 번 크게 물러난 뒤 쏜다"
+    },
+    {
+      "monster": "archer",
+      "name": "벽 탈출",
+      "isDefault": false,
+      "conditionText": "거리 붙음(1) + 몬스터 뒤 1칸↓",
+      "conditions": [
+        {
+          "type": "distance",
+          "op": "==",
+          "value": 1
+        },
+        {
+          "type": "monsterBackSpace",
+          "op": "<=",
+          "value": 1
+        }
+      ],
+      "slots": [
+        "vault",
+        "crossbow",
+        "hunting_bow",
+        "crossbow",
+        "hunting_bow"
+      ],
+      "description": "붙었는데 뒤가 막혔으면 상대를 뛰어넘어 빠져나온다"
+    },
+    {
+      "monster": "archer",
+      "name": "탈출",
+      "isDefault": false,
+      "conditionText": "거리 붙음(1) + 몬스터 뒤 1칸↓ + 적 체력 50%↓",
+      "conditions": [
+        {
+          "type": "distance",
+          "op": "==",
+          "value": 1
+        },
+        {
+          "type": "monsterBackSpace",
+          "op": "<=",
+          "value": 1
+        },
+        {
+          "type": "monsterHpPercent",
+          "op": "<=",
+          "value": 50
+        }
+      ],
+      "slots": [
+        "vault",
+        "aim",
+        "longbow",
+        "crossbow",
+        "hunting_bow"
+      ],
+      "description": "체력이 낮고 뒤가 막혔으면 뛰어넘은 뒤 저격"
+    },
+    {
+      "monster": "archer",
+      "name": "벽 사격",
+      "isDefault": false,
+      "conditionText": "거리 떨어짐(2↑) + 몬스터 뒤 1칸↓",
+      "conditions": [
+        {
+          "type": "distance",
+          "op": ">=",
+          "value": 2
+        },
+        {
+          "type": "monsterBackSpace",
+          "op": "<=",
+          "value": 1
+        }
+      ],
+      "slots": [
+        "crossbow",
+        "hunting_bow",
+        "crossbow",
+        "longbow",
+        "hunting_bow"
+      ],
+      "description": "뒤가 막혀도 거리가 있으면 계속 쏜다"
+    },
+    {
+      "monster": "archer",
+      "name": "장판 견제",
+      "isDefault": false,
+      "conditionText": "거리 떨어짐(2↑) + 직전 방어 3장↑",
+      "conditions": [
+        {
+          "type": "distance",
+          "op": ">=",
+          "value": 2
+        },
+        {
+          "type": "lastRoundGuardCards",
+          "op": ">=",
+          "value": 3
+        }
+      ],
+      "slots": [
+        "poison_jar",
+        "javelin",
+        "crossbow",
+        "aim",
+        "hunting_bow"
+      ],
+      "description": "제자리에서 버티는 상대에게 독 장판"
+    },
+    {
+      "monster": "archer",
+      "name": "투척 연계",
+      "isDefault": false,
+      "conditionText": "거리 떨어짐(2↑) + 직전 이동 2장↑",
+      "conditions": [
+        {
+          "type": "distance",
+          "op": ">=",
+          "value": 2
+        },
+        {
+          "type": "lastRoundMoveCards",
+          "op": ">=",
+          "value": 2
+        }
+      ],
+      "slots": [
+        "throwing_axe",
+        "throwing_dagger",
+        "firebomb",
+        "crossbow",
+        "hunting_bow"
+      ],
+      "description": "움직이는 상대를 투척과 장판으로 견제"
+    },
+    {
+      "monster": "poison_hunter",
+      "name": "독 살포",
+      "isDefault": true,
+      "conditionText": "기본",
+      "conditions": [
+        {
+          "type": "default"
+        }
+      ],
+      "slots": [
+        "poison_jar",
+        "apply_poison",
+        "venom_dagger",
+        "poison_mist",
+        "venom_fang"
+      ],
+      "description": "기본 독 살포"
+    },
+    {
+      "monster": "poison_hunter",
+      "name": "근접 독니",
+      "isDefault": false,
+      "conditionText": "거리 근(≤2)",
+      "conditions": [
+        {
+          "type": "distance",
+          "op": "<=",
+          "value": 2
+        }
+      ],
+      "slots": [
+        "apply_poison",
+        "venom_fang",
+        "venom_dagger",
+        "venom_fang",
+        "dodge"
+      ],
+      "description": "붙었을 때 독을 쌓음"
+    },
+    {
+      "monster": "poison_hunter",
+      "name": "독 폭발",
+      "isDefault": false,
+      "conditionText": "플레이어 독 3↑",
+      "conditions": [
+        {
+          "type": "playerPoison",
+          "op": ">=",
+          "value": 3
+        }
+      ],
+      "slots": [
+        "poison_burst",
+        "spiked_shield",
+        "poison_burst",
+        "venom_fang",
+        "dodge"
+      ],
+      "description": "독이 쌓인 상대에게 폭발"
+    },
+    {
+      "monster": "poison_hunter",
+      "name": "장판 봉쇄",
+      "isDefault": false,
+      "conditionText": "직전 방어 3장↑",
+      "conditions": [
+        {
+          "type": "lastRoundGuardCards",
+          "op": ">=",
+          "value": 3
+        }
+      ],
+      "slots": [
+        "poison_jar",
+        "poison_mist",
+        "poison_jar",
+        "apply_poison",
+        "venom_fang"
+      ],
+      "description": "제자리에서 버티는 상대 주위에 장판"
+    },
+    {
+      "monster": "poison_hunter",
+      "name": "교란",
+      "isDefault": false,
+      "conditionText": "직전 이동 2장↑",
+      "conditions": [
+        {
+          "type": "lastRoundMoveCards",
+          "op": ">=",
+          "value": 2
+        }
+      ],
+      "slots": [
+        "roll",
+        "venom_dagger",
+        "dodge",
+        "venom_fang",
+        "poison_mist"
+      ],
+      "description": "움직이는 상대를 따라다니며 교란"
+    },
+    {
+      "monster": "poison_hunter",
+      "name": "발악",
+      "isDefault": false,
+      "conditionText": "적 체력 30%↓",
+      "conditions": [
+        {
+          "type": "monsterHpPercent",
+          "op": "<=",
+          "value": 30
+        }
+      ],
+      "slots": [
+        "poison_burst",
+        "apply_poison",
+        "venom_fang",
+        "poison_burst",
+        "venom_dagger"
+      ],
+      "description": "체력이 낮으면 독을 터뜨리는 데 집중"
+    },
+    {
+      "monster": "poison_hunter",
+      "name": "장판 몰이",
+      "isDefault": false,
+      "conditionText": "플레이어가 벽",
+      "conditions": [
+        {
+          "type": "playerAtWall"
+        }
+      ],
+      "slots": [
+        "poison_jar",
+        "venom_fang",
+        "poison_jar",
+        "venom_dagger",
+        "venom_fang"
+      ],
+      "description": "벽에 몰린 상대의 퇴로를 독으로 막음"
+    },
+    {
+      "monster": "heavy",
+      "name": "기본 강타",
+      "isDefault": true,
+      "conditionText": "기본",
+      "conditions": [
+        {
+          "type": "default"
+        }
+      ],
+      "slots": [
+        "advance",
+        "battle_axe",
+        null,
+        "war_hammer",
+        null
+      ],
+      "description": "다가서며 대형 무기를 연달아 휘두른다"
+    },
+    {
+      "monster": "heavy",
+      "name": "중량 강타",
+      "isDefault": false,
+      "conditionText": "거리 붙음(1)",
+      "conditions": [
+        {
+          "type": "distance",
+          "op": "==",
+          "value": 1
+        }
+      ],
+      "slots": [
+        "whirlwind_slash",
+        null,
+        "war_hammer",
+        null,
+        "tower_shield"
+      ],
+      "description": "붙었을 때 대형 무기를 연달아"
+    },
+    {
+      "monster": "heavy",
+      "name": "돌진 압박",
+      "isDefault": false,
+      "conditionText": "거리 떨어짐(2↑)",
+      "conditions": [
+        {
+          "type": "distance",
+          "op": ">=",
+          "value": 2
+        }
+      ],
+      "slots": [
+        "dash_thrust",
+        null,
+        "leap",
+        "war_hammer",
+        null
+      ],
+      "description": "떨어져 있으면 돌진하며 연속 공격"
+    },
+    {
+      "monster": "heavy",
+      "name": "철벽",
+      "isDefault": false,
+      "conditionText": "직전 사거리2↑ 2장↑",
+      "conditions": [
+        {
+          "type": "lastRoundRange2Cards",
+          "op": ">=",
+          "value": 2
+        }
+      ],
+      "slots": [
+        "tower_shield",
+        "leap",
+        "battle_axe",
+        null,
+        "shove"
+      ],
+      "description": "원거리 위주 상대에게 방어하며 접근해 강타"
+    },
+    {
+      "monster": "heavy",
+      "name": "분노",
+      "isDefault": false,
+      "conditionText": "적 체력 40%↓",
+      "conditions": [
+        {
+          "type": "monsterHpPercent",
+          "op": "<=",
+          "value": 40
+        }
+      ],
+      "slots": [
+        "whirlwind_slash",
+        null,
+        "whirlwind_slash",
+        null,
+        "tower_shield"
+      ],
+      "description": "체력이 낮아지면 회전 베기를 연달아"
+    },
+    {
+      "monster": "heavy",
+      "name": "방어 파쇄",
+      "isDefault": false,
+      "conditionText": "직전 방어 3장↑",
+      "conditions": [
+        {
+          "type": "lastRoundGuardCards",
+          "op": ">=",
+          "value": 3
+        }
+      ],
+      "slots": [
+        "halberd",
+        null,
+        "halberd",
+        null,
+        "shove"
+      ],
+      "description": "방어 위주 상대를 관통으로 파쇄"
+    },
+    {
+      "monster": "heavy",
+      "name": "기동 대응",
+      "isDefault": false,
+      "conditionText": "직전 이동 2장↑",
+      "conditions": [
+        {
+          "type": "lastRoundMoveCards",
+          "op": ">=",
+          "value": 2
+        }
+      ],
+      "slots": [
+        "leap",
+        "dash_thrust",
+        null,
+        "shove",
+        "tower_shield"
+      ],
+      "description": "움직이는 상대를 돌진으로 잡음"
+    },
+    {
+      "monster": "assassin",
+      "name": "뒤잡기 콤보",
+      "isDefault": true,
+      "conditionText": "기본",
+      "conditions": [
+        {
+          "type": "default"
+        }
+      ],
+      "slots": [
+        "roll",
+        "vital_strike",
+        "assassin_dagger",
+        "dagger",
+        "dodge"
+      ],
+      "description": "기본 뒤잡기"
+    },
+    {
+      "monster": "assassin",
+      "name": "장거리 접근",
+      "isDefault": false,
+      "conditionText": "거리 원(≥4)",
+      "conditions": [
+        {
+          "type": "distance",
+          "op": ">=",
+          "value": 4
+        }
+      ],
+      "slots": [
+        "leap",
+        "roll",
+        "vital_strike",
+        "assassin_dagger",
+        "dagger"
+      ],
+      "description": "멀리서 접근해 뒤를 잡음"
+    },
+    {
+      "monster": "assassin",
+      "name": "출혈 연계",
+      "isDefault": false,
+      "conditionText": "직전 방어 3장↑",
+      "conditions": [
+        {
+          "type": "lastRoundGuardCards",
+          "op": ">=",
+          "value": 3
+        }
+      ],
+      "slots": [
+        "sharpen",
+        "serrated_sword",
+        "roll",
+        "vital_strike",
+        "assassin_dagger"
+      ],
+      "description": "방어 위주 상대에게 출혈과 스턴"
+    },
+    {
+      "monster": "assassin",
+      "name": "교란 후퇴",
+      "isDefault": false,
+      "conditionText": "직전 사거리2↑ 2장↑",
+      "conditions": [
+        {
+          "type": "lastRoundRange2Cards",
+          "op": ">=",
+          "value": 2
+        }
+      ],
+      "slots": [
+        "roll",
+        "vault",
+        "vital_strike",
+        "assassin_dagger",
+        "retreat"
+      ],
+      "description": "원거리 위주 상대의 뒤를 잡고 빠짐"
+    },
+    {
+      "monster": "assassin",
+      "name": "이탈",
+      "isDefault": false,
+      "conditionText": "적 체력 50%↓ + 몬스터가 앞섬",
+      "conditions": [
+        {
+          "type": "monsterHpPercent",
+          "op": "<=",
+          "value": 50
+        },
+        {
+          "type": "monsterAhead"
+        }
+      ],
+      "slots": [
+        "roll",
+        "dagger",
+        "retreat",
+        "assassin_dagger",
+        "dodge"
+      ],
+      "description": "체력이 낮고 밀리는 중이면 이탈"
+    },
+    {
+      "monster": "assassin",
+      "name": "연타",
+      "isDefault": false,
+      "conditionText": "거리 근(≤2)",
+      "conditions": [
+        {
+          "type": "distance",
+          "op": "<=",
+          "value": 2
+        }
+      ],
+      "slots": [
+        "serrated_sword",
+        "dagger",
+        "assassin_dagger",
+        "dagger",
+        "roll"
+      ],
+      "description": "붙었을 때 연타"
+    },
+    {
+      "monster": "assassin",
+      "name": "벽 출혈",
+      "isDefault": false,
+      "conditionText": "플레이어가 벽",
+      "conditions": [
+        {
+          "type": "playerAtWall"
+        }
+      ],
+      "slots": [
+        "sharpen",
+        "serrated_sword",
+        "serrated_sword",
+        "dagger",
+        "dagger"
+      ],
+      "description": "벽에 몰린 상대는 뒤를 못 잡으니 출혈 연타"
+    }
+  ]
+}
