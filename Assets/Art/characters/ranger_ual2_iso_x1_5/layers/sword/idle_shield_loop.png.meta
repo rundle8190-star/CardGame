@@ -1,0 +1,1434 @@
+fileFormatVersion: 2
+guid: ab7da4f089af6e942b9f648e85e026bb
+TextureImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 64
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 3
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 8192
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: idle_shield_loop_00
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 144
+        width: 192
+        height: 144
+      alignment: 9
+      pivot: {x: 0.375, y: 0.06944445}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8908a3b59c919a34787db2465d286e62
+      internalID: 5853247543615079940
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: idle_shield_loop_01
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 144
+        width: 192
+        height: 144
+      alignment: 9
+      pivot: {x: 0.375, y: 0.06944445}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d47a01c19700e524e815072320d9e55f
+      internalID: 5623171589013271834
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: idle_shield_loop_02
+      rect:
+        serializedVersion: 2
+        x: 384
+        y: 144
+        width: 192
+        height: 144
+      alignment: 9
+      pivot: {x: 0.375, y: 0.06944445}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 863c651603f24df4ea912426f57c7f99
+      internalID: -3853050700297948824
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: idle_shield_loop_03
+      rect:
+        serializedVersion: 2
+        x: 576
+        y: 144
+        width: 192
+        height: 144
+      alignment: 9
+      pivot: {x: 0.375, y: 0.06944445}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a80385eb491ba31438767e1e6c0fcb5e
+      internalID: -3306362368657499587
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: idle_shield_loop_04
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 144
+        width: 192
+        height: 144
+      alignment: 9
+      pivot: {x: 0.375, y: 0.06944445}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ca21bee70714f814cbd5ad78d653aad5
+      internalID: -617107544998184075
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: idle_shield_loop_05
+      rect:
+        serializedVersion: 2
+        x: 960
+        y: 144
+        width: 192
+        height: 144
+      alignment: 9
+      pivot: {x: 0.375, y: 0.06944445}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1056b9119b60eff44ac0366f24d0ce98
+      internalID: 5711443821376678450
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: idle_shield_loop_06
+      rect:
+        serializedVersion: 2
+        x: 1152
+        y: 144
+        width: 192
+        height: 144
+      alignment: 9
+      pivot: {x: 0.375, y: 0.06944445}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2f9e7b2e10adc2b429e3b30090090d70
+      internalID: 2891398238723541250
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: idle_shield_loop_07
+      rect:
+        serializedVersion: 2
+        x: 1344
+        y: 144
+        width: 192
+        height: 144
+      alignment: 9
+      pivot: {x: 0.375, y: 0.06944445}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3d15f40fa232e764e9bacdf37bcf595f
+      internalID: 2381172548237386299
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: idle_shield_loop_08
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 144
+        width: 192
+        height: 144
+      alignment: 9
+      pivot: {x: 0.375, y: 0.06944445}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ef6983e45f2710c4e88475b3cf27d01d
+      internalID: 2671864686674225536
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: idle_shield_loop_09
+      rect:
+        serializedVersion: 2
+        x: 1728
+        y: 144
+        width: 192
+        height: 144
+      alignment: 9
+      pivot: {x: 0.375, y: 0.06944445}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: aeb0a38b66d6d624c8a5a7cd61f3e25a
+      internalID: -4567699710667342288
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: idle_shield_loop_10
+      rect:
+        serializedVersion: 2
+        x: 1920
+        y: 144
+        width: 192
+        height: 144
+      alignment: 9
+      pivot: {x: 0.375, y: 0.06944445}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 29fb8edbcd711744c888415731c0881c
+      internalID: 1192108493193426262
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: idle_shield_loop_11
+      rect:
+        serializedVersion: 2
+        x: 2112
+        y: 144
+        width: 192
+        height: 144
+      alignment: 9
+      pivot: {x: 0.375, y: 0.06944445}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: dfdddc40a8137254882d1edd6af78f21
+      internalID: 3960533543506302403
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: idle_shield_loop_12
+      rect:
+        serializedVersion: 2
+        x: 2304
+        y: 144
+        width: 192
+        height: 144
+      alignment: 9
+      pivot: {x: 0.375, y: 0.06944445}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: db5863ac85cd6214682bbacefad24df1
+      internalID: -2913106476511777568
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: idle_shield_loop_13
+      rect:
+        serializedVersion: 2
+        x: 2496
+        y: 144
+        width: 192
+        height: 144
+      alignment: 9
+      pivot: {x: 0.375, y: 0.06944445}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e834b8c7418339444a1cf1d068f9aa8c
+      internalID: -5991098744554664421
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: idle_shield_loop_14
+      rect:
+        serializedVersion: 2
+        x: 2688
+        y: 144
+        width: 192
+        height: 144
+      alignment: 9
+      pivot: {x: 0.375, y: 0.06944445}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: dbf408043d77e874ba351db9539318f3
+      internalID: 5361076393118599844
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: idle_shield_loop_15
+      rect:
+        serializedVersion: 2
+        x: 2880
+        y: 144
+        width: 192
+        height: 144
+      alignment: 9
+      pivot: {x: 0.375, y: 0.06944445}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: aedb8566b77cf67438ddf2e3bf03d3ee
+      internalID: -4579965939232263501
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: idle_shield_loop_16
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 144
+        width: 192
+        height: 144
+      alignment: 9
+      pivot: {x: 0.375, y: 0.06944445}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a198b4c7d6a1c7e43a011e684472a383
+      internalID: -6005670548667287258
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: idle_shield_loop_17
+      rect:
+        serializedVersion: 2
+        x: 3264
+        y: 144
+        width: 192
+        height: 144
+      alignment: 9
+      pivot: {x: 0.375, y: 0.06944445}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 437a93b74f65dcd4a85a82d0db3e3977
+      internalID: -6544498247905533036
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: idle_shield_loop_18
+      rect:
+        serializedVersion: 2
+        x: 3456
+        y: 144
+        width: 192
+        height: 144
+      alignment: 9
+      pivot: {x: 0.375, y: 0.06944445}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 28961e55edfed3f4b94796e2fac43e99
+      internalID: -5975856183178064466
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: idle_shield_loop_19
+      rect:
+        serializedVersion: 2
+        x: 3648
+        y: 144
+        width: 192
+        height: 144
+      alignment: 9
+      pivot: {x: 0.375, y: 0.06944445}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: bc63e865d844370438132f23188caac2
+      internalID: 6910993034531387080
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: idle_shield_loop_20
+      rect:
+        serializedVersion: 2
+        x: 3840
+        y: 144
+        width: 192
+        height: 144
+      alignment: 9
+      pivot: {x: 0.375, y: 0.06944445}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0a6ee8128ad705d49864047f8c8ed92d
+      internalID: 5859264284901024844
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: idle_shield_loop_21
+      rect:
+        serializedVersion: 2
+        x: 4032
+        y: 144
+        width: 192
+        height: 144
+      alignment: 9
+      pivot: {x: 0.375, y: 0.06944445}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d29999caafecb514ab75353f932459ac
+      internalID: 7479389581059022538
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: idle_shield_loop_22
+      rect:
+        serializedVersion: 2
+        x: 4224
+        y: 144
+        width: 192
+        height: 144
+      alignment: 9
+      pivot: {x: 0.375, y: 0.06944445}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1a3eb37ac2146d94fbf46ce1493fd429
+      internalID: -3680015221143629137
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: idle_shield_loop_23
+      rect:
+        serializedVersion: 2
+        x: 4416
+        y: 144
+        width: 192
+        height: 144
+      alignment: 9
+      pivot: {x: 0.375, y: 0.06944445}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4a8bee53a630ccc498461acbc8073867
+      internalID: -1964348509840377868
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: idle_shield_loop_24
+      rect:
+        serializedVersion: 2
+        x: 4608
+        y: 144
+        width: 192
+        height: 144
+      alignment: 9
+      pivot: {x: 0.375, y: 0.06944445}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d17e6ceca8157a74eaea0cbbf6519a59
+      internalID: -6976131283470148740
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: idle_shield_loop_25
+      rect:
+        serializedVersion: 2
+        x: 4800
+        y: 144
+        width: 192
+        height: 144
+      alignment: 9
+      pivot: {x: 0.375, y: 0.06944445}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a510e7b2932ac2d4dbe1214a0adfaf03
+      internalID: 989078412938355794
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: idle_shield_loop_26
+      rect:
+        serializedVersion: 2
+        x: 4992
+        y: 144
+        width: 192
+        height: 144
+      alignment: 9
+      pivot: {x: 0.375, y: 0.06944445}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7015d01f87e29644dad03fc631236472
+      internalID: -5173309387498100452
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: idle_shield_loop_27
+      rect:
+        serializedVersion: 2
+        x: 5184
+        y: 144
+        width: 192
+        height: 144
+      alignment: 9
+      pivot: {x: 0.375, y: 0.06944445}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8cb931354aa6e7446abe60d2f0023d3e
+      internalID: -2385071794671217634
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: idle_shield_loop_28
+      rect:
+        serializedVersion: 2
+        x: 5376
+        y: 144
+        width: 192
+        height: 144
+      alignment: 9
+      pivot: {x: 0.375, y: 0.06944445}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d93a0e420ef667c408ecc89a4a260249
+      internalID: 551718311595890050
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: idle_shield_loop_29
+      rect:
+        serializedVersion: 2
+        x: 5568
+        y: 144
+        width: 192
+        height: 144
+      alignment: 9
+      pivot: {x: 0.375, y: 0.06944445}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: df957abab911cdc46b1b31a98027e1c3
+      internalID: 517454386118384701
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: idle_shield_loop_30
+      rect:
+        serializedVersion: 2
+        x: 5760
+        y: 144
+        width: 192
+        height: 144
+      alignment: 9
+      pivot: {x: 0.375, y: 0.06944445}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: da7a1691e43eb7a448d7b0e7efa992fe
+      internalID: -1899329189122476317
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: idle_shield_loop_31
+      rect:
+        serializedVersion: 2
+        x: 5952
+        y: 144
+        width: 192
+        height: 144
+      alignment: 9
+      pivot: {x: 0.375, y: 0.06944445}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1c69ad38b5bc68245bd9d0bee9c5125d
+      internalID: -7661124697883428339
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: idle_shield_loop_32
+      rect:
+        serializedVersion: 2
+        x: 6144
+        y: 144
+        width: 192
+        height: 144
+      alignment: 9
+      pivot: {x: 0.375, y: 0.06944445}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 97aa12bdd05cbb0438cb948960121f18
+      internalID: 4931166389664865974
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: idle_shield_loop_33
+      rect:
+        serializedVersion: 2
+        x: 6336
+        y: 144
+        width: 192
+        height: 144
+      alignment: 9
+      pivot: {x: 0.375, y: 0.06944445}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 38ea46486124287478aa7b83779a5b7d
+      internalID: 521452883899089905
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: idle_shield_loop_34
+      rect:
+        serializedVersion: 2
+        x: 6528
+        y: 144
+        width: 192
+        height: 144
+      alignment: 9
+      pivot: {x: 0.375, y: 0.06944445}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 884a563237f0b5d488e7b76f91ab6aac
+      internalID: -788997000870648514
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: idle_shield_loop_35
+      rect:
+        serializedVersion: 2
+        x: 6720
+        y: 144
+        width: 192
+        height: 144
+      alignment: 9
+      pivot: {x: 0.375, y: 0.06944445}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c7a2ebc28c77cc04caebf7e9fa75258b
+      internalID: -6059749858020044429
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: idle_shield_loop_36
+      rect:
+        serializedVersion: 2
+        x: 6912
+        y: 144
+        width: 192
+        height: 144
+      alignment: 9
+      pivot: {x: 0.375, y: 0.06944445}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 70aa5c744678d9f479b2fc9815707e51
+      internalID: 8711064457104347674
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: idle_shield_loop_37
+      rect:
+        serializedVersion: 2
+        x: 7104
+        y: 144
+        width: 192
+        height: 144
+      alignment: 9
+      pivot: {x: 0.375, y: 0.06944445}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8ffe43dc2a2ce0c429468f8ebeb9d286
+      internalID: 8190137543232981056
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: idle_shield_loop_38
+      rect:
+        serializedVersion: 2
+        x: 7296
+        y: 144
+        width: 192
+        height: 144
+      alignment: 9
+      pivot: {x: 0.375, y: 0.06944445}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 07d4661e9cbd4fc479e32603aac4c154
+      internalID: -4978582960186345838
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: idle_shield_loop_39
+      rect:
+        serializedVersion: 2
+        x: 7488
+        y: 144
+        width: 192
+        height: 144
+      alignment: 9
+      pivot: {x: 0.375, y: 0.06944445}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1bbd22db5bff3874b9e6145d449086f2
+      internalID: -7716460455142345167
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: idle_shield_loop_40
+      rect:
+        serializedVersion: 2
+        x: 7680
+        y: 144
+        width: 192
+        height: 144
+      alignment: 9
+      pivot: {x: 0.375, y: 0.06944445}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5128c33d3dbf4304bb428aa161db6cc0
+      internalID: 4673132414042947422
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: idle_shield_loop_41
+      rect:
+        serializedVersion: 2
+        x: 7872
+        y: 144
+        width: 192
+        height: 144
+      alignment: 9
+      pivot: {x: 0.375, y: 0.06944445}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 779b3a42681c18f4382e54e006167a6b
+      internalID: -2334441502002990959
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: idle_shield_loop_42
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 192
+        height: 144
+      alignment: 9
+      pivot: {x: 0.375, y: 0.06944445}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1a0497668824536478ac6cec7ebeff9c
+      internalID: -726823595592640595
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: idle_shield_loop_43
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 0
+        width: 192
+        height: 144
+      alignment: 9
+      pivot: {x: 0.375, y: 0.06944445}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 41bce3dd99b4dd54c8328a3d1d453802
+      internalID: -6389225577455334836
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: idle_shield_loop_44
+      rect:
+        serializedVersion: 2
+        x: 384
+        y: 0
+        width: 192
+        height: 144
+      alignment: 9
+      pivot: {x: 0.375, y: 0.06944445}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2a1855a579854854a829e2942a9ad4f0
+      internalID: 2751525093557391883
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: idle_shield_loop_45
+      rect:
+        serializedVersion: 2
+        x: 576
+        y: 0
+        width: 192
+        height: 144
+      alignment: 9
+      pivot: {x: 0.375, y: 0.06944445}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6d22df2b7f0cab74d96cfcbdb4d25695
+      internalID: -515028494275283951
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: idle_shield_loop_46
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 0
+        width: 192
+        height: 144
+      alignment: 9
+      pivot: {x: 0.375, y: 0.06944445}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8670688e53be43446bde47b0bdc0974e
+      internalID: 2761117567033363334
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: idle_shield_loop_47
+      rect:
+        serializedVersion: 2
+        x: 960
+        y: 0
+        width: 192
+        height: 144
+      alignment: 9
+      pivot: {x: 0.375, y: 0.06944445}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b21b4f93916817644bac08431daccc78
+      internalID: -2005886465000205049
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: idle_shield_loop_48
+      rect:
+        serializedVersion: 2
+        x: 1152
+        y: 0
+        width: 192
+        height: 144
+      alignment: 9
+      pivot: {x: 0.375, y: 0.06944445}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 065a45ad5e6546544a0c6754be93c4d2
+      internalID: 1418729085528811985
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: idle_shield_loop_49
+      rect:
+        serializedVersion: 2
+        x: 1344
+        y: 0
+        width: 192
+        height: 144
+      alignment: 9
+      pivot: {x: 0.375, y: 0.06944445}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9297d97717b491e42bc957194ade935d
+      internalID: -4356089059460468705
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: idle_shield_loop_50
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 0
+        width: 192
+        height: 144
+      alignment: 9
+      pivot: {x: 0.375, y: 0.06944445}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e9cc9bafd281bc346bf5f22349c34dc3
+      internalID: -258552015126634175
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: idle_shield_loop_51
+      rect:
+        serializedVersion: 2
+        x: 1728
+        y: 0
+        width: 192
+        height: 144
+      alignment: 9
+      pivot: {x: 0.375, y: 0.06944445}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 97b53f69f6134f0479791ce32a674f36
+      internalID: 111228420193944355
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: idle_shield_loop_52
+      rect:
+        serializedVersion: 2
+        x: 1920
+        y: 0
+        width: 192
+        height: 144
+      alignment: 9
+      pivot: {x: 0.375, y: 0.06944445}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7bc3102f05016ea4fa128e3b95ee3312
+      internalID: 5472369041887286148
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: idle_shield_loop_53
+      rect:
+        serializedVersion: 2
+        x: 2112
+        y: 0
+        width: 192
+        height: 144
+      alignment: 9
+      pivot: {x: 0.375, y: 0.06944445}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9a1905fcabe0803429c2015f4a6aa9d2
+      internalID: 2005802988583944872
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: idle_shield_loop_54
+      rect:
+        serializedVersion: 2
+        x: 2304
+        y: 0
+        width: 192
+        height: 144
+      alignment: 9
+      pivot: {x: 0.375, y: 0.06944445}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 49aaf074566687348a51d3ce68876511
+      internalID: 747125423603860291
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: idle_shield_loop_55
+      rect:
+        serializedVersion: 2
+        x: 2496
+        y: 0
+        width: 192
+        height: 144
+      alignment: 9
+      pivot: {x: 0.375, y: 0.06944445}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 11aea411909eef3408f367d6a9cef525
+      internalID: -9046872728310242988
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: idle_shield_loop_56
+      rect:
+        serializedVersion: 2
+        x: 2688
+        y: 0
+        width: 192
+        height: 144
+      alignment: 9
+      pivot: {x: 0.375, y: 0.06944445}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 47295c89778e12d43b0f435a5f1926f4
+      internalID: 1047995785518384994
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: idle_shield_loop_57
+      rect:
+        serializedVersion: 2
+        x: 2880
+        y: 0
+        width: 192
+        height: 144
+      alignment: 9
+      pivot: {x: 0.375, y: 0.06944445}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2e3514ce494a0c7448c5539a1d3b5bb6
+      internalID: -8123934116663810030
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: idle_shield_loop_58
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 0
+        width: 192
+        height: 144
+      alignment: 9
+      pivot: {x: 0.375, y: 0.06944445}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6d756c6d6c6ae3d42bf7229bba85be91
+      internalID: -316398238323295216
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: idle_shield_loop_59
+      rect:
+        serializedVersion: 2
+        x: 3264
+        y: 0
+        width: 192
+        height: 144
+      alignment: 9
+      pivot: {x: 0.375, y: 0.06944445}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 054d290d80498d041bd7dda882472244
+      internalID: 8559121635033218392
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    nameFileIdTable:
+      idle_shield_loop_00: 5853247543615079940
+      idle_shield_loop_01: 5623171589013271834
+      idle_shield_loop_02: -3853050700297948824
+      idle_shield_loop_03: -3306362368657499587
+      idle_shield_loop_04: -617107544998184075
+      idle_shield_loop_05: 5711443821376678450
+      idle_shield_loop_06: 2891398238723541250
+      idle_shield_loop_07: 2381172548237386299
+      idle_shield_loop_08: 2671864686674225536
+      idle_shield_loop_09: -4567699710667342288
+      idle_shield_loop_10: 1192108493193426262
+      idle_shield_loop_11: 3960533543506302403
+      idle_shield_loop_12: -2913106476511777568
+      idle_shield_loop_13: -5991098744554664421
+      idle_shield_loop_14: 5361076393118599844
+      idle_shield_loop_15: -4579965939232263501
+      idle_shield_loop_16: -6005670548667287258
+      idle_shield_loop_17: -6544498247905533036
+      idle_shield_loop_18: -5975856183178064466
+      idle_shield_loop_19: 6910993034531387080
+      idle_shield_loop_20: 5859264284901024844
+      idle_shield_loop_21: 7479389581059022538
+      idle_shield_loop_22: -3680015221143629137
+      idle_shield_loop_23: -1964348509840377868
+      idle_shield_loop_24: -6976131283470148740
+      idle_shield_loop_25: 989078412938355794
+      idle_shield_loop_26: -5173309387498100452
+      idle_shield_loop_27: -2385071794671217634
+      idle_shield_loop_28: 551718311595890050
+      idle_shield_loop_29: 517454386118384701
+      idle_shield_loop_30: -1899329189122476317
+      idle_shield_loop_31: -7661124697883428339
+      idle_shield_loop_32: 4931166389664865974
+      idle_shield_loop_33: 521452883899089905
+      idle_shield_loop_34: -788997000870648514
+      idle_shield_loop_35: -6059749858020044429
+      idle_shield_loop_36: 8711064457104347674
+      idle_shield_loop_37: 8190137543232981056
+      idle_shield_loop_38: -4978582960186345838
+      idle_shield_loop_39: -7716460455142345167
+      idle_shield_loop_40: 4673132414042947422
+      idle_shield_loop_41: -2334441502002990959
+      idle_shield_loop_42: -726823595592640595
+      idle_shield_loop_43: -6389225577455334836
+      idle_shield_loop_44: 2751525093557391883
+      idle_shield_loop_45: -515028494275283951
+      idle_shield_loop_46: 2761117567033363334
+      idle_shield_loop_47: -2005886465000205049
+      idle_shield_loop_48: 1418729085528811985
+      idle_shield_loop_49: -4356089059460468705
+      idle_shield_loop_50: -258552015126634175
+      idle_shield_loop_51: 111228420193944355
+      idle_shield_loop_52: 5472369041887286148
+      idle_shield_loop_53: 2005802988583944872
+      idle_shield_loop_54: 747125423603860291
+      idle_shield_loop_55: -9046872728310242988
+      idle_shield_loop_56: 1047995785518384994
+      idle_shield_loop_57: -8123934116663810030
+      idle_shield_loop_58: -316398238323295216
+      idle_shield_loop_59: 8559121635033218392
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

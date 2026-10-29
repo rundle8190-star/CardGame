@@ -89,6 +89,72 @@ namespace CardGame.EditorTools
         }
 
         /// <summary>
+        /// 부위 번호 그림 줄이기: ss x ss 칸에서 가장 많이 나온 번호(빨강 값)를 고른다. 투명도는 BoxDownsample과 같은 방식.
+        /// </summary>
+        public static Color32[] MajorityDownsample(Color32[] src, int w, int h, int ss)
+        {
+            if (ss <= 1) return src;
+            int bw = w * ss, n = ss * ss;
+            var dst = new Color32[w * h];
+            var cnt = new int[256];
+            var seen = new List<int>(8);
+            for (int y = 0; y < h; y++)
+                for (int x = 0; x < w; x++)
+                {
+                    int a = 0;
+                    seen.Clear();
+                    for (int sy = 0; sy < ss; sy++)
+                    {
+                        int row = (y * ss + sy) * bw + x * ss;
+                        for (int sx = 0; sx < ss; sx++)
+                        {
+                            var c = src[row + sx];
+                            a += c.a;
+                            if (c.a == 0) continue;
+                            if (cnt[c.r]++ == 0) seen.Add(c.r);
+                        }
+                    }
+                    if (a == 0) continue;
+                    int best = 0, bestN = -1;
+                    foreach (int v in seen) { if (cnt[v] > bestN) { bestN = cnt[v]; best = v; } cnt[v] = 0; }
+                    dst[y * w + x] = new Color32((byte)best, 0, 0, (byte)(a / n));
+                }
+            return dst;
+        }
+
+        /// <summary>
+        /// 무기 레이어 윤곽선: 무기 바깥 투명 픽셀 중 상하좌우로 무기에 닿은 곳에 그린다.
+        /// 단, 몸에 가려서 잘린 쪽(가림막 없이 그리면 무기가 있는 자리)에는 그리지 않는다.
+        /// </summary>
+        public static void AddLayerOutline(Color32[] px, Color32[] alone, int w, int h, Color32 col)
+        {
+            var src = (Color32[])px.Clone();
+            col.a = 255;
+            for (int y = 0; y < h; y++)
+                for (int x = 0; x < w; x++)
+                {
+                    int i = y * w + x;
+                    if (src[i].a != 0 || (alone != null && alone[i].a != 0)) continue;
+                    bool edge = (x > 0 && src[i - 1].a != 0) || (x < w - 1 && src[i + 1].a != 0)
+                             || (y > 0 && src[i - w].a != 0) || (y < h - 1 && src[i + w].a != 0);
+                    if (edge) px[i] = col;
+                }
+        }
+
+        /// <summary>가장 가까운 팔레트 색의 번호</summary>
+        public static int NearestIndex(Color32 c, Color32[] pal)
+        {
+            int best = 0, bestD = int.MaxValue;
+            for (int i = 0; i < pal.Length; i++)
+            {
+                int dr = c.r - pal[i].r, dg = c.g - pal[i].g, db = c.b - pal[i].b;
+                int d = dr * dr * 3 + dg * dg * 4 + db * db * 2;
+                if (d < bestD) { bestD = d; best = i; }
+            }
+            return best;
+        }
+
+        /// <summary>
         /// 여러 프레임의 색을 모아 count색 팔레트를 만든다 (가장 많이 쓰인 색 위주, 중간 나누기 + 몇 번 다듬기). 디더링 없음.
         /// </summary>
         public static Color32[] BuildPalette(Dictionary<int, int> hist, int count)
@@ -230,7 +296,7 @@ namespace CardGame.EditorTools
         /// 프레임을 시트 PNG로 저장한다. 가로 8192px 안에 들어가면 한 줄, 넘치면 여러 줄 (왼쪽 위부터 오른쪽으로, 다음 줄).
         /// 돌려주는 값: 한 줄에 들어간 프레임 수.
         /// </summary>
-        public static int SaveStrip(string assetPath, List<Color32[]> frames, int fw, int fh, Vector2 pivot01, int ppu)
+        public static int SaveStrip(string assetPath, List<Color32[]> frames, int fw, int fh, Vector2 pivot01, int ppu, bool indexImage = false)
         {
             int n = frames.Count;
             const int MaxSize = 8192;
@@ -258,7 +324,9 @@ namespace CardGame.EditorTools
             ti.filterMode = FilterMode.Point;
             ti.textureCompression = TextureImporterCompression.Uncompressed;
             ti.mipmapEnabled = false;
-            ti.alphaIsTransparency = true;
+            // 인덱스 이미지는 빨강 값이 칸 번호라 색 변환, 투명 가장자리 번짐 처리를 하면 안 된다
+            ti.alphaIsTransparency = !indexImage;
+            ti.sRGBTexture = !indexImage;
             ti.isReadable = false;
             ti.maxTextureSize = 8192;
 

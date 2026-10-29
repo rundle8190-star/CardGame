@@ -1,0 +1,276 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d6bfe379add6db74e9d5ef064f44611f, type: 3}
+  m_Name: ranger_ual2_iso_x1_5
+  m_EditorClassIdentifier: 
+  baseModel: {fileID: 919132149155446097, guid: baca02d327213954e930ea27d68c1eb3, type: 3}
+  parts:
+  - {fileID: 919132149155446097, guid: 3edc9867ea5979e428a0c5da0fabd54d, type: 3}
+  bodyDepthPush: 0.03
+  hideBodyUnderClothes: 1
+  keepBodyBones:
+  - Head
+  - neck_01
+  noPushRenderers:
+  - Eyes
+  - Eyebrows
+  heightScale: 1
+  flattenFeet: 0
+  flattenFeetAmount: 1
+  straightenHips: 0
+  straightenHipsAmount: 1
+  keepAboveGround: 1
+  plantFeet: 0
+  plantDistance: 0.08
+  groundLockHeight: 0.2
+  textureRules:
+  - materialNameContains: MI_Superhero_Male
+    texture: {fileID: 2800000, guid: 99b11bbaa20d0e3428ddfa55cd744724, type: 3}
+    tint: {r: 1, g: 1, b: 1, a: 1}
+  - materialNameContains: MI_Superhero_Female
+    texture: {fileID: 2800000, guid: 4e010c2ea7148314eaf7b88c9dcd0b72, type: 3}
+    tint: {r: 1, g: 1, b: 1, a: 1}
+  - materialNameContains: MI_Eyes
+    texture: {fileID: 2800000, guid: 4e34bc5ae5f3451449dd8424f0521165, type: 3}
+    tint: {r: 1, g: 1, b: 1, a: 1}
+  - materialNameContains: MI_Hair_1
+    texture: {fileID: 2800000, guid: 5129cef671b840d4991272bd79134928, type: 3}
+    tint: {r: 1, g: 1, b: 1, a: 1}
+  - materialNameContains: MI_Hair_2
+    texture: {fileID: 2800000, guid: b8921e4c6bfdc8f44bb8581a4cfbdb0a, type: 3}
+    tint: {r: 1, g: 1, b: 1, a: 1}
+  - materialNameContains: MI_Peasant
+    texture: {fileID: 2800000, guid: 51f0502bb78efe349bcd4b8370c60a9d, type: 3}
+    tint: {r: 1, g: 1, b: 1, a: 1}
+  - materialNameContains: MI_Ranger
+    texture: {fileID: 2800000, guid: a0804c139eca07345ad5a871bc0c8a26, type: 3}
+    tint: {r: 1, g: 1, b: 1, a: 1}
+  - materialNameContains: MI_Regular_Male
+    texture: {fileID: 2800000, guid: aee2c91cad1cb2f409aa96b9f6e193ce, type: 3}
+    tint: {r: 1, g: 1, b: 1, a: 1}
+  - materialNameContains: MI_Regular_Female
+    texture: {fileID: 2800000, guid: 68dab5049734ea04e9770c1bb5f4a7df, type: 3}
+    tint: {r: 1, g: 1, b: 1, a: 1}
+  weapon:
+    prefab: {fileID: 0}
+    boneName: hand_r
+    autoGrip: 1
+    flipGrip: 0
+    extraPosition: {x: 0, y: 0, z: 0}
+    extraRotation: {x: 0, y: 0, z: 0}
+    scale: 1
+    bladeMode: 0
+  shield:
+    useTempShield: 0
+    prefab: {fileID: 0}
+    boneName: lowerarm_l
+    diameter: 0.6
+    thickness: 0.05
+    color: {r: 0.47843137, g: 0.30588236, b: 0.17254902, a: 1}
+    extraPosition: {x: 0, y: 0, z: 0}
+    extraRotation: {x: 0, y: 0, z: 0}
+    scale: 1
+    autoOrient: 1
+  clips:
+  - bake: 1
+    clip: {fileID: 3625414872004886998, guid: 2c0accddfe5cb2c4c87fa4cbc2f4fcab, type: 3}
+    outputName: 
+    findHitFrame: 1
+    hitFrameOverride: -1
+  - bake: 1
+    clip: {fileID: 7400775424482280638, guid: 2c0accddfe5cb2c4c87fa4cbc2f4fcab, type: 3}
+    outputName: 
+    findHitFrame: 0
+    hitFrameOverride: -1
+  - bake: 1
+    clip: {fileID: -1662512729948635066, guid: 2c0accddfe5cb2c4c87fa4cbc2f4fcab, type: 3}
+    outputName: 
+    findHitFrame: 1
+    hitFrameOverride: -1
+  - bake: 1
+    clip: {fileID: 7742298430783984577, guid: 2c0accddfe5cb2c4c87fa4cbc2f4fcab, type: 3}
+    outputName: 
+    findHitFrame: 0
+    hitFrameOverride: -1
+  - bake: 1
+    clip: {fileID: 543990450412311274, guid: 2c0accddfe5cb2c4c87fa4cbc2f4fcab, type: 3}
+    outputName: 
+    findHitFrame: 1
+    hitFrameOverride: -1
+  - bake: 1
+    clip: {fileID: 1678460618773446439, guid: 2c0accddfe5cb2c4c87fa4cbc2f4fcab, type: 3}
+    outputName: 
+    findHitFrame: 1
+    hitFrameOverride: -1
+  - bake: 1
+    clip: {fileID: 8990922676025542795, guid: 2c0accddfe5cb2c4c87fa4cbc2f4fcab, type: 3}
+    outputName: 
+    findHitFrame: 1
+    hitFrameOverride: -1
+  - bake: 1
+    clip: {fileID: 5047704512850479675, guid: 2c0accddfe5cb2c4c87fa4cbc2f4fcab, type: 3}
+    outputName: 
+    findHitFrame: 0
+    hitFrameOverride: -1
+  - bake: 1
+    clip: {fileID: 5177481599410670366, guid: 2c0accddfe5cb2c4c87fa4cbc2f4fcab, type: 3}
+    outputName: 
+    findHitFrame: 1
+    hitFrameOverride: -1
+  - bake: 1
+    clip: {fileID: -209083552512460135, guid: 2c0accddfe5cb2c4c87fa4cbc2f4fcab, type: 3}
+    outputName: 
+    findHitFrame: 0
+    hitFrameOverride: -1
+  - bake: 1
+    clip: {fileID: 7967110328740518756, guid: 2c0accddfe5cb2c4c87fa4cbc2f4fcab, type: 3}
+    outputName: 
+    findHitFrame: 0
+    hitFrameOverride: -1
+  - bake: 1
+    clip: {fileID: 8716492398999915444, guid: 2c0accddfe5cb2c4c87fa4cbc2f4fcab, type: 3}
+    outputName: 
+    findHitFrame: 1
+    hitFrameOverride: -1
+  - bake: 1
+    clip: {fileID: -2044582983327672346, guid: 2c0accddfe5cb2c4c87fa4cbc2f4fcab, type: 3}
+    outputName: 
+    findHitFrame: 1
+    hitFrameOverride: -1
+  - bake: 1
+    clip: {fileID: -8061687084165900903, guid: 2c0accddfe5cb2c4c87fa4cbc2f4fcab, type: 3}
+    outputName: 
+    findHitFrame: 1
+    hitFrameOverride: -1
+  - bake: 1
+    clip: {fileID: -7192042517891519836, guid: 2c0accddfe5cb2c4c87fa4cbc2f4fcab, type: 3}
+    outputName: 
+    findHitFrame: 0
+    hitFrameOverride: -1
+  - bake: 1
+    clip: {fileID: 937510309337268382, guid: 2c0accddfe5cb2c4c87fa4cbc2f4fcab, type: 3}
+    outputName: 
+    findHitFrame: 0
+    hitFrameOverride: -1
+  - bake: 1
+    clip: {fileID: -7816163768055700239, guid: 2c0accddfe5cb2c4c87fa4cbc2f4fcab, type: 3}
+    outputName: 
+    findHitFrame: 1
+    hitFrameOverride: -1
+  - bake: 1
+    clip: {fileID: -5566208886993524023, guid: 2c0accddfe5cb2c4c87fa4cbc2f4fcab, type: 3}
+    outputName: 
+    findHitFrame: 0
+    hitFrameOverride: -1
+  yawToFront: 45
+  pitch: 30
+  pixelsPerMeter: 54
+  frameWidth: 192
+  frameHeight: 144
+  groundPixel: 9
+  fps: 24
+  maxFrames: 240
+  autoExpandFrame: 1
+  flipY: 0
+  lightFromScreen: {x: -0.5, y: 0.8, z: 0.6}
+  litThreshold: 0.35
+  midThreshold: -0.15
+  midBrightness: 0.82
+  shadowBrightness: 0.62
+  palette: {fileID: 0}
+  outline: 1
+  outlineColor: {r: 0.101960786, g: 0.07058824, b: 0.11764706, a: 1}
+  autoPalette: 1
+  autoPaletteColors: 24
+  superSample: 4
+  textureMipBias: 2
+  hideTinyPartsPixels: 1.5
+  snapToPixel: 1
+  flickerFilter: 1
+  flickerMaxSpeed: 4
+  directPlayback: 1
+  groundFromFirstFrame: 1
+  layers:
+  - name: sword
+    isShield: 0
+    prefab: {fileID: 919132149155446097, guid: a6a0af5e3c2cfc047942ea6286cd424c, type: 3}
+    boneName: hand_r
+    bladeMode: 1
+    flipGrip: 0
+    extraPosition: {x: 0, y: 0, z: 0}
+    extraRotation: {x: 0, y: 0, z: 0}
+    scale: 1
+    strikePoint: 1
+  - name: falchion
+    isShield: 0
+    prefab: {fileID: 919132149155446097, guid: 33ab65bea25cbc04d85f1bd0ec982865, type: 3}
+    boneName: hand_r
+    bladeMode: 1
+    flipGrip: 0
+    extraPosition: {x: 0, y: 0, z: 0}
+    extraRotation: {x: 0, y: 0, z: 0}
+    scale: 1
+    strikePoint: 0
+  - name: messer
+    isShield: 0
+    prefab: {fileID: 919132149155446097, guid: eec4f502ccabf8340b1d8412948a2fbf, type: 3}
+    boneName: hand_r
+    bladeMode: 1
+    flipGrip: 0
+    extraPosition: {x: 0, y: 0, z: 0}
+    extraRotation: {x: 0, y: 0, z: 0}
+    scale: 1
+    strikePoint: 0
+  - name: dagger
+    isShield: 0
+    prefab: {fileID: 919132149155446097, guid: 9a9538f650fa94741b25a23446df1a31, type: 3}
+    boneName: hand_r
+    bladeMode: 1
+    flipGrip: 0
+    extraPosition: {x: 0, y: 0, z: 0}
+    extraRotation: {x: 0, y: 0, z: 0}
+    scale: 1
+    strikePoint: 0
+  - name: arming_sword
+    isShield: 0
+    prefab: {fileID: 919132149155446097, guid: 9a7a5063e26379b43bc0e3ec02e40264, type: 3}
+    boneName: hand_r
+    bladeMode: 1
+    flipGrip: 0
+    extraPosition: {x: 0, y: 0, z: 0}
+    extraRotation: {x: 0, y: 0, z: 0}
+    scale: 1
+    strikePoint: 0
+  - name: shield_a
+    isShield: 1
+    prefab: {fileID: 919132149155446097, guid: 8ae3387ad4528d74f9d51716683df92d, type: 3}
+    boneName: lowerarm_l
+    bladeMode: 0
+    flipGrip: 0
+    extraPosition: {x: 0, y: 0, z: 0}
+    extraRotation: {x: 0, y: 0, z: 0}
+    scale: 1
+    strikePoint: 0
+  layerClipPrefixes:
+  - Sword_
+  - Idle_Shield
+  - Shield_
+  - Hit_
+  layerPaletteColors: 12
+  paletteSwap: 1
+  skinColors: 5
+  clothColors: 6
+  leatherColors: 6
+  metalColors: 4
+  darkColors: 3
+  outputFolder: Assets/Art/characters/ranger_ual2_iso_x1_5
+  spritePixelsPerUnit: 64

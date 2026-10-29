@@ -1,0 +1,2424 @@
+fileFormatVersion: 2
+guid: 2eafc5e4d8143e84a913d919509f515b
+TextureImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 64
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 3
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 8192
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: sword_heavy_combo_00
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 528
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c5640174a1fb17b499e8adf88961a740
+      internalID: 3532464701370642947
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_01
+      rect:
+        serializedVersion: 2
+        x: 240
+        y: 528
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 70a5cd8ed671ad94896c65ec1a2463ed
+      internalID: -2084333315816507954
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_02
+      rect:
+        serializedVersion: 2
+        x: 480
+        y: 528
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4967e240a99847748bb9e29aefb56bed
+      internalID: -3991215254882474662
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_03
+      rect:
+        serializedVersion: 2
+        x: 720
+        y: 528
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7a2a6cbbcd3de754ba83c03ee28d6013
+      internalID: 4321788607199975309
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_04
+      rect:
+        serializedVersion: 2
+        x: 960
+        y: 528
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3db3caf008909db4e97558ba3f14de6f
+      internalID: -4286636161711044680
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_05
+      rect:
+        serializedVersion: 2
+        x: 1200
+        y: 528
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8349fd19194a3394a86258f6c974c97e
+      internalID: 7848552446154412951
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_06
+      rect:
+        serializedVersion: 2
+        x: 1440
+        y: 528
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cef21b53dcdc15641b1ae774c23a1b2f
+      internalID: 605323095278193565
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_07
+      rect:
+        serializedVersion: 2
+        x: 1680
+        y: 528
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ca8f9748e1f86e54e89ab51f4e92f92d
+      internalID: -7890108294674189938
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_08
+      rect:
+        serializedVersion: 2
+        x: 1920
+        y: 528
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 40b050bf1409a69468ef1bacb4f2e698
+      internalID: -483494969547651627
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_09
+      rect:
+        serializedVersion: 2
+        x: 2160
+        y: 528
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5642fe35a432ea448bd0613a5e924773
+      internalID: 8162396556338819653
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_10
+      rect:
+        serializedVersion: 2
+        x: 2400
+        y: 528
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 267b60c2eccf10440b9c6e3185b5a67e
+      internalID: 3235202109661189197
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_11
+      rect:
+        serializedVersion: 2
+        x: 2640
+        y: 528
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1d578c981d00f814e85400ba8ca3a37f
+      internalID: 8878482483866009081
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_12
+      rect:
+        serializedVersion: 2
+        x: 2880
+        y: 528
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 43ff7e83745082244964434d6eb1418b
+      internalID: -7790512795484044565
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_13
+      rect:
+        serializedVersion: 2
+        x: 3120
+        y: 528
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7f07047fd21debb4799ace7ba9a7c834
+      internalID: -2119753566799707195
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_14
+      rect:
+        serializedVersion: 2
+        x: 3360
+        y: 528
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4b14b1758baed184ea48790d97a1799c
+      internalID: -2665113414015685569
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_15
+      rect:
+        serializedVersion: 2
+        x: 3600
+        y: 528
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 42deef2f6e22195438cc58f6a7ca520c
+      internalID: -302997253686958439
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_16
+      rect:
+        serializedVersion: 2
+        x: 3840
+        y: 528
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 842f5d112f9363e4b87049a6c45bea61
+      internalID: 5533976208617481457
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_17
+      rect:
+        serializedVersion: 2
+        x: 4080
+        y: 528
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: be6ba682fdb9b0249a8e2a2a12dfe5a4
+      internalID: 4054505612444346906
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_18
+      rect:
+        serializedVersion: 2
+        x: 4320
+        y: 528
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4984977c80594d449a9e371f4df52577
+      internalID: 3147210970214142487
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_19
+      rect:
+        serializedVersion: 2
+        x: 4560
+        y: 528
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1c0af20cb5af222408db90e714efb018
+      internalID: -1486230029552811599
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_20
+      rect:
+        serializedVersion: 2
+        x: 4800
+        y: 528
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f0353aab4452b9949a82435702744385
+      internalID: -6984085862791810087
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_21
+      rect:
+        serializedVersion: 2
+        x: 5040
+        y: 528
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f8f8e5d014b541f4fb8acc27697115a7
+      internalID: 3491126141849786345
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_22
+      rect:
+        serializedVersion: 2
+        x: 5280
+        y: 528
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b5164fa1a83770441beb348213fda8f0
+      internalID: 5313784553214192042
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_23
+      rect:
+        serializedVersion: 2
+        x: 5520
+        y: 528
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 46d10392b4f57494e98e4d2ffab78f43
+      internalID: 1697705373948476013
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_24
+      rect:
+        serializedVersion: 2
+        x: 5760
+        y: 528
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7e07853119ced4a4dad200ec0a4d5e62
+      internalID: 7228602491931671491
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_25
+      rect:
+        serializedVersion: 2
+        x: 6000
+        y: 528
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5d6a4c10a64ee8a47a0cad09ed9142b1
+      internalID: -4904009230864671476
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_26
+      rect:
+        serializedVersion: 2
+        x: 6240
+        y: 528
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 45ba1ae372b802441ab69ed69ccda033
+      internalID: 7149831735687850379
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_27
+      rect:
+        serializedVersion: 2
+        x: 6480
+        y: 528
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7361b67373dd72c43a4be74d1878d1b6
+      internalID: -5084546671976624919
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_28
+      rect:
+        serializedVersion: 2
+        x: 6720
+        y: 528
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e0f55750df763ff41b2836eada255336
+      internalID: 2696904028976055060
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_29
+      rect:
+        serializedVersion: 2
+        x: 6960
+        y: 528
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 51a8fb896449d934398a8e7baf10a93c
+      internalID: 5580778407998996864
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_30
+      rect:
+        serializedVersion: 2
+        x: 7200
+        y: 528
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 90182d287ff8fe844a3d3aa544c14f82
+      internalID: -8275179159839872368
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_31
+      rect:
+        serializedVersion: 2
+        x: 7440
+        y: 528
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a84fdb2884ecdfa46afd467c8e4eb76b
+      internalID: 4361379199203253945
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_32
+      rect:
+        serializedVersion: 2
+        x: 7680
+        y: 528
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 62f6373229587d94c87d6faac93849de
+      internalID: 2147159500327701100
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_33
+      rect:
+        serializedVersion: 2
+        x: 7920
+        y: 528
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ae65cc97d0dd20b4eb9d73ace0a539fc
+      internalID: -3428947266561730043
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_34
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 352
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: de645764f6128cb4a8520aacc7b8248a
+      internalID: 3933699885360401312
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_35
+      rect:
+        serializedVersion: 2
+        x: 240
+        y: 352
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ed9530977340fb540a2b4456f4932e83
+      internalID: 2887498143276048843
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_36
+      rect:
+        serializedVersion: 2
+        x: 480
+        y: 352
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fd1774acfde703c4bb951285b1f30258
+      internalID: 5658788162264305790
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_37
+      rect:
+        serializedVersion: 2
+        x: 720
+        y: 352
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a1b4cad5dc0ccd246883139540620bc2
+      internalID: 1339790663039792148
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_38
+      rect:
+        serializedVersion: 2
+        x: 960
+        y: 352
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: bff2a99c66a13a34794088d8bad933ce
+      internalID: 6236600835244440768
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_39
+      rect:
+        serializedVersion: 2
+        x: 1200
+        y: 352
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0dd1afbaef3491948b81d2805d5d7c9d
+      internalID: 288947959903440218
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_40
+      rect:
+        serializedVersion: 2
+        x: 1440
+        y: 352
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cda3b2716e197034989492af7f5b2656
+      internalID: 6973103610833665385
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_41
+      rect:
+        serializedVersion: 2
+        x: 1680
+        y: 352
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8cb4e1f88dc9dd949b6eb095ea0aafdd
+      internalID: -963829551115327903
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_42
+      rect:
+        serializedVersion: 2
+        x: 1920
+        y: 352
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f7c4462f2b7122d469810ea671743bb4
+      internalID: 4405089666824999128
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_43
+      rect:
+        serializedVersion: 2
+        x: 2160
+        y: 352
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8cef47bc9393cf546828b4d465d76575
+      internalID: 336045669219568006
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_44
+      rect:
+        serializedVersion: 2
+        x: 2400
+        y: 352
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8a6f76ce737f43c4c9301c3173ce6a3e
+      internalID: 7646089273373729591
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_45
+      rect:
+        serializedVersion: 2
+        x: 2640
+        y: 352
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 147bbd4963150f64692628847823704d
+      internalID: -8100763744350519490
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_46
+      rect:
+        serializedVersion: 2
+        x: 2880
+        y: 352
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 80ee3ab0aeb347a4dac9682e73f9b662
+      internalID: 216348741656056141
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_47
+      rect:
+        serializedVersion: 2
+        x: 3120
+        y: 352
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 576df91e04330b84da67bf0516779316
+      internalID: -2834717152834423656
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_48
+      rect:
+        serializedVersion: 2
+        x: 3360
+        y: 352
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 550d2194a24e77a4585f17be6d638e87
+      internalID: 6510769073785661848
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_49
+      rect:
+        serializedVersion: 2
+        x: 3600
+        y: 352
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8326238cd341ff649a07840ec691a94d
+      internalID: 6377350980591591582
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_50
+      rect:
+        serializedVersion: 2
+        x: 3840
+        y: 352
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 783a1a534db329f4d97944b20f84ff5b
+      internalID: -693481592640873259
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_51
+      rect:
+        serializedVersion: 2
+        x: 4080
+        y: 352
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d235c3f8769e11543a82b17e5f2b7d33
+      internalID: 7791349865035761866
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_52
+      rect:
+        serializedVersion: 2
+        x: 4320
+        y: 352
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 703a37af56ba59f4585dd0dc41f51dca
+      internalID: -2517336663133725884
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_53
+      rect:
+        serializedVersion: 2
+        x: 4560
+        y: 352
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c2a9d6ee278ffea4895ca6138e8c58cf
+      internalID: 1111382025997950172
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_54
+      rect:
+        serializedVersion: 2
+        x: 4800
+        y: 352
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0c43d90a886996549954c38c6375224e
+      internalID: -3141956274616460426
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_55
+      rect:
+        serializedVersion: 2
+        x: 5040
+        y: 352
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cccdd5a573e4ead4289c667ae14cc4d0
+      internalID: 6090633415499678052
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_56
+      rect:
+        serializedVersion: 2
+        x: 5280
+        y: 352
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 992a9fb6de38c184d9fa78ea36bfae0b
+      internalID: 5073816783684875197
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_57
+      rect:
+        serializedVersion: 2
+        x: 5520
+        y: 352
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9ec1a1ead11ba124bb2ecc7206159535
+      internalID: -7904368547897444984
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_58
+      rect:
+        serializedVersion: 2
+        x: 5760
+        y: 352
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: bbee8b6ddc1110347a44eabfdaffc032
+      internalID: -1219896013718405823
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_59
+      rect:
+        serializedVersion: 2
+        x: 6000
+        y: 352
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ef91b5faa2c62ed438e460db6937e90e
+      internalID: -3344176515929465389
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_60
+      rect:
+        serializedVersion: 2
+        x: 6240
+        y: 352
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: bf08aa5087f371d41b0c38c2efa4fc8d
+      internalID: -2523583261518966024
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_61
+      rect:
+        serializedVersion: 2
+        x: 6480
+        y: 352
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c9b6606864223684b8e35de80e30756c
+      internalID: -8159794851427976865
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_62
+      rect:
+        serializedVersion: 2
+        x: 6720
+        y: 352
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f59a299338bcf5247ae2e9331c0df9b2
+      internalID: -4495181990937214432
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_63
+      rect:
+        serializedVersion: 2
+        x: 6960
+        y: 352
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 798d0a03463c08848927cf5bd0da9e2f
+      internalID: 3870076547222599306
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_64
+      rect:
+        serializedVersion: 2
+        x: 7200
+        y: 352
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8a6332bec84a1644793bfbb91fb633be
+      internalID: -3482121048424321645
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_65
+      rect:
+        serializedVersion: 2
+        x: 7440
+        y: 352
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0d02682609a68c942a0f8c4774b612b5
+      internalID: 5954201757432382727
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_66
+      rect:
+        serializedVersion: 2
+        x: 7680
+        y: 352
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c501876d78292ae4bace52d915e13f1e
+      internalID: -4939102123218338852
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_67
+      rect:
+        serializedVersion: 2
+        x: 7920
+        y: 352
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c7a201d3894e4b248af518c6286d80c0
+      internalID: -7549573401686605415
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_68
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 176
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 02958c5ec540b294b8bfa20a1aef7462
+      internalID: -7941655274839100126
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_69
+      rect:
+        serializedVersion: 2
+        x: 240
+        y: 176
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3574fe1893301af48badf0d46c1d1ace
+      internalID: -3867127224006013222
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_70
+      rect:
+        serializedVersion: 2
+        x: 480
+        y: 176
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: dad3061f30b623c47977c782cde1b2e0
+      internalID: -648311908898108477
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_71
+      rect:
+        serializedVersion: 2
+        x: 720
+        y: 176
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0b5c622dc8629554497261ded469241e
+      internalID: 5022227036068501915
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_72
+      rect:
+        serializedVersion: 2
+        x: 960
+        y: 176
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4bf7a6c19dba5694b899aae0bb09bb8d
+      internalID: 770113996280378632
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_73
+      rect:
+        serializedVersion: 2
+        x: 1200
+        y: 176
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 938c026ec2a1a5c4f8359c5a2480d352
+      internalID: 5573672358302063023
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_74
+      rect:
+        serializedVersion: 2
+        x: 1440
+        y: 176
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 11a9a50cf4627434f891d1893abc8898
+      internalID: -3538560013222713295
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_75
+      rect:
+        serializedVersion: 2
+        x: 1680
+        y: 176
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a6109f0837e982d418f398a6ba54fb24
+      internalID: -3427721819932826680
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_76
+      rect:
+        serializedVersion: 2
+        x: 1920
+        y: 176
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 91aa9247b6599ea47bd018d8ea3a303f
+      internalID: 3171825167543822888
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_77
+      rect:
+        serializedVersion: 2
+        x: 2160
+        y: 176
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6a649739e72b8074c80a15cfa293b8e8
+      internalID: 2955155505813959536
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_78
+      rect:
+        serializedVersion: 2
+        x: 2400
+        y: 176
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3e5f94a855f4ded459058abcbcca1b3d
+      internalID: 5623674712782073835
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_79
+      rect:
+        serializedVersion: 2
+        x: 2640
+        y: 176
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 64a20471674a5e94fbbdf5311a24ebc2
+      internalID: 7175908066226239726
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_80
+      rect:
+        serializedVersion: 2
+        x: 2880
+        y: 176
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8345269443b045b4a93bab1a426c4843
+      internalID: -5671799448868670312
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_81
+      rect:
+        serializedVersion: 2
+        x: 3120
+        y: 176
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f3c776eff0a875f45bad1cdfd7025ca7
+      internalID: 3052757189584503147
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_82
+      rect:
+        serializedVersion: 2
+        x: 3360
+        y: 176
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 546c2afdde6fcb34f8f3f8d07612b136
+      internalID: -2978809846614644407
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_83
+      rect:
+        serializedVersion: 2
+        x: 3600
+        y: 176
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3269c981f13a37647985f123621e6412
+      internalID: 3293452651372139116
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_84
+      rect:
+        serializedVersion: 2
+        x: 3840
+        y: 176
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 31aa877d5b2dec940994ddb00e1cc922
+      internalID: -8475638504004909151
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_85
+      rect:
+        serializedVersion: 2
+        x: 4080
+        y: 176
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e3c8d120b63479c4b8d0c9b37656a6c7
+      internalID: -3729697461514533137
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_86
+      rect:
+        serializedVersion: 2
+        x: 4320
+        y: 176
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9c84d716206ed454783cb14316909503
+      internalID: 4622676323104783112
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_87
+      rect:
+        serializedVersion: 2
+        x: 4560
+        y: 176
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 32096c7270be49b45bc44de57c26a671
+      internalID: -5458306759406183851
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_88
+      rect:
+        serializedVersion: 2
+        x: 4800
+        y: 176
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ad9e24a3c6ba99a40992f965574979ad
+      internalID: -1893870890471633211
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_89
+      rect:
+        serializedVersion: 2
+        x: 5040
+        y: 176
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 18d5891137ae3634ab4e5d41d83ea024
+      internalID: -6312271792591798024
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_90
+      rect:
+        serializedVersion: 2
+        x: 5280
+        y: 176
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f767210ba55c17141931d778ae8e61b4
+      internalID: 8975229513115486206
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_91
+      rect:
+        serializedVersion: 2
+        x: 5520
+        y: 176
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ca57977e85efa08479ae33509177953b
+      internalID: 3192781144170012291
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_92
+      rect:
+        serializedVersion: 2
+        x: 5760
+        y: 176
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ec3aafbaa0290ff45a4c74bb42a67734
+      internalID: -6139753392652789300
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_93
+      rect:
+        serializedVersion: 2
+        x: 6000
+        y: 176
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 53ceea78bcfc6ba4885980d0016a5fda
+      internalID: 2043095391777638354
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_94
+      rect:
+        serializedVersion: 2
+        x: 6240
+        y: 176
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1620cda0b94b5384dbe2b8906b7197c7
+      internalID: 8439966527206986103
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_95
+      rect:
+        serializedVersion: 2
+        x: 6480
+        y: 176
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fbd455312ac45824784c3fb27b5966db
+      internalID: 2463504094127689299
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_96
+      rect:
+        serializedVersion: 2
+        x: 6720
+        y: 176
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1a66e2c6982f8ac47bba26d2e866d974
+      internalID: 3703906570457411984
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_97
+      rect:
+        serializedVersion: 2
+        x: 6960
+        y: 176
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 118c8a4c0ff1312448ef56f0eccf5c02
+      internalID: 3307691663302981356
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_98
+      rect:
+        serializedVersion: 2
+        x: 7200
+        y: 176
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ec3b511ea6c16b54fa47442f057f7916
+      internalID: -8216021876762593658
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_99
+      rect:
+        serializedVersion: 2
+        x: 7440
+        y: 176
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ac5c59d6ac775e0429aa3e3850d789db
+      internalID: 1593769984482795145
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_100
+      rect:
+        serializedVersion: 2
+        x: 7680
+        y: 176
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 74d6469862d005d43a0f3a0e3289393c
+      internalID: -3056360040547375043
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_101
+      rect:
+        serializedVersion: 2
+        x: 7920
+        y: 176
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: bc554ddf118f0aa4a9a624082f6883c9
+      internalID: -3962113770792944190
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_102
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 82b6c4df6ebef4a4798e667890fdc062
+      internalID: 5620078094785375801
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_103
+      rect:
+        serializedVersion: 2
+        x: 240
+        y: 0
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 97a902f6a249a4d438e3342c7d4e8745
+      internalID: -4378163785038748774
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sword_heavy_combo_104
+      rect:
+        serializedVersion: 2
+        x: 480
+        y: 0
+        width: 240
+        height: 176
+      alignment: 9
+      pivot: {x: 0.45833334, y: 0.17045455}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5fedb66cdcac56149b84104a0e9baa53
+      internalID: 6723414005217418331
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    nameFileIdTable:
+      sword_heavy_combo_00: 3532464701370642947
+      sword_heavy_combo_01: -2084333315816507954
+      sword_heavy_combo_02: -3991215254882474662
+      sword_heavy_combo_03: 4321788607199975309
+      sword_heavy_combo_04: -4286636161711044680
+      sword_heavy_combo_05: 7848552446154412951
+      sword_heavy_combo_06: 605323095278193565
+      sword_heavy_combo_07: -7890108294674189938
+      sword_heavy_combo_08: -483494969547651627
+      sword_heavy_combo_09: 8162396556338819653
+      sword_heavy_combo_10: 3235202109661189197
+      sword_heavy_combo_100: -3056360040547375043
+      sword_heavy_combo_101: -3962113770792944190
+      sword_heavy_combo_102: 5620078094785375801
+      sword_heavy_combo_103: -4378163785038748774
+      sword_heavy_combo_104: 6723414005217418331
+      sword_heavy_combo_11: 8878482483866009081
+      sword_heavy_combo_12: -7790512795484044565
+      sword_heavy_combo_13: -2119753566799707195
+      sword_heavy_combo_14: -2665113414015685569
+      sword_heavy_combo_15: -302997253686958439
+      sword_heavy_combo_16: 5533976208617481457
+      sword_heavy_combo_17: 4054505612444346906
+      sword_heavy_combo_18: 3147210970214142487
+      sword_heavy_combo_19: -1486230029552811599
+      sword_heavy_combo_20: -6984085862791810087
+      sword_heavy_combo_21: 3491126141849786345
+      sword_heavy_combo_22: 5313784553214192042
+      sword_heavy_combo_23: 1697705373948476013
+      sword_heavy_combo_24: 7228602491931671491
+      sword_heavy_combo_25: -4904009230864671476
+      sword_heavy_combo_26: 7149831735687850379
+      sword_heavy_combo_27: -5084546671976624919
+      sword_heavy_combo_28: 2696904028976055060
+      sword_heavy_combo_29: 5580778407998996864
+      sword_heavy_combo_30: -8275179159839872368
+      sword_heavy_combo_31: 4361379199203253945
+      sword_heavy_combo_32: 2147159500327701100
+      sword_heavy_combo_33: -3428947266561730043
+      sword_heavy_combo_34: 3933699885360401312
+      sword_heavy_combo_35: 2887498143276048843
+      sword_heavy_combo_36: 5658788162264305790
+      sword_heavy_combo_37: 1339790663039792148
+      sword_heavy_combo_38: 6236600835244440768
+      sword_heavy_combo_39: 288947959903440218
+      sword_heavy_combo_40: 6973103610833665385
+      sword_heavy_combo_41: -963829551115327903
+      sword_heavy_combo_42: 4405089666824999128
+      sword_heavy_combo_43: 336045669219568006
+      sword_heavy_combo_44: 7646089273373729591
+      sword_heavy_combo_45: -8100763744350519490
+      sword_heavy_combo_46: 216348741656056141
+      sword_heavy_combo_47: -2834717152834423656
+      sword_heavy_combo_48: 6510769073785661848
+      sword_heavy_combo_49: 6377350980591591582
+      sword_heavy_combo_50: -693481592640873259
+      sword_heavy_combo_51: 7791349865035761866
+      sword_heavy_combo_52: -2517336663133725884
+      sword_heavy_combo_53: 1111382025997950172
+      sword_heavy_combo_54: -3141956274616460426
+      sword_heavy_combo_55: 6090633415499678052
+      sword_heavy_combo_56: 5073816783684875197
+      sword_heavy_combo_57: -7904368547897444984
+      sword_heavy_combo_58: -1219896013718405823
+      sword_heavy_combo_59: -3344176515929465389
+      sword_heavy_combo_60: -2523583261518966024
+      sword_heavy_combo_61: -8159794851427976865
+      sword_heavy_combo_62: -4495181990937214432
+      sword_heavy_combo_63: 3870076547222599306
+      sword_heavy_combo_64: -3482121048424321645
+      sword_heavy_combo_65: 5954201757432382727
+      sword_heavy_combo_66: -4939102123218338852
+      sword_heavy_combo_67: -7549573401686605415
+      sword_heavy_combo_68: -7941655274839100126
+      sword_heavy_combo_69: -3867127224006013222
+      sword_heavy_combo_70: -648311908898108477
+      sword_heavy_combo_71: 5022227036068501915
+      sword_heavy_combo_72: 770113996280378632
+      sword_heavy_combo_73: 5573672358302063023
+      sword_heavy_combo_74: -3538560013222713295
+      sword_heavy_combo_75: -3427721819932826680
+      sword_heavy_combo_76: 3171825167543822888
+      sword_heavy_combo_77: 2955155505813959536
+      sword_heavy_combo_78: 5623674712782073835
+      sword_heavy_combo_79: 7175908066226239726
+      sword_heavy_combo_80: -5671799448868670312
+      sword_heavy_combo_81: 3052757189584503147
+      sword_heavy_combo_82: -2978809846614644407
+      sword_heavy_combo_83: 3293452651372139116
+      sword_heavy_combo_84: -8475638504004909151
+      sword_heavy_combo_85: -3729697461514533137
+      sword_heavy_combo_86: 4622676323104783112
+      sword_heavy_combo_87: -5458306759406183851
+      sword_heavy_combo_88: -1893870890471633211
+      sword_heavy_combo_89: -6312271792591798024
+      sword_heavy_combo_90: 8975229513115486206
+      sword_heavy_combo_91: 3192781144170012291
+      sword_heavy_combo_92: -6139753392652789300
+      sword_heavy_combo_93: 2043095391777638354
+      sword_heavy_combo_94: 8439966527206986103
+      sword_heavy_combo_95: 2463504094127689299
+      sword_heavy_combo_96: 3703906570457411984
+      sword_heavy_combo_97: 3307691663302981356
+      sword_heavy_combo_98: -8216021876762593658
+      sword_heavy_combo_99: 1593769984482795145
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

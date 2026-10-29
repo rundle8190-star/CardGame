@@ -6,9 +6,9 @@ using UnityEngine;
 namespace CardGame.EditorTools
 {
     /// <summary>
-    /// 받아 둔 에셋으로 테스트용 굽기 설정 두 개를 자동으로 만든다.
-    ///  - test_sword_shield : 레인저 옷 + 한손검 + 임시 방패 + 검방패 모션
-    ///  - test_axe          : 농부 옷 + 수염 + 도끼 + 도끼 모션
+    /// 받아 둔 에셋으로 테스트용 굽기 설정을 자동으로 만든다. (Mixamo 모션은 2026-10-29에 폐기)
+    ///  - ranger_ual_x1_5 / ranger_ual_iso_x1_5   : 레인저 + UAL1 모션 전부 (검·임시 방패 함께 그림)
+    ///  - ranger_ual2_x1_5 / ranger_ual2_iso_x1_5 : 레인저 + UAL2 전투 모션. 몸과 무기(한손검 5종, 방패)를 따로 굽고 부위별 색 교체 팔레트를 만든다.
     /// </summary>
     public static class CharacterBakeTestSetups
     {
@@ -16,116 +16,99 @@ namespace CardGame.EditorTools
         const string SetupFolder = A + "BakeSetups";
 
         const string UAL = A + "Animations/UAL/UAL1_Standard.fbx";
-        const string SS = A + "Animations/Mixamo/SwordShield/";
-        const string AXE = A + "Animations/Mixamo/Axe/";
-        const string SINGLE = A + "Animations/Mixamo/Singles/X Bot@";
         // UAL을 Generic(리타깃 없음)으로 가져온 사본. 원본(휴머노이드)은 기존 설정이 쓰므로 그대로 둔다.
         const string UAL_GENERIC_DIR = A + "Animations/UAL_Generic";
         const string UAL_GENERIC = UAL_GENERIC_DIR + "/UAL1_Standard_Generic.fbx";
         static readonly string[] UalAttacks = { "Sword_Attack", "Punch_Cross", "Punch_Jab" };
 
+        const string UAL2 = A + "Animations/UAL2/UAL2_Standard.fbx";
+        const string UAL2_GENERIC = UAL_GENERIC_DIR + "/UAL2_Standard_Generic.fbx";
+        const string MW = A + "Weapons/Medieval/";
+        // UAL2에서 굽는 전투 모션 (true = 공격이라 타격 프레임을 찾는다). Sword_Regular_C_Rec 는 파일에 없다.
+        static readonly (string name, bool attack)[] Ual2Clips =
+        {
+            ("Sword_Regular_A", true), ("Sword_Regular_A_Rec", false),
+            ("Sword_Regular_B", true), ("Sword_Regular_B_Rec", false),
+            ("Sword_Regular_C", true),
+            ("Sword_Regular_Combo", true), ("Sword_Heavy_Combo", true),
+            ("Sword_Block", false), ("Sword_Dash", true),
+            ("Idle_Shield_Loop", false), ("Idle_Shield_Break", false),
+            ("Shield_Dash", true), ("Shield_OneShot", true),
+            ("Melee_Hook", true), ("Melee_Hook_Rec", false),
+            ("Hit_Knockback", false), ("OverhandThrow", true), ("Consume", false),
+        };
+        // 예전 Mixamo 모션을 쓰던 설정 (파일이 지워져서 빈 껍데기). 만들 때 휴지통으로 옮긴다.
+        static readonly string[] MixamoSetups = { "ranger_x1_5", "ranger_iso_x1_5", "ranger_x2", "test_sword_shield", "test_axe" };
+
         public static CharacterBakeSetup[] CreateAll()
         {
             var missing = new List<string>();
-            var r15 = Ranger("ranger_x1_5", 1.5f, false, missing);
-            var iso = Ranger("ranger_iso_x1_5", 1.5f, true, missing);
-            var a = SwordShield(missing);
-            var b = Axe(missing);
+            RemoveMixamoSetups();
             var u = UalRanger("ranger_ual_x1_5", false, missing);
             var ui = UalRanger("ranger_ual_iso_x1_5", true, missing);
+            var u2 = Ual2Ranger("ranger_ual2_x1_5", false, missing);
+            var u2i = Ual2Ranger("ranger_ual2_iso_x1_5", true, missing);
             AssetDatabase.SaveAssets();
             if (missing.Count > 0)
                 Debug.LogWarning("[캐릭터 굽기] 찾지 못한 파일/모션 (건너뜀):\n" + string.Join("\n", missing));
-            return new[] { r15, iso, a, b, u, ui };
+            return new[] { u, ui, u2, u2i };
         }
 
-        static CharacterBakeSetup SwordShield(List<string> missing)
+        /// <summary>Mixamo 모션을 쓰던 굽기 설정을 휴지통으로 옮긴다 (git 첫 기록 c808919 에 남아 있다).</summary>
+        static void RemoveMixamoSetups()
         {
-            var s = NewSetup("test_sword_shield");
-            s.baseModel = Load<GameObject>(A + "Characters/Base/Superhero_Male_FullBody.fbx", missing);
-            AddPart(s, A + "Characters/Outfits/Male_Ranger.fbx", missing); // 두건이 있어서 머리카락은 뺐다
-            s.weapon.prefab = Load<GameObject>(A + "Weapons/Arming_Sword.fbx", missing);
-            s.shield.useTempShield = true;
-            s.outputFolder = "Assets/Art/characters/test_sword_shield";
+            foreach (var n in MixamoSetups)
+            {
+                string path = $"{SetupFolder}/{n}.asset";
+                if (AssetDatabase.LoadAssetAtPath<CharacterBakeSetup>(path) == null) continue;
+                if (AssetDatabase.MoveAssetToTrash(path)) Debug.Log($"[캐릭터 굽기] Mixamo 설정 정리: {path} → 휴지통");
+            }
+        }
 
-            AddClip(s, UAL, "Sword_Idle", false, missing);
-            AddClip(s, UAL, "Sword_Attack", true, missing);
-            AddClip(s, UAL, "Hit_Chest", false, missing);
-            AddClip(s, UAL, "Death01", false, missing);
-            AddClip(s, SS + "sword and shield idle.fbx", null, false, missing);
-            AddClip(s, SS + "sword and shield slash.fbx", null, true, missing, 7); // 눈으로 확인한 타격 프레임
-            AddClip(s, SS + "sword and shield slash (2).fbx", null, true, missing, 8);
-            AddClip(s, SS + "sword and shield attack.fbx", null, true, missing);
-            AddClip(s, SS + "sword and shield block.fbx", null, false, missing);
-            AddClip(s, SS + "sword and shield impact.fbx", null, false, missing);
-            AddClip(s, SS + "sword and shield death.fbx", null, false, missing);
-            AddClip(s, SINGLE + "One Hand Sword Combo.fbx", null, true, missing, 36);
-            AddClip(s, SINGLE + "Standing Dodge Backward.fbx", null, false, missing);
-            Save(s);
-            return s;
+        [MenuItem("CardGame/캐릭터 굽기/UAL2 무기 레이어·색 교체 테스트 굽기 (옆+아이소)")]
+        static void BakeUal2Test()
+        {
+            var missing = new List<string>();
+            RemoveMixamoSetups();
+            var a = Ual2Ranger("ranger_ual2_x1_5", false, missing);
+            var b = Ual2Ranger("ranger_ual2_iso_x1_5", true, missing);
+            AssetDatabase.SaveAssets();
+            if (missing.Count > 0) Debug.LogWarning("[캐릭터 굽기] 찾지 못한 파일/모션 (건너뜀):\n" + string.Join("\n", missing));
+            var t0 = EditorApplication.timeSinceStartup;
+            CharacterBaker.BakeAll(a);
+            CharacterBaker.BakeAll(b);
+            Debug.Log($"[캐릭터 굽기] UAL2 테스트 굽기 끝 ({EditorApplication.timeSinceStartup - t0:0}초)");
         }
 
         /// <summary>
-        /// 레인저 + 한손검 + 임시 방패, 받아 둔 검방패 모션 전부 (제자리 돌기 4개는 뺌: 횡스크롤에서는 좌우 반전으로 대신한다).
-        /// size: 기본(1미터 36px) 대비 도트 크기 배율. 1.5면 키 약 96px, 2면 약 130px.
+        /// 레인저 + UAL2 전투 모션. 무기는 몸 시트에 그리지 않고 레이어로 따로 굽는다.
+        /// 무기마다 손잡이 잡는 법(그립)은 여기서 한 번만 정한다.
         /// </summary>
-        static CharacterBakeSetup Ranger(string name, float size, bool isometric, List<string> missing)
+        static CharacterBakeSetup Ual2Ranger(string name, bool isometric, List<string> missing)
         {
+            EnsureGeneric(UAL2, UAL2_GENERIC);
             var s = NewSetup(name);
-            s.fps = 24; // 12fps는 끊겨 보여서 두 배로
-            if (isometric)
+            UalCommon(s, name, isometric, missing);
+            // 몸 시트에는 무기·방패 없음
+            s.weapon = new CharacterBakeSetup.WeaponSlot();
+            s.shield = new CharacterBakeSetup.ShieldSlot();
+            s.paletteSwap = true;
+            s.autoPaletteColors = 24;
+            s.layerClipPrefixes.AddRange(new[] { "Sword_", "Idle_Shield", "Shield_", "Hit_" });
+            void W(string layer, string path, bool strike = false)
             {
-                // 2.5D 쿼터뷰: 위에서 30도, 옆에서 45도 돌려 캐릭터가 화면 오른쪽 아래를 본다 (바닥 마름모가 2:1)
-                s.yawToFront = 45f;
-                s.pitch = 30f;
+                var go = Load<GameObject>(path, missing);
+                if (go != null) s.layers.Add(new CharacterBakeSetup.LayerItem { name = layer, prefab = go, boneName = "hand_r", bladeMode = 1, strikePoint = strike });
             }
-            s.baseModel = Load<GameObject>(A + "Characters/Base/Superhero_Male_FullBody.fbx", missing);
-            AddPart(s, A + "Characters/Outfits/Male_Ranger.fbx", missing);
-            s.weapon.prefab = Load<GameObject>(A + "Weapons/Arming_Sword.fbx", missing);
-            s.shield.useTempShield = true;
-            s.outputFolder = "Assets/Art/characters/" + name;
-            s.pixelsPerMeter = Mathf.Round(36f * size);
-            s.frameWidth = Mathf.RoundToInt(128 * size / 8f) * 8;
-            s.frameHeight = Mathf.RoundToInt(96 * size / 8f) * 8;
-            s.groundPixel = Mathf.RoundToInt(6 * size);
-            s.maxFrames = 240;
+            W("sword", MW + "Swords/Sword.fbx", true);
+            W("falchion", MW + "Swords/Falchion.fbx");
+            W("messer", MW + "Swords/Messer.fbx");
+            W("dagger", MW + "Swords/Dagger.fbx");
+            W("arming_sword", A + "Weapons/Arming_Sword.fbx");
+            var sh = Load<GameObject>(MW + "Shields/Shield A.fbx", missing);
+            if (sh != null) s.layers.Add(new CharacterBakeSetup.LayerItem { name = "shield_a", isShield = true, prefab = sh, boneName = "lowerarm_l" });
 
-            // 기존 Quaternius 검 모션
-            AddClip(s, UAL, "Sword_Idle", false, missing);
-            AddClip(s, UAL, "Sword_Attack", true, missing);
-            AddClip(s, UAL, "Hit_Chest", false, missing);
-            AddClip(s, UAL, "Death01", false, missing);
-
-            // Mixamo 검방패 팩
-            string[] idle = { "idle", "idle (2)", "idle (3)", "idle (4)" };
-            foreach (var n in idle) SS_(s, n, false, missing);
-            SS_(s, "attack", true, missing);
-            SS_(s, "attack (2)", true, missing);
-            SS_(s, "attack (3)", true, missing);
-            SS_(s, "attack (4)", true, missing);
-            SS_(s, "slash", true, missing, 7);   // 눈으로 확인한 타격 프레임
-            SS_(s, "slash (2)", true, missing, 8);
-            SS_(s, "slash (3)", true, missing);
-            SS_(s, "slash (4)", true, missing);
-            SS_(s, "slash (5)", true, missing);
-            SS_(s, "kick", true, missing);
-            foreach (var n in new[] { "block", "block (2)", "block idle", "crouch block", "crouch block (2)", "crouch block idle",
-                                      "crouch", "crouch idle", "crouching", "crouching (2)", "crouching (3)",
-                                      "impact", "impact (2)", "impact (3)", "death", "death (2)",
-                                      "jump", "jump (2)", "walk", "walk (2)", "run", "run (2)",
-                                      "strafe", "strafe (2)", "strafe (3)", "strafe (4)",
-                                      "power up", "casting", "casting (2)" })
-                SS_(s, n, false, missing);
-            AddClip(s, SS + "sheath sword 1.fbx", null, false, missing);
-            AddClip(s, SS + "sheath sword 2.fbx", null, false, missing);
-
-            // 낱개 Mixamo 모션
-            AddClip(s, SINGLE + "One Hand Sword Combo.fbx", null, true, missing, 36);
-            AddClip(s, SINGLE + "Standing Dodge Backward.fbx", null, false, missing);
-            AddClip(s, SINGLE + "Draw Sword 2.fbx", null, false, missing);
-            AddClip(s, SINGLE + "Falling Back Death.fbx", null, false, missing);
-            AddClip(s, SINGLE + "Flying Back Death.fbx", null, false, missing);
-            AddClip(s, SINGLE + "Standing React Death Forward.fbx", null, false, missing);
+            foreach (var (n, attack) in Ual2Clips) AddClip(s, UAL2_GENERIC, n, attack, missing);
             Save(s);
             return s;
         }
@@ -136,27 +119,11 @@ namespace CardGame.EditorTools
         /// </summary>
         static CharacterBakeSetup UalRanger(string name, bool isometric, List<string> missing)
         {
-            EnsureGenericUal();
+            EnsureGeneric(UAL, UAL_GENERIC);
             var s = NewSetup(name);
-            s.fps = 24;
-            if (isometric) { s.yawToFront = 45f; s.pitch = 30f; }
-            s.baseModel = Load<GameObject>(A + "Characters/Base/Superhero_Male_FullBody.fbx", missing);
-            AddPart(s, A + "Characters/Outfits/Male_Ranger.fbx", missing);
+            UalCommon(s, name, isometric, missing);
             s.weapon.prefab = Load<GameObject>(A + "Weapons/Arming_Sword.fbx", missing);
             s.shield.useTempShield = true;
-            s.outputFolder = "Assets/Art/characters/" + name;
-            s.pixelsPerMeter = 54f;
-            s.frameWidth = 192;
-            s.frameHeight = 144;
-            s.groundPixel = 9;
-            s.maxFrames = 240;
-
-            s.directPlayback = true;
-            s.groundFromFirstFrame = true;
-            s.straightenHips = false;
-            s.flattenFeet = false;
-            s.plantFeet = false;
-            s.keepAboveGround = true;
 
             var names = new List<string>();
             foreach (var o in AssetDatabase.LoadAllAssetsAtPath(UAL_GENERIC))
@@ -172,45 +139,39 @@ namespace CardGame.EditorTools
             return s;
         }
 
-        /// <summary>UAL 원본을 복사해 Generic으로 가져온다 (이미 있으면 그대로).</summary>
-        static void EnsureGenericUal()
+        /// <summary>UAL 설정 공통: 레인저 몸, 1.5배 도트, 24fps, 뼈대가 같아 그대로 재생 (자세 보정 끔)</summary>
+        static void UalCommon(CharacterBakeSetup s, string name, bool isometric, List<string> missing)
         {
-            if (AssetDatabase.LoadAssetAtPath<GameObject>(UAL_GENERIC) != null) return;
-            string src = System.IO.Path.Combine(System.IO.Directory.GetCurrentDirectory(), UAL);
-            if (!System.IO.File.Exists(src)) return;
-            string dir = System.IO.Path.Combine(System.IO.Directory.GetCurrentDirectory(), UAL_GENERIC_DIR);
-            System.IO.Directory.CreateDirectory(dir);
-            // 설정(.meta) 없이 파일만 복사해서, 가져오기 규칙(CharacterArtImport)이 Generic으로 설정하게 한다
-            System.IO.File.Copy(src, System.IO.Path.Combine(System.IO.Directory.GetCurrentDirectory(), UAL_GENERIC), true);
-            AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
+            s.fps = 24;
+            if (isometric) { s.yawToFront = 45f; s.pitch = 30f; }
+            s.baseModel = Load<GameObject>(A + "Characters/Base/Superhero_Male_FullBody.fbx", missing);
+            AddPart(s, A + "Characters/Outfits/Male_Ranger.fbx", missing);
+            s.outputFolder = "Assets/Art/characters/" + name;
+            s.pixelsPerMeter = 54f;
+            s.frameWidth = 192;
+            s.frameHeight = 144;
+            s.groundPixel = 9;
+            s.maxFrames = 240;
+
+            s.directPlayback = true;
+            s.groundFromFirstFrame = true;
+            s.straightenHips = false;
+            s.flattenFeet = false;
+            s.plantFeet = false;
+            s.keepAboveGround = true;
         }
 
-        static void SS_(CharacterBakeSetup s, string n, bool attack, List<string> missing, int hitOverride = -1)
-            => AddClip(s, SS + "sword and shield " + n + ".fbx", null, attack, missing, hitOverride);
-
-        static CharacterBakeSetup Axe(List<string> missing)
+        /// <summary>UAL 원본을 복사해 Generic으로 가져온다 (이미 있으면 그대로).</summary>
+        static void EnsureGeneric(string srcAsset, string dstAsset)
         {
-            var s = NewSetup("test_axe");
-            s.baseModel = Load<GameObject>(A + "Characters/Base/Superhero_Male_FullBody.fbx", missing);
-            AddPart(s, A + "Characters/Outfits/Male_Peasant.fbx", missing);
-            AddPart(s, A + "Characters/Hair/Hair_Buzzed.fbx", missing);
-            AddPart(s, A + "Characters/Hair/Hair_Beard.fbx", missing);
-            s.weapon.prefab = Load<GameObject>(A + "Weapons/Bearded_Axe.fbx", missing);
-            s.heightScale = 1.05f;
-            s.outputFolder = "Assets/Art/characters/test_axe";
-
-            AddClip(s, AXE + "standing idle.fbx", null, false, missing);
-            AddClip(s, AXE + "standing melee attack downward.fbx", null, true, missing, 10);
-            AddClip(s, AXE + "standing melee attack horizontal.fbx", null, true, missing, 11); // 눈으로 확인한 타격 프레임
-            AddClip(s, AXE + "standing melee combo attack ver. 1.fbx", null, true, missing, 23);
-            AddClip(s, AXE + "standing block react large.fbx", null, false, missing);
-            AddClip(s, AXE + "standing react large gut.fbx", null, false, missing);
-            AddClip(s, AXE + "standing taunt battlecry.fbx", null, false, missing);
-            AddClip(s, SINGLE + "Orc Idle.fbx", null, false, missing);
-            AddClip(s, SINGLE + "Falling Back Death.fbx", null, false, missing);
-            AddClip(s, UAL, "Hit_Head", false, missing);
-            Save(s);
-            return s;
+            if (AssetDatabase.LoadAssetAtPath<GameObject>(dstAsset) != null) return;
+            string cwd = System.IO.Directory.GetCurrentDirectory();
+            string src = System.IO.Path.Combine(cwd, srcAsset);
+            if (!System.IO.File.Exists(src)) return;
+            System.IO.Directory.CreateDirectory(System.IO.Path.Combine(cwd, UAL_GENERIC_DIR));
+            // 설정(.meta) 없이 파일만 복사해서, 가져오기 규칙(CharacterArtImport)이 Generic으로 설정하게 한다
+            System.IO.File.Copy(src, System.IO.Path.Combine(cwd, dstAsset), true);
+            AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
         }
 
         static CharacterBakeSetup NewSetup(string name)
@@ -248,6 +209,20 @@ namespace CardGame.EditorTools
             s.autoExpandFrame = true;
             s.directPlayback = false;
             s.groundFromFirstFrame = false;
+            // 반짝임 줄이기 값 (설정 파일에 예전 값이 남아 있을 수 있어 매번 맞춘다)
+            s.autoPalette = true;
+            s.autoPaletteColors = 24;
+            s.superSample = 4;
+            s.textureMipBias = 2f;
+            s.hideTinyPartsPixels = 1.5f;
+            s.snapToPixel = true;
+            s.flickerFilter = true;
+            s.flickerMaxSpeed = 4f;
+            s.layers.Clear();
+            s.layerClipPrefixes.Clear();
+            s.layerPaletteColors = 12;
+            s.paletteSwap = false;
+            s.skinColors = 5; s.clothColors = 6; s.leatherColors = 6; s.metalColors = 4; s.darkColors = 3;
             AddDefaultTextureRules(s);
             return s;
         }

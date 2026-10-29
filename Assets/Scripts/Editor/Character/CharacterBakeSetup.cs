@@ -124,6 +124,23 @@ namespace CardGame.EditorTools
         [Tooltip("모션마다 첫 프레임에서 가장 낮은 발이 바닥에 닿도록 모션 전체를 한 번만 올리거나 내린다 (프레임마다 따로 맞추지 않음).")]
         public bool groundFromFirstFrame = false;
 
+        [Header("무기 레이어 (몸과 따로 굽기)")]
+        [Tooltip("여기 넣은 무기·방패는 몸 시트에 그리지 않고 layers/이름/ 폴더에 따로 굽는다. 프레임·기준점·크기는 몸 시트와 같고, 몸에 가려지는 부분은 지운다.")]
+        public List<LayerItem> layers = new List<LayerItem>();
+        [Tooltip("무기 레이어를 구울 모션 이름 앞부분 (예: Sword_). 비우면 모든 모션.")]
+        public List<string> layerClipPrefixes = new List<string>();
+        [Tooltip("무기 레이어마다 쓸 고정 팔레트 색 수")]
+        [Range(4, 32)] public int layerPaletteColors = 12;
+
+        [Header("부위별 팔레트 (게임에서 색 교체)")]
+        [Tooltip("켜면 몸 시트 색을 부위별 칸(피부, 천, 가죽, 금속, 어두운 곳)으로 나눠 정하고, 칸 번호를 담은 인덱스 이미지(_idx.png)와 색 교체 팔레트(_palette_swap.png)를 같이 만든다.")]
+        public bool paletteSwap = false;
+        public int skinColors = 5;
+        public int clothColors = 6;
+        public int leatherColors = 6;
+        public int metalColors = 4;
+        public int darkColors = 3;
+
         [Header("저장")]
         [Tooltip("결과 PNG를 저장할 폴더")]
         public string outputFolder = "Assets/Art/characters/test";
@@ -150,6 +167,26 @@ namespace CardGame.EditorTools
             public Vector3 extraPosition = Vector3.zero;
             public Vector3 extraRotation = Vector3.zero;
             public float scale = 1f;
+            [Tooltip("손잡이 찾는 방법. 0 자동(이름), 1 칼 종류(가장 넓은 곳 = 코등이 쪽이 손잡이), 2 도끼·망치 종류(머리에서 먼 끝이 손잡이)")]
+            [Range(0, 2)] public int bladeMode = 0;
+        }
+
+        [Serializable]
+        public class LayerItem
+        {
+            [Tooltip("레이어 이름 (폴더 이름으로 쓴다)")]
+            public string name;
+            public bool isShield;
+            public GameObject prefab;
+            public string boneName = "hand_r";
+            [Tooltip("손잡이 찾는 방법. 0 자동(이름), 1 칼 종류, 2 도끼·망치 종류")]
+            [Range(0, 2)] public int bladeMode = 0;
+            public bool flipGrip;
+            public Vector3 extraPosition;
+            public Vector3 extraRotation;
+            public float scale = 1f;
+            [Tooltip("타격 프레임을 찾을 때 이 무기 끝을 쓴다. 아무것도 체크 안 하면 첫 번째 무기.")]
+            public bool strikePoint;
         }
 
         [Serializable]
@@ -164,6 +201,10 @@ namespace CardGame.EditorTools
             public Color color = new Color32(0x7a, 0x4e, 0x2c, 0xff);
             public Vector3 extraPosition = Vector3.zero;
             public Vector3 extraRotation = Vector3.zero;
+            [Tooltip("방패 모델 크기 배율")]
+            public float scale = 1f;
+            [Tooltip("방패 모델의 가장 얇은 축을 바깥면, 가장 긴 축을 팔 방향으로 자동으로 맞춘다.")]
+            public bool autoOrient = true;
         }
 
         [Serializable]

@@ -18,6 +18,18 @@ namespace CardGame.EditorTools
     public class CharacterRig : IDisposable
     {
         const string ShaderName = "Hidden/CardGame/BakeToon";
+        const string FlatShaderName = "Hidden/CardGame/BakeFlat";
+
+        /// <summary>
+        /// 무엇을 그릴지.
+        /// All: 미리보기용 (몸 + 예전 무기칸 + 첫 무기 레이어 + 방패 레이어)
+        /// Fit: 프레임 크기 재기용 (전부)
+        /// Body: 몸만 (무기 레이어 빼고)
+        /// BodyId: 몸의 부위 번호 (빨강 = 번호)
+        /// Layer: 무기 레이어 하나 (몸은 깊이만 써서 가림막)
+        /// LayerAlone: 무기 레이어 하나, 가림막 없이 (윤곽선 판단용)
+        /// </summary>
+        public enum Pass { All, Fit, Body, BodyId, Layer, LayerAlone }
 
         class DrawItem
         {
@@ -26,7 +38,12 @@ namespace CardGame.EditorTools
             public Mesh mesh;          // 스킨이면 매 프레임 구운 메시, 아니면 원본 메시
             public Material[] mats;
             public bool[] skipSub;     // 화면에서 너무 작아서 그리지 않을 부분 (버클, 징 등)
+            public int layer = -1;     // -1 몸, -2 예전 무기·방패 칸, 0 이상 무기 레이어 번호
+            public Material[] idMats;  // 부위 번호 그리기용 (몸만)
+            public Material[] occMats; // 깊이만 쓰는 가림막 (몸만)
         }
+        readonly List<Transform> layerRoots = new List<Transform>();
+        public int LayerCount => setup.layers.Count;
 
         public readonly CharacterBakeSetup setup;
         Scene scene;
@@ -55,6 +72,10 @@ namespace CardGame.EditorTools
         public Color32[] AutoPalette;
         /// <summary>true면 팔레트·윤곽선 없이 색 그대로 돌려준다 (팔레트 만들 때 쓴다).</summary>
         public bool RawColors;
+        /// <summary>부위별 팔레트 (색 교체용). 전부 굽기 때 만든다.</summary>
+        public CharacterBaker.SwapPalette Swap;
+        /// <summary>무기 레이어마다의 고정 팔레트 (setup.layers 순서)</summary>
+        public Color32[][] LayerPalettes;
 
         public string Warnings { get; private set; } = "";
         /// <summary>점검용 정보 (무기, 방패 크기와 위치). 굽기 창 아래에 작게 표시된다.</summary>
@@ -144,8 +165,44 @@ namespace CardGame.EditorTools
                 }
             }
 
-            BuildWeapon();
-            BuildShield();
+            var legacyW = BuildWeapon(s.weapon, "bake_weapon", out var legacyTip);
+            if (legacyW != null) { weaponTf = legacyW; weaponTipLocal = legacyTip; }
+            BuildShield(s.shield, "bake_shield");
+
+            // 무기 레이어: 전부 손에 달아 두고, 그릴 때 하나씩 고른다
+            layerRoots.Clear();
+            Transform strike = null; Vector3 strikeTip = Vector3.zero; bool strikeChosen = false;
+            for (int i = 0; i < s.layers.Count; i++)
+            {
+                var L = s.layers[i];
+                Transform t = null;
+                if (L != null && L.prefab != null)
+                {
+                    if (L.isShield)
+                        t = BuildShield(new CharacterBakeSetup.ShieldSlot
+                        {
+                            prefab = L.prefab, boneName = L.boneName, extraPosition = L.extraPosition,
+                            extraRotation = L.extraRotation, scale = L.scale, autoOrient = true,
+                        }, "bake_layer_" + i);
+                    else
+                    {
+                        t = BuildWeapon(new CharacterBakeSetup.WeaponSlot
+                        {
+                            prefab = L.prefab, boneName = L.boneName, autoGrip = true, flipGrip = L.flipGrip,
+                            extraPosition = L.extraPosition, extraRotation = L.extraRotation, scale = L.scale, bladeMode = L.bladeMode,
+                        }, "bake_layer_" + i, out var tip);
+                        if (t != null && !strikeChosen && (L.strikePoint || strike == null))
+                        {
+                            strike = t; strikeTip = tip;
+                            strikeChosen = L.strikePoint;
+                        }
+                    }
+                }
+                layerRoots.Add(t);
+            }
+            if (weaponTf == null && strike != null) { weaponTf = strike; weaponTipLocal = strikeTip; }
+            bool needFlat = s.layers.Count > 0 || s.paletteSwap;
+            if (needFlat && Shader.Find(FlatShaderName) == null) Warnings += $"셰이더 {FlatShaderName} 를 찾을 수 없습니다.\n";
 
             // 그릴 목록과 재질 만들기
             int tinyHidden = 0;
@@ -169,6 +226,7 @@ namespace CardGame.EditorTools
                     item.mesh = mf.sharedMesh;
                 }
 
+                item.layer = LayerOf(r.transform);
                 bool push = s.bodyDepthPush > 0f && pushRenderers.Contains(r) && !s.noPushRenderers.Exists(n => !string.IsNullOrEmpty(n) && r.name.Contains(n));
                 var src = r.sharedMaterials;
                 item.mats = new Material[Mathf.Max(1, src.Length)];
@@ -176,10 +234,25 @@ namespace CardGame.EditorTools
                     item.mats[i] = r.gameObject.name == "bake_temp_shield"
                         ? MakeMat(null, s.shield.color, null, 0f)
                         : MakeMat(i < src.Length ? src[i] : null, Color.white, null, push ? s.bodyDepthPush : 0f);
+                if (item.layer == -1 && needFlat && Shader.Find(FlatShaderName) != null)
+                {
+                    item.idMats = new Material[item.mats.Length];
+                    item.occMats = new Material[item.mats.Length];
+                    for (int i = 0; i < item.mats.Length; i++)
+                    {
+                        string mn = (i < src.Length && src[i] != null ? src[i].name : "") + "|" + r.name;
+                        int id = 3; bool classify = true;
+                        if (Has(mn, "Eye") || Has(mn, "Hair") || Has(mn, "Brow")) { id = 5; classify = false; }
+                        else if (Has(mn, "Superhero")) { id = 1; classify = false; }
+                        float pv = push ? s.bodyDepthPush : 0f;
+                        item.idMats[i] = MakeFlat(item.mats[i], id, classify, pv, true);
+                        item.occMats[i] = MakeFlat(item.mats[i], 0, false, pv, false);
+                    }
+                }
                 // 화면에서 너무 작은 조각(버클, 징 등)은 프레임마다 생겼다 사라지며 반짝이므로 아예 그리지 않는다
                 var srcMesh = item.skinned != null ? item.skinned.sharedMesh : item.mesh;
                 item.skipSub = new bool[srcMesh.subMeshCount];
-                bool keep = r.gameObject.name.StartsWith("bake_temp") || (weaponTf != null && r.transform.IsChildOf(weaponTf))
+                bool keep = item.layer != -1
                          || s.noPushRenderers.Exists(n => !string.IsNullOrEmpty(n) && r.name.Contains(n));
                 if (s.hideTinyPartsPixels > 0f && !keep)
                 {
@@ -426,6 +499,33 @@ namespace CardGame.EditorTools
 
         Transform Bone(string name) => !string.IsNullOrEmpty(name) && bones.TryGetValue(name, out var t) ? t : null;
 
+        static bool Has(string s, string part) => s.IndexOf(part, StringComparison.OrdinalIgnoreCase) >= 0;
+
+        /// <summary>이 렌더러가 몸(-1)인지, 예전 무기·방패 칸(-2)인지, 몇 번 무기 레이어인지.</summary>
+        static int LayerOf(Transform t)
+        {
+            for (var p = t; p != null; p = p.parent)
+            {
+                string n = p.name;
+                if (n.StartsWith("bake_layer_") && int.TryParse(n.Substring(11), out int li)) return li;
+                if (n == "bake_weapon" || n == "bake_shield" || n == "bake_temp_shield") return -2;
+            }
+            return -1;
+        }
+
+        Material MakeFlat(Material colorMat, int id, bool classify, float push, bool writeColor)
+        {
+            var m = new Material(Shader.Find(FlatShaderName)) { hideFlags = HideFlags.HideAndDontSave };
+            m.SetTexture("_MainTex", colorMat.GetTexture("_MainTex"));
+            m.SetColor("_Color", colorMat.GetColor("_Color"));
+            m.SetVector("_Id", new Vector4(id, 0, 0, 0)); // 벡터는 색 공간 변환을 하지 않아서 번호가 그대로 간다
+            m.SetFloat("_Classify", classify ? 1f : 0f);
+            m.SetFloat("_DepthPush", push);
+            m.SetFloat("_ColorMask", writeColor ? 15f : 0f);
+            createdMats.Add(m);
+            return m;
+        }
+
         Material MakeMat(Material src, Color baseColor, Texture tex, float push)
         {
             Color color = baseColor;
@@ -459,14 +559,14 @@ namespace CardGame.EditorTools
 
         // ───────────────────────── 무기 ─────────────────────────
 
-        void BuildWeapon()
+        Transform BuildWeapon(CharacterBakeSetup.WeaponSlot w, string goName, out Vector3 tipLocal)
         {
-            var w = setup.weapon;
-            if (w.prefab == null) return;
+            tipLocal = Vector3.zero;
+            if (w == null || w.prefab == null) return null;
             var hand = Bone(w.boneName);
-            if (hand == null) { Warnings += $"무기 뼈 '{w.boneName}' 를 찾을 수 없습니다.\n"; return; }
+            if (hand == null) { Warnings += $"무기 뼈 '{w.boneName}' 를 찾을 수 없습니다.\n"; return null; }
 
-            var go = Spawn(w.prefab, "bake_weapon");
+            var go = Spawn(w.prefab, goName);
             go.transform.SetPositionAndRotation(Vector3.zero, Quaternion.identity);
             go.transform.localScale = Vector3.one;
 
@@ -477,7 +577,7 @@ namespace CardGame.EditorTools
                 if (mf.sharedMesh == null) continue;
                 foreach (var v in mf.sharedMesh.vertices) pts.Add(go.transform.InverseTransformPoint(mf.transform.TransformPoint(v)));
             }
-            if (pts.Count == 0) { Warnings += "무기 메시가 비어 있습니다.\n"; return; }
+            if (pts.Count == 0) { Warnings += "무기 메시가 비어 있습니다.\n"; return null; }
 
             var b = new Bounds(pts[0], Vector3.zero);
             foreach (var p in pts) b.Encapsulate(p);
@@ -506,7 +606,7 @@ namespace CardGame.EditorTools
             float widestPos = lo + (widest + 0.5f) / Bins * len;
 
             string lname = w.prefab.name.ToLowerInvariant();
-            bool bladeType = lname.Contains("sword") || lname.Contains("dagger") || lname.Contains("knife") || lname.Contains("blade") || lname.Contains("sabre") || lname.Contains("katana");
+            bool bladeType = w.bladeMode == 1 || (w.bladeMode == 0 && (lname.Contains("sword") || lname.Contains("dagger") || lname.Contains("knife") || lname.Contains("blade") || lname.Contains("sabre") || lname.Contains("katana")));
             float endLo = b.min[k], endHi = b.max[k];
             bool widestNearLo = Mathf.Abs(widestPos - endLo) < Mathf.Abs(widestPos - endHi);
             // 칼 종류: 가장 넓은 곳(코등이)에 가까운 끝이 손잡이. 도끼, 망치 종류: 머리에서 먼 끝이 손잡이.
@@ -523,7 +623,7 @@ namespace CardGame.EditorTools
             Vector3 axisA = Vector3.zero; axisA[k] = dirSign;
             float bSign = binCount[widest] > 0 && (binSumB[widest] / binCount[widest] - center[kb]) < 0 ? -1f : 1f;
             Vector3 axisB = Vector3.zero; axisB[kb] = bSign;
-            weaponTipLocal = tip;
+            tipLocal = tip;
 
             // 단위가 cm로 들어와 100배 작거나 큰 무기를 자동으로 맞춘다
             float unitFix = len < 0.1f ? 100f : (len > 10f ? 0.01f : 1f);
@@ -561,22 +661,21 @@ namespace CardGame.EditorTools
                 go.transform.localPosition = w.extraPosition;
                 go.transform.localRotation = Quaternion.Euler(w.extraRotation);
             }
-            weaponTf = go.transform;
             var wb = WorldBounds(go);
-            Info += $"무기 {w.prefab.name}: 길이 {len * scale:0.00}m, 손에서 {Vector3.Distance(wb.center, hand.position):0.00}m, 화면 크기 {wb.size.x:0.00}x{wb.size.y:0.00}x{wb.size.z:0.00}, 손 배율 {hand.lossyScale.x:0.###}\n";
+            Info += $"무기 {w.prefab.name}: 길이 {len * scale:0.00}m, 손에서 {Vector3.Distance(wb.center, hand.position):0.00}m, 화면 크기 {wb.size.x:0.00}x{wb.size.y:0.00}x{wb.size.z:0.00}, 손 배율 {hand.lossyScale.x:0.###}, 손잡이 {(bladeType ? "칼" : "도끼")}식\n";
+            return go.transform;
         }
 
         // ───────────────────────── 방패 ─────────────────────────
 
-        void BuildShield()
+        Transform BuildShield(CharacterBakeSetup.ShieldSlot sh, string goName)
         {
-            var sh = setup.shield;
-            if (!sh.useTempShield && sh.prefab == null) return;
+            if (sh == null || (!sh.useTempShield && sh.prefab == null)) return null;
             var arm = Bone(sh.boneName);
-            if (arm == null) { Warnings += $"방패 뼈 '{sh.boneName}' 를 찾을 수 없습니다.\n"; return; }
+            if (arm == null) { Warnings += $"방패 뼈 '{sh.boneName}' 를 찾을 수 없습니다.\n"; return null; }
             Transform child = arm.childCount > 0 ? arm.GetChild(0) : null;
             foreach (Transform c in arm) if (c.name.StartsWith("hand")) child = c;
-            if (child == null) { Warnings += "방패를 달 팔 방향을 알 수 없습니다.\n"; return; }
+            if (child == null) { Warnings += "방패를 달 팔 방향을 알 수 없습니다.\n"; return null; }
 
             // 기본 자세에서 손등 쪽(위쪽)이 방패 바깥면
             Vector3 armDir = (child.position - arm.position).normalized;
@@ -587,13 +686,35 @@ namespace CardGame.EditorTools
             GameObject go;
             if (sh.prefab != null)
             {
-                go = Spawn(sh.prefab, "bake_shield");
-                go.transform.rotation = Quaternion.LookRotation(normal, armDir) * Quaternion.Euler(sh.extraRotation);
-                go.transform.position = mid + normal * 0.06f + go.transform.rotation * sh.extraPosition;
+                go = Spawn(sh.prefab, goName);
+                go.transform.SetPositionAndRotation(Vector3.zero, Quaternion.identity);
+                go.transform.localScale = Vector3.one;
+                var lb = LocalBounds(go);
+                float big = Mathf.Max(lb.size.x, Mathf.Max(lb.size.y, lb.size.z));
+                float unitFix = big < 0.1f ? 100f : (big > 10f ? 0.01f : 1f);
+                float sc = sh.scale * unitFix;
+                go.transform.localScale = Vector3.one * sc;
+                Quaternion modelAxes = Quaternion.identity;
+                float halfThick = 0.03f;
+                if (sh.autoOrient)
+                {
+                    // 가장 얇은 축 = 바깥면 방향, 남은 축 중 긴 쪽 = 팔 방향
+                    var sz = lb.size;
+                    int thin = sz.x <= sz.y && sz.x <= sz.z ? 0 : (sz.y <= sz.z ? 1 : 2);
+                    int a1 = (thin + 1) % 3, a2 = (thin + 2) % 3;
+                    int along = sz[a1] >= sz[a2] ? a1 : a2;
+                    Vector3 n = Vector3.zero; n[thin] = 1f;
+                    Vector3 u = Vector3.zero; u[along] = 1f;
+                    modelAxes = Quaternion.LookRotation(n, u);
+                    halfThick = sz[thin] * 0.5f * sc;
+                }
+                var rot = Quaternion.LookRotation(normal, armDir) * Quaternion.Euler(sh.extraRotation) * Quaternion.Inverse(modelAxes);
+                go.transform.rotation = rot;
+                go.transform.position = mid + normal * (0.05f + halfThick) - rot * (lb.center * sc) + rot * sh.extraPosition;
             }
             else
             {
-                go = new GameObject("bake_temp_shield");
+                go = new GameObject(goName == "bake_shield" ? "bake_temp_shield" : goName);
                 SceneManager.MoveGameObjectToScene(go, scene);
                 go.AddComponent<MeshFilter>().sharedMesh = Resources.GetBuiltinResource<Mesh>("Cylinder.fbx");
                 go.AddComponent<MeshRenderer>();
@@ -604,7 +725,24 @@ namespace CardGame.EditorTools
             }
             go.transform.SetParent(arm, true);
             var sb = WorldBounds(go);
-            Info += $"방패: 크기 {sb.size.x:0.00}x{sb.size.y:0.00}x{sb.size.z:0.00}, 팔 배율 {arm.lossyScale.x:0.###}\n";
+            Info += $"방패 {(sh.prefab != null ? sh.prefab.name : "임시")}: 크기 {sb.size.x:0.00}x{sb.size.y:0.00}x{sb.size.z:0.00}, 팔 배율 {arm.lossyScale.x:0.###}\n";
+            return go.transform;
+        }
+
+        /// <summary>모델 자기 좌표 기준 메시 범위 (위치·회전 0, 배율 1일 때)</summary>
+        static Bounds LocalBounds(GameObject go)
+        {
+            bool any = false; var b = new Bounds();
+            foreach (var mf in go.GetComponentsInChildren<MeshFilter>(true))
+            {
+                if (mf.sharedMesh == null) continue;
+                foreach (var v in mf.sharedMesh.vertices)
+                {
+                    var p = go.transform.InverseTransformPoint(mf.transform.TransformPoint(v));
+                    if (!any) { b = new Bounds(p, Vector3.zero); any = true; } else b.Encapsulate(p);
+                }
+            }
+            return b;
         }
 
         static Bounds WorldBounds(GameObject go)
@@ -686,6 +824,7 @@ namespace CardGame.EditorTools
         /// <summary>현재 모션의 t초 자세를 만든다.</summary>
         public void Sample(float t)
         {
+            poseReady = false;
             if (!graph.IsValid()) return;
             root.transform.position = Vector3.zero;
             clipPlayable.SetTime(t);
@@ -733,44 +872,37 @@ namespace CardGame.EditorTools
 
         // ───────────────────────── 그리기 ─────────────────────────
 
-        /// <summary>현재 자세를 그려서 픽셀(왼쪽 아래부터)로 돌려준다. 윤곽선, 팔레트까지 적용.</summary>
+        /// <summary>현재 자세를 그려서 픽셀(왼쪽 아래부터)로 돌려준다. 윤곽선, 팔레트까지 적용 (미리보기, 예전 방식 굽기).</summary>
         public Color32[] Render()
         {
+            var px = RenderPass(Pass.All, -1);
+            if (RawColors) return px;
+            return Finish(px);
+        }
+
+        /// <summary>팔레트 맞추기 + 윤곽선</summary>
+        public Color32[] Finish(Color32[] px)
+        {
             var s = setup;
-            int w = frameW, h = frameH;
-            // 몇 배 크게 그린 뒤 평균으로 줄인다 (작은 장식이 프레임마다 깜빡이는 것 방지)
-            int ss = Mathf.Clamp(s.superSample, 1, 8);
-            int bw = w * ss, bh = h * ss;
-            if (rt == null || rt.width != bw || rt.height != bh)
+            if (s.palette != null)
             {
-                if (rt != null) { rt.Release(); UnityEngine.Object.DestroyImmediate(rt); }
-                rt = new RenderTexture(bw, bh, 24, RenderTextureFormat.ARGB32, RenderTextureReadWrite.sRGB)
-                { filterMode = FilterMode.Point, antiAliasing = 1, hideFlags = HideFlags.HideAndDontSave };
-                rt.Create();
-                if (readback != null) UnityEngine.Object.DestroyImmediate(readback);
-                readback = new Texture2D(bw, bh, TextureFormat.RGBA32, false, false) { hideFlags = HideFlags.HideAndDontSave };
+                if (paletteCache == null) paletteCache = PixelArtUtil.LoadPalette(s.palette);
+                PixelArtUtil.Quantize(px, paletteCache);
             }
+            else if (AutoPalette != null) PixelArtUtil.Quantize(px, AutoPalette);
+            if (s.outline) PixelArtUtil.AddOutline(px, frameW, frameH, s.outlineColor);
+            return px;
+        }
 
-            GetCamera(out var camPos, out var camRot, out var right, out var up, out var fwd);
-            float ppm = Mathf.Max(1f, s.pixelsPerMeter);
-            float hw = w * 0.5f / ppm, hh = h * 0.5f / ppm;
-            Matrix4x4 view = Matrix4x4.TRS(camPos, camRot, new Vector3(1, 1, -1)).inverse;
-            Matrix4x4 proj = Matrix4x4.Ortho(-hw, hw, -hh, hh, 0.1f, 40f);
-            Matrix4x4 scale = Matrix4x4.Scale(Vector3.one * s.heightScale);
-            Vector3 l = s.lightFromScreen;
-            Vector3 lightWorld = (right * l.x + up * l.y - fwd * l.z).normalized;
+        // 자세마다 한 번만: 스킨 메시 굽기, 바닥 아래로 내려간 만큼 올리기, 픽셀 칸 맞추기
+        bool poseReady;
+        Matrix4x4 poseLift = Matrix4x4.identity;
+        int poseFrameW = -1, poseFrameH = -1, posePivX = -1, poseGround = -1;
 
-            var cb = new CommandBuffer { name = "CardGameCharacterBake" };
-            cb.SetRenderTarget(rt);
-            cb.ClearRenderTarget(true, true, new Color(0, 0, 0, 0));
-            cb.SetViewProjectionMatrices(view, proj);
-            cb.SetGlobalVector("_CGBakeLightDir", lightWorld);
-            cb.SetGlobalVector("_CGBakeShade", new Vector4(s.litThreshold, s.midThreshold, s.midBrightness, s.shadowBrightness));
-            // 크게 그리면 그만큼 선명한 밉맵을 고르므로, 결과 해상도 기준으로 되돌린 뒤 설정만큼 더 흐리게
-            cb.SetGlobalFloat("_CGBakeMipBias", Mathf.Log(ss, 2f) + s.textureMipBias);
-
-            // 먼저 몸 메시를 구워서 가장 낮은 점을 잰다. 바닥(0) 아래로 내려갔으면 전부 그만큼 올려서 그린다.
-            float lift = 0f;
+        void PreparePose(Vector3 right, Vector3 up, float ppm)
+        {
+            var s = setup;
+            if (poseReady && poseFrameW == frameW && poseFrameH == frameH && posePivX == pivX && poseGround == ground) return;
             float meshMinY = float.MaxValue;
             foreach (var it in items)
             {
@@ -785,6 +917,7 @@ namespace CardGame.EditorTools
                     if (y < meshMinY) meshMinY = y;
                 }
             }
+            float lift = 0f;
             if (s.keepAboveGround && meshMinY < 0f && meshMinY != float.MaxValue) lift = -meshMinY;
             Vector3 shift = Vector3.up * lift;
             if (s.snapToPixel)
@@ -795,52 +928,127 @@ namespace CardGame.EditorTools
                 Vector3 fix = right * ((Mathf.Round(dx) - dx) / ppm) + up * ((Mathf.Round(dy) - dy) / ppm);
                 shift += fix / Mathf.Max(0.0001f, s.heightScale);
             }
-            Matrix4x4 liftM = Matrix4x4.Translate(shift);
+            poseLift = Matrix4x4.Translate(shift);
+            poseReady = true;
+            poseFrameW = frameW; poseFrameH = frameH; posePivX = pivX; poseGround = ground;
+        }
 
-            foreach (var it in items)
+        RenderTexture rtId;
+
+        /// <summary>
+        /// 고른 것만 그려서 픽셀로 돌려준다 (팔레트, 윤곽선 없음). 투명도는 0 아니면 255.
+        /// BodyId 는 빨강 값이 부위 번호다 (작은 칸마다 가장 많이 나온 번호).
+        /// </summary>
+        public Color32[] RenderPass(Pass pass, int layer)
+        {
+            var s = setup;
+            int w = frameW, h = frameH;
+            // 몇 배 크게 그린 뒤 평균으로 줄인다 (작은 장식이 프레임마다 깜빡이는 것 방지)
+            int ss = Mathf.Clamp(s.superSample, 1, 8);
+            int bw = w * ss, bh = h * ss;
+            if (rt == null || rt.width != bw || rt.height != bh)
+            {
+                if (rt != null) { rt.Release(); UnityEngine.Object.DestroyImmediate(rt); }
+                if (rtId != null) { rtId.Release(); UnityEngine.Object.DestroyImmediate(rtId); rtId = null; }
+                rt = new RenderTexture(bw, bh, 24, RenderTextureFormat.ARGB32, RenderTextureReadWrite.sRGB)
+                { filterMode = FilterMode.Point, antiAliasing = 1, hideFlags = HideFlags.HideAndDontSave };
+                rt.Create();
+                if (readback != null) UnityEngine.Object.DestroyImmediate(readback);
+                readback = new Texture2D(bw, bh, TextureFormat.RGBA32, false, false) { hideFlags = HideFlags.HideAndDontSave };
+            }
+            bool idPass = pass == Pass.BodyId;
+            if (idPass && rtId == null)
+            {
+                // 부위 번호는 색 변환 없이 그대로 읽어야 해서 선형 텍스처에 그린다
+                rtId = new RenderTexture(bw, bh, 24, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Linear)
+                { filterMode = FilterMode.Point, antiAliasing = 1, hideFlags = HideFlags.HideAndDontSave };
+                rtId.Create();
+            }
+            var target = idPass ? rtId : rt;
+
+            GetCamera(out var camPos, out var camRot, out var right, out var up, out var fwd);
+            float ppm = Mathf.Max(1f, s.pixelsPerMeter);
+            float hw = w * 0.5f / ppm, hh = h * 0.5f / ppm;
+            Matrix4x4 view = Matrix4x4.TRS(camPos, camRot, new Vector3(1, 1, -1)).inverse;
+            Matrix4x4 proj = Matrix4x4.Ortho(-hw, hw, -hh, hh, 0.1f, 40f);
+            Matrix4x4 scale = Matrix4x4.Scale(Vector3.one * s.heightScale);
+            Vector3 l = s.lightFromScreen;
+            Vector3 lightWorld = (right * l.x + up * l.y - fwd * l.z).normalized;
+
+            PreparePose(right, up, ppm);
+
+            var cb = new CommandBuffer { name = "CardGameCharacterBake" };
+            cb.SetRenderTarget(target);
+            cb.ClearRenderTarget(true, true, new Color(0, 0, 0, 0));
+            cb.SetViewProjectionMatrices(view, proj);
+            cb.SetGlobalVector("_CGBakeLightDir", lightWorld);
+            cb.SetGlobalVector("_CGBakeShade", new Vector4(s.litThreshold, s.midThreshold, s.midBrightness, s.shadowBrightness));
+            // 크게 그리면 그만큼 선명한 밉맵을 고르므로, 결과 해상도 기준으로 되돌린 뒤 설정만큼 더 흐리게
+            cb.SetGlobalFloat("_CGBakeMipBias", Mathf.Log(ss, 2f) + s.textureMipBias);
+
+            // 미리보기(All)에는 첫 무기 레이어와 방패 레이어만 보여 준다
+            int previewWeapon = -1;
+            if (pass == Pass.All)
+                for (int i = 0; i < s.layers.Count; i++)
+                    if (s.layers[i] != null && !s.layers[i].isShield && layerRoots.Count > i && layerRoots[i] != null) { previewWeapon = i; break; }
+
+            // 무기는 뼈 밑에 붙어 있어서 목록에서 몸보다 먼저 나올 수 있다. 가림막(몸 깊이)이 먼저 그려져야 가려지므로 몸을 앞에 둔다.
+            var ordered = new List<DrawItem>(items.Count);
+            foreach (var it in items) if (it.layer == -1) ordered.Add(it);
+            foreach (var it in items) if (it.layer != -1) ordered.Add(it);
+            foreach (var it in ordered)
             {
                 if (it.renderer == null || !it.renderer.gameObject.activeInHierarchy) continue;
+                Material[] mats;
+                switch (pass)
+                {
+                    case Pass.Fit: mats = it.mats; break;
+                    case Pass.All:
+                        if (it.layer >= 0 && it.layer != previewWeapon && !(s.layers[it.layer] != null && s.layers[it.layer].isShield)) continue;
+                        mats = it.mats; break;
+                    case Pass.Body: if (it.layer != -1) continue; mats = it.mats; break;
+                    case Pass.BodyId: if (it.layer != -1 || it.idMats == null) continue; mats = it.idMats; break;
+                    case Pass.Layer:
+                        if (it.layer == -1) { if (it.occMats == null) continue; mats = it.occMats; }
+                        else if (it.layer == layer) mats = it.mats;
+                        else continue;
+                        break;
+                    default: // LayerAlone
+                        if (it.layer != layer) continue; mats = it.mats; break;
+                }
                 Matrix4x4 m;
                 if (it.skinned != null)
                 {
                     var t = it.skinned.transform;
-                    m = scale * liftM * Matrix4x4.TRS(t.position, t.rotation, Vector3.one);
+                    m = scale * poseLift * Matrix4x4.TRS(t.position, t.rotation, Vector3.one);
                 }
-                else m = scale * liftM * it.renderer.localToWorldMatrix;
+                else m = scale * poseLift * it.renderer.localToWorldMatrix;
 
                 for (int sub = 0; sub < it.mesh.subMeshCount; sub++)
                     if (it.skipSub == null || sub >= it.skipSub.Length || !it.skipSub[sub])
-                        cb.DrawMesh(it.mesh, m, it.mats[Mathf.Min(sub, it.mats.Length - 1)], sub, 0);
+                        cb.DrawMesh(it.mesh, m, mats[Mathf.Min(sub, mats.Length - 1)], sub, 0);
             }
             Graphics.ExecuteCommandBuffer(cb);
             cb.Release();
 
             var prev = RenderTexture.active;
-            RenderTexture.active = rt;
+            RenderTexture.active = target;
             readback.ReadPixels(new Rect(0, 0, bw, bh), 0, 0, false);
             readback.Apply(false);
             RenderTexture.active = prev;
 
-            Color32[] px = PixelArtUtil.BoxDownsample(readback.GetPixels32(), w, h, ss);
+            Color32[] px = idPass ? PixelArtUtil.MajorityDownsample(readback.GetPixels32(), w, h, ss)
+                                  : PixelArtUtil.BoxDownsample(readback.GetPixels32(), w, h, ss);
             for (int i = 0; i < px.Length; i++) px[i].a = px[i].a >= 128 ? (byte)255 : (byte)0;
 
             // 위아래가 뒤집혀 나오는 그래픽 장치가 있어서, 처음 그릴 때 발 위치로 한 번 판단한다
-            if (autoFlip < 0 && PixelArtUtil.OpaqueRowRange(px, w, h, out int minY, out int maxY))
+            if (autoFlip < 0 && !idPass && pass != Pass.Layer && pass != Pass.LayerAlone && PixelArtUtil.OpaqueRowRange(px, w, h, out int minY, out int maxY))
             {
                 int g = ground;
                 autoFlip = Mathf.Abs((h - 1 - maxY) - g) < Mathf.Abs(minY - g) ? 1 : 0;
                 if (autoFlip == 1) Debug.Log("[캐릭터 굽기] 이 컴퓨터는 그림이 뒤집혀 나와서 자동으로 바로잡습니다.");
             }
             if ((autoFlip == 1) != s.flipY) PixelArtUtil.FlipRows(px, w, h);
-
-            if (RawColors) return px;
-            if (s.palette != null)
-            {
-                if (paletteCache == null) paletteCache = PixelArtUtil.LoadPalette(s.palette);
-                PixelArtUtil.Quantize(px, paletteCache);
-            }
-            else if (AutoPalette != null) PixelArtUtil.Quantize(px, AutoPalette);
-            if (s.outline) PixelArtUtil.AddOutline(px, w, h, s.outlineColor);
             return px;
         }
 
@@ -851,6 +1059,7 @@ namespace CardGame.EditorTools
             foreach (var o in createdObjects) if (o != null) UnityEngine.Object.DestroyImmediate(o);
             createdMats.Clear(); createdObjects.Clear(); items.Clear();
             if (rt != null) { rt.Release(); UnityEngine.Object.DestroyImmediate(rt); rt = null; }
+            if (rtId != null) { rtId.Release(); UnityEngine.Object.DestroyImmediate(rtId); rtId = null; }
             if (readback != null) { UnityEngine.Object.DestroyImmediate(readback); readback = null; }
             if (scene.IsValid()) EditorSceneManager.ClosePreviewScene(scene);
             root = null;
