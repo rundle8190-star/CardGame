@@ -13,6 +13,8 @@ Shader "Hidden/CardGame/BakeFlat"
         _Classify ("텍스처 색으로 부위 나누기", Float) = 0
         _DepthPush ("깊이 밀기(m)", Float) = 0
         _ColorMask ("색 쓰기 (0 = 깊이만)", Float) = 15
+        _ClothRange ("천: 색상 최소·최대(도), 채도 최소·최대", Vector) = (55, 170, 0.2, 1)
+        _ClothMinV ("천: 가장 어두운 밝기", Float) = 0.04
     }
     SubShader
     {
@@ -36,6 +38,8 @@ Shader "Hidden/CardGame/BakeFlat"
             float _Classify;
             float _DepthPush;
             float _CGBakeMipBias;
+            float4 _ClothRange;
+            float _ClothMinV;
 
             struct appdata { float4 vertex : POSITION; float2 uv : TEXCOORD0; };
             struct v2f { float4 pos : SV_POSITION; float2 uv : TEXCOORD0; };
@@ -70,7 +74,8 @@ Shader "Hidden/CardGame/BakeFlat"
                         else h = (c.r - c.g) / (mx - mn) + 4.0;
                         h *= 60.0;
                     }
-                    if (h >= 55 && h <= 170 && s >= 0.2 && mx >= 0.04) id = 2; // 초록 계열 = 천 (어두운 초록 바지 포함)
+                    // 천: 설정한 색상·채도 범위 (기본은 초록 계열, 어두운 초록 바지 포함)
+                    if (h >= _ClothRange.x && h <= _ClothRange.y && s >= _ClothRange.z && s <= _ClothRange.w && mx >= _ClothMinV) id = 2;
                     else if (mx < 0.12) id = 5;          // 아주 어두운 색
                     else if (s < 0.18) id = 4;           // 회색 = 금속
                     else id = 3;                          // 갈색, 주황 = 가죽

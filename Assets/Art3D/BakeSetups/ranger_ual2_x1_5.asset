@@ -209,6 +209,7 @@ MonoBehaviour:
     extraPosition: {x: 0, y: 0, z: 0}
     extraRotation: {x: 0, y: 0, z: 0}
     scale: 1
+    swapColors: 0
     strikePoint: 1
   - name: falchion
     isShield: 0
@@ -219,6 +220,7 @@ MonoBehaviour:
     extraPosition: {x: 0, y: 0, z: 0}
     extraRotation: {x: 0, y: 0, z: 0}
     scale: 1
+    swapColors: 0
     strikePoint: 0
   - name: messer
     isShield: 0
@@ -229,6 +231,7 @@ MonoBehaviour:
     extraPosition: {x: 0, y: 0, z: 0}
     extraRotation: {x: 0, y: 0, z: 0}
     scale: 1
+    swapColors: 0
     strikePoint: 0
   - name: dagger
     isShield: 0
@@ -239,6 +242,7 @@ MonoBehaviour:
     extraPosition: {x: 0, y: 0, z: 0}
     extraRotation: {x: 0, y: 0, z: 0}
     scale: 1
+    swapColors: 0
     strikePoint: 0
   - name: arming_sword
     isShield: 0
@@ -249,6 +253,95 @@ MonoBehaviour:
     extraPosition: {x: 0, y: 0, z: 0}
     extraRotation: {x: 0, y: 0, z: 0}
     scale: 1
+    swapColors: 0
+    strikePoint: 0
+  - name: cutlass
+    isShield: 0
+    prefab: {fileID: 919132149155446097, guid: e8afa82cd1d5bdd4abf23290ef06d03d, type: 3}
+    boneName: hand_r
+    bladeMode: 1
+    flipGrip: 0
+    extraPosition: {x: 0, y: 0, z: 0}
+    extraRotation: {x: 0, y: 0, z: 0}
+    scale: 1
+    swapColors: 0
+    strikePoint: 0
+  - name: scimitar
+    isShield: 0
+    prefab: {fileID: 919132149155446097, guid: 1b390bbc118de0140ba3392bdb91366d, type: 3}
+    boneName: hand_r
+    bladeMode: 1
+    flipGrip: 0
+    extraPosition: {x: 0, y: 0, z: 0}
+    extraRotation: {x: 0, y: 0, z: 0}
+    scale: 1
+    swapColors: 0
+    strikePoint: 0
+  - name: kopesh
+    isShield: 0
+    prefab: {fileID: 919132149155446097, guid: 7f6b5813445d1244dbd7bf20c74a6ecb, type: 3}
+    boneName: hand_r
+    bladeMode: 1
+    flipGrip: 0
+    extraPosition: {x: 0, y: 0, z: 0}
+    extraRotation: {x: 0, y: 0, z: 0}
+    scale: 1
+    swapColors: 0
+    strikePoint: 0
+  - name: mace
+    isShield: 0
+    prefab: {fileID: 919132149155446097, guid: a043f8ee3cf44c548996532e5c8af308, type: 3}
+    boneName: hand_r
+    bladeMode: 2
+    flipGrip: 0
+    extraPosition: {x: 0, y: 0, z: 0}
+    extraRotation: {x: 0, y: 0, z: 0}
+    scale: 1
+    swapColors: 0
+    strikePoint: 0
+  - name: spiked_mace
+    isShield: 0
+    prefab: {fileID: 919132149155446097, guid: 81540e6d17bf513458fcc563e93d8b93, type: 3}
+    boneName: hand_r
+    bladeMode: 2
+    flipGrip: 0
+    extraPosition: {x: 0, y: 0, z: 0}
+    extraRotation: {x: 0, y: 0, z: 0}
+    scale: 1
+    swapColors: 0
+    strikePoint: 0
+  - name: war_hammer
+    isShield: 0
+    prefab: {fileID: 919132149155446097, guid: 2a8ac1524ee43344a82e8c55f552dcb3, type: 3}
+    boneName: hand_r
+    bladeMode: 2
+    flipGrip: 0
+    extraPosition: {x: 0, y: 0, z: 0}
+    extraRotation: {x: 0, y: 0, z: 0}
+    scale: 1
+    swapColors: 0
+    strikePoint: 0
+  - name: hatchet
+    isShield: 0
+    prefab: {fileID: 919132149155446097, guid: 4b67ff9f63185ee478064d38cfd57e94, type: 3}
+    boneName: hand_r
+    bladeMode: 2
+    flipGrip: 0
+    extraPosition: {x: 0, y: 0, z: 0}
+    extraRotation: {x: 0, y: 0, z: 0}
+    scale: 1
+    swapColors: 0
+    strikePoint: 0
+  - name: bearded_axe
+    isShield: 0
+    prefab: {fileID: 919132149155446097, guid: a92bd944cb7d9674ab487004d4ae5d84, type: 3}
+    boneName: hand_r
+    bladeMode: 2
+    flipGrip: 0
+    extraPosition: {x: 0, y: 0, z: 0}
+    extraRotation: {x: 0, y: 0, z: 0}
+    scale: 1
+    swapColors: 0
     strikePoint: 0
   - name: shield_a
     isShield: 1
@@ -258,7 +351,63 @@ MonoBehaviour:
     flipGrip: 0
     extraPosition: {x: 0, y: 0, z: 0}
     extraRotation: {x: 0, y: 0, z: 0}
-    scale: 1
+    scale: 0.68
+    swapColors: 1
+    strikePoint: 0
+  - name: shield_b
+    isShield: 1
+    prefab: {fileID: 919132149155446097, guid: b2a24fe2b8a707142a601f566c0b57b6, type: 3}
+    boneName: lowerarm_l
+    bladeMode: 0
+    flipGrip: 0
+    extraPosition: {x: 0, y: 0, z: 0}
+    extraRotation: {x: 0, y: 0, z: 0}
+    scale: 0.68
+    swapColors: 1
+    strikePoint: 0
+  - name: shield_c
+    isShield: 1
+    prefab: {fileID: 919132149155446097, guid: cc8b9f6e43ecc2d4f9efa0abfefee103, type: 3}
+    boneName: lowerarm_l
+    bladeMode: 0
+    flipGrip: 0
+    extraPosition: {x: 0, y: 0, z: 0}
+    extraRotation: {x: 0, y: 0, z: 0}
+    scale: 0.68
+    swapColors: 1
+    strikePoint: 0
+  - name: shield_d
+    isShield: 1
+    prefab: {fileID: 919132149155446097, guid: 2de18f40b6f9fbd47be85a956391707b, type: 3}
+    boneName: lowerarm_l
+    bladeMode: 0
+    flipGrip: 0
+    extraPosition: {x: 0, y: 0, z: 0}
+    extraRotation: {x: 0, y: 0, z: 0}
+    scale: 0.68
+    swapColors: 1
+    strikePoint: 0
+  - name: shield_e
+    isShield: 1
+    prefab: {fileID: 919132149155446097, guid: 131ae38371b24fa458146da74e169b00, type: 3}
+    boneName: lowerarm_l
+    bladeMode: 0
+    flipGrip: 0
+    extraPosition: {x: 0, y: 0, z: 0}
+    extraRotation: {x: 0, y: 0, z: 0}
+    scale: 0.68
+    swapColors: 1
+    strikePoint: 0
+  - name: shield_f
+    isShield: 1
+    prefab: {fileID: 919132149155446097, guid: 10afb60d8d5690e4a8592d70a1336036, type: 3}
+    boneName: lowerarm_l
+    bladeMode: 0
+    flipGrip: 0
+    extraPosition: {x: 0, y: 0, z: 0}
+    extraRotation: {x: 0, y: 0, z: 0}
+    scale: 0.68
+    swapColors: 1
     strikePoint: 0
   layerClipPrefixes:
   - Sword_
@@ -272,5 +421,8 @@ MonoBehaviour:
   leatherColors: 6
   metalColors: 4
   darkColors: 3
+  clothHue: {x: 55, y: 170}
+  clothSaturation: {x: 0.2, y: 1}
+  clothMinValue: 0.04
   outputFolder: Assets/Art/characters/ranger_ual2_x1_5
   spritePixelsPerUnit: 64

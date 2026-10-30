@@ -140,6 +140,12 @@ namespace CardGame.EditorTools
         public int leatherColors = 6;
         public int metalColors = 4;
         public int darkColors = 3;
+        [Tooltip("옷 텍스처에서 '천'으로 볼 색상(도) 범위. 기본은 초록 (레인저).")]
+        public Vector2 clothHue = new Vector2(55f, 170f);
+        [Tooltip("천으로 볼 채도 범위 (0~1)")]
+        public Vector2 clothSaturation = new Vector2(0.2f, 1f);
+        [Tooltip("천으로 볼 가장 어두운 밝기 (0~1)")]
+        public float clothMinValue = 0.04f;
 
         [Header("저장")]
         [Tooltip("결과 PNG를 저장할 폴더")]
@@ -185,6 +191,8 @@ namespace CardGame.EditorTools
             public Vector3 extraPosition;
             public Vector3 extraRotation;
             public float scale = 1f;
+            [Tooltip("몸 색 교체 팔레트를 같이 쓴다 (방패용). 판(Brown 3)은 천, 테두리(Grey)는 금속, 나머지는 가죽 칸. layers/이름/모션_idx.png 도 저장한다.")]
+            public bool swapColors;
             [Tooltip("타격 프레임을 찾을 때 이 무기 끝을 쓴다. 아무것도 체크 안 하면 첫 번째 무기.")]
             public bool strikePoint;
         }

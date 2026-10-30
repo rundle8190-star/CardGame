@@ -313,8 +313,17 @@ namespace CardGame.EditorTools
                 {
                     var px = rig.RenderPass(CharacterRig.Pass.Layer, li);
                     var alone = rig.RenderPass(CharacterRig.Pass.LayerAlone, li);
-                    if (rig.LayerPalettes != null && rig.LayerPalettes[li] != null) PixelArtUtil.Quantize(px, rig.LayerPalettes[li]);
-                    if (s.outline) PixelArtUtil.AddLayerOutline(px, alone, fw, fh, s.outlineColor);
+                    if (SwapLayer(s, sp, li))
+                    {
+                        // 방패: 몸과 같은 칸 번호로 (옷 색을 바꾸면 방패 판도 같이 바뀐다)
+                        px = ToIndex(px, rig.RenderPass(CharacterRig.Pass.LayerId, li), sp);
+                        if (s.outline) PixelArtUtil.AddLayerOutline(px, alone, fw, fh, outlineIdx);
+                    }
+                    else
+                    {
+                        if (rig.LayerPalettes != null && rig.LayerPalettes[li] != null) PixelArtUtil.Quantize(px, rig.LayerPalettes[li]);
+                        if (s.outline) PixelArtUtil.AddLayerOutline(px, alone, fw, fh, s.outlineColor);
+                    }
                     lay[li].Add(px);
                 }
             }
@@ -348,7 +357,15 @@ namespace CardGame.EditorTools
             foreach (int li in lis)
             {
                 string lp = $"{LayerFolder(s, li)}/{name}.png";
-                PixelArtUtil.SaveStrip(lp, lay[li], fw, fh, pivot, s.spritePixelsPerUnit);
+                if (SwapLayer(s, sp, li))
+                {
+                    var row = sp.Row(s.outlineColor);
+                    var colorFrames = new List<Color32[]>(n);
+                    foreach (var f in lay[li]) colorFrames.Add(FromIndex(f, row));
+                    PixelArtUtil.SaveStrip(lp, colorFrames, fw, fh, pivot, s.spritePixelsPerUnit);
+                    PixelArtUtil.SaveStrip($"{LayerFolder(s, li)}/{name}_idx.png", lay[li], fw, fh, pivot, s.spritePixelsPerUnit, true);
+                }
+                else PixelArtUtil.SaveStrip(lp, lay[li], fw, fh, pivot, s.spritePixelsPerUnit);
                 names.Add(PixelArtUtil.SafeName(s.layers[li].name));
             }
 
@@ -365,6 +382,19 @@ namespace CardGame.EditorTools
             File.WriteAllText(Path.Combine(Directory.GetCurrentDirectory(), json), JsonUtility.ToJson(info, true));
             AssetDatabase.ImportAsset(json);
             return png;
+        }
+
+        /// <summary>이 레이어를 몸 색 교체 칸 번호로 굽는지 (방패)</summary>
+        static bool SwapLayer(CharacterBakeSetup s, SwapPalette sp, int li) => sp != null && s.layers[li] != null && s.layers[li].swapColors;
+
+        /// <summary>색 교체 레이어의 판(Brown 3)을 몸 천 색으로 칠해 둔다. 그래야 가까운 천 칸 번호로 바뀐다.</summary>
+        static void TintSwapLayers(CharacterRig rig)
+        {
+            var s = rig.setup; var sp = rig.Swap;
+            if (sp == null || sp.part[2] == null || sp.part[2].Length == 0) return;
+            var cloth = sp.part[2][Mathf.Max(0, sp.part[2].Length - 2)];
+            for (int li = 0; li < s.layers.Count; li++)
+                if (SwapLayer(s, sp, li)) rig.TintLayer(li, "Brown 3", cloth);
         }
 
         static string SwapPalettePath(CharacterBakeSetup s) => s.outputFolder.TrimEnd('/') + "/_palette_swap.png";
@@ -389,6 +419,7 @@ namespace CardGame.EditorTools
                     rig.Swap = sp;
                 }
                 else rig.Swap = MakeSwapPalette(rig, list);
+                TintSwapLayers(rig);
             }
             if (s.layers.Count > 0 && rig.LayerPalettes == null)
             {
@@ -637,7 +668,7 @@ namespace CardGame.EditorTools
                 if (Layered(s))
                 {
                     EditorUtility.DisplayProgressBar("캐릭터 굽기", "부위별·무기 팔레트 만드는 중", 0f);
-                    if (s.paletteSwap) rig.Swap = MakeSwapPalette(rig, list);
+                    if (s.paletteSwap) { rig.Swap = MakeSwapPalette(rig, list); TintSwapLayers(rig); }
                     if (s.layers.Count > 0) rig.LayerPalettes = MakeLayerPalettes(rig, list);
                 }
                 else if (s.palette == null && s.autoPalette)

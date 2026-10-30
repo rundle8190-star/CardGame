@@ -28,8 +28,9 @@ namespace CardGame.EditorTools
         /// BodyId: 몸의 부위 번호 (빨강 = 번호)
         /// Layer: 무기 레이어 하나 (몸은 깊이만 써서 가림막)
         /// LayerAlone: 무기 레이어 하나, 가림막 없이 (윤곽선 판단용)
+        /// LayerId: 색 교체를 쓰는 레이어(방패)의 부위 번호 (몸은 깊이만 써서 가림막)
         /// </summary>
-        public enum Pass { All, Fit, Body, BodyId, Layer, LayerAlone }
+        public enum Pass { All, Fit, Body, BodyId, Layer, LayerAlone, LayerId }
 
         class DrawItem
         {
@@ -39,7 +40,8 @@ namespace CardGame.EditorTools
             public Material[] mats;
             public bool[] skipSub;     // 화면에서 너무 작아서 그리지 않을 부분 (버클, 징 등)
             public int layer = -1;     // -1 몸, -2 예전 무기·방패 칸, 0 이상 무기 레이어 번호
-            public Material[] idMats;  // 부위 번호 그리기용 (몸만)
+            public Material[] idMats;  // 부위 번호 그리기용 (몸, 색 교체 레이어)
+            public string[] matNames;  // 원래 재질 이름 (레이어 색 바꾸기용)
             public Material[] occMats; // 깊이만 쓰는 가림막 (몸만)
         }
         readonly List<Transform> layerRoots = new List<Transform>();
@@ -230,6 +232,8 @@ namespace CardGame.EditorTools
                 bool push = s.bodyDepthPush > 0f && pushRenderers.Contains(r) && !s.noPushRenderers.Exists(n => !string.IsNullOrEmpty(n) && r.name.Contains(n));
                 var src = r.sharedMaterials;
                 item.mats = new Material[Mathf.Max(1, src.Length)];
+                item.matNames = new string[item.mats.Length];
+                for (int i = 0; i < item.matNames.Length; i++) item.matNames[i] = i < src.Length && src[i] != null ? src[i].name : "";
                 for (int i = 0; i < item.mats.Length; i++)
                     item.mats[i] = r.gameObject.name == "bake_temp_shield"
                         ? MakeMat(null, s.shield.color, null, 0f)
@@ -247,6 +251,18 @@ namespace CardGame.EditorTools
                         float pv = push ? s.bodyDepthPush : 0f;
                         item.idMats[i] = MakeFlat(item.mats[i], id, classify, pv, true);
                         item.occMats[i] = MakeFlat(item.mats[i], 0, false, pv, false);
+                    }
+                }
+                // 색 교체 레이어(방패): 판은 천(2), 테두리는 금속(4), 나머지는 가죽(3)
+                if (item.layer >= 0 && item.layer < s.layers.Count && s.layers[item.layer] != null && s.layers[item.layer].swapColors
+                    && Shader.Find(FlatShaderName) != null)
+                {
+                    item.idMats = new Material[item.mats.Length];
+                    for (int i = 0; i < item.mats.Length; i++)
+                    {
+                        string mn = item.matNames[i];
+                        int id = Has(mn, "Brown 3") ? 2 : Has(mn, "Grey") ? 4 : 3;
+                        item.idMats[i] = MakeFlat(item.mats[i], id, false, 0f, true);
                     }
                 }
                 // 화면에서 너무 작은 조각(버클, 징 등)은 프레임마다 생겼다 사라지며 반짝이므로 아예 그리지 않는다
@@ -522,6 +538,8 @@ namespace CardGame.EditorTools
             m.SetFloat("_Classify", classify ? 1f : 0f);
             m.SetFloat("_DepthPush", push);
             m.SetFloat("_ColorMask", writeColor ? 15f : 0f);
+            m.SetVector("_ClothRange", new Vector4(setup.clothHue.x, setup.clothHue.y, setup.clothSaturation.x, setup.clothSaturation.y));
+            m.SetFloat("_ClothMinV", setup.clothMinValue);
             createdMats.Add(m);
             return m;
         }
@@ -956,7 +974,7 @@ namespace CardGame.EditorTools
                 if (readback != null) UnityEngine.Object.DestroyImmediate(readback);
                 readback = new Texture2D(bw, bh, TextureFormat.RGBA32, false, false) { hideFlags = HideFlags.HideAndDontSave };
             }
-            bool idPass = pass == Pass.BodyId;
+            bool idPass = pass == Pass.BodyId || pass == Pass.LayerId;
             if (idPass && rtId == null)
             {
                 // 부위 번호는 색 변환 없이 그대로 읽어야 해서 선형 텍스처에 그린다
@@ -986,11 +1004,15 @@ namespace CardGame.EditorTools
             // 크게 그리면 그만큼 선명한 밉맵을 고르므로, 결과 해상도 기준으로 되돌린 뒤 설정만큼 더 흐리게
             cb.SetGlobalFloat("_CGBakeMipBias", Mathf.Log(ss, 2f) + s.textureMipBias);
 
-            // 미리보기(All)에는 첫 무기 레이어와 방패 레이어만 보여 준다
-            int previewWeapon = -1;
+            // 미리보기(All)에는 첫 무기 레이어와 첫 방패 레이어만 보여 준다
+            int previewWeapon = -1, previewShield = -1;
             if (pass == Pass.All)
                 for (int i = 0; i < s.layers.Count; i++)
-                    if (s.layers[i] != null && !s.layers[i].isShield && layerRoots.Count > i && layerRoots[i] != null) { previewWeapon = i; break; }
+                {
+                    if (s.layers[i] == null || layerRoots.Count <= i || layerRoots[i] == null) continue;
+                    if (!s.layers[i].isShield) { if (previewWeapon < 0) previewWeapon = i; }
+                    else if (previewShield < 0) previewShield = i;
+                }
 
             // 무기는 뼈 밑에 붙어 있어서 목록에서 몸보다 먼저 나올 수 있다. 가림막(몸 깊이)이 먼저 그려져야 가려지므로 몸을 앞에 둔다.
             var ordered = new List<DrawItem>(items.Count);
@@ -1004,13 +1026,18 @@ namespace CardGame.EditorTools
                 {
                     case Pass.Fit: mats = it.mats; break;
                     case Pass.All:
-                        if (it.layer >= 0 && it.layer != previewWeapon && !(s.layers[it.layer] != null && s.layers[it.layer].isShield)) continue;
+                        if (it.layer >= 0 && it.layer != previewWeapon && it.layer != previewShield) continue;
                         mats = it.mats; break;
                     case Pass.Body: if (it.layer != -1) continue; mats = it.mats; break;
                     case Pass.BodyId: if (it.layer != -1 || it.idMats == null) continue; mats = it.idMats; break;
                     case Pass.Layer:
                         if (it.layer == -1) { if (it.occMats == null) continue; mats = it.occMats; }
                         else if (it.layer == layer) mats = it.mats;
+                        else continue;
+                        break;
+                    case Pass.LayerId:
+                        if (it.layer == -1) { if (it.occMats == null) continue; mats = it.occMats; }
+                        else if (it.layer == layer && it.idMats != null) mats = it.idMats;
                         else continue;
                         break;
                     default: // LayerAlone
@@ -1050,6 +1077,21 @@ namespace CardGame.EditorTools
             }
             if ((autoFlip == 1) != s.flipY) PixelArtUtil.FlipRows(px, w, h);
             return px;
+        }
+
+        /// <summary>레이어 li 에서 재질 이름에 name 이 들어간 부분의 색을 바꾼다 (방패 판을 옷 색으로).</summary>
+        public void TintLayer(int li, string name, Color color)
+        {
+            foreach (var it in items)
+            {
+                if (it.layer != li || it.matNames == null) continue;
+                for (int i = 0; i < it.mats.Length && i < it.matNames.Length; i++)
+                    if (Has(it.matNames[i], name))
+                    {
+                        it.mats[i].SetColor("_Color", color);
+                        if (it.idMats != null && i < it.idMats.Length) it.idMats[i].SetColor("_Color", color);
+                    }
+            }
         }
 
         public void Dispose()
