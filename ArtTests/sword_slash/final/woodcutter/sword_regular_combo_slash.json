@@ -1,0 +1,48 @@
+{
+ "motion": "sword_regular_combo",
+ "fps": 24,
+ "frames": 73,
+ "frameWidth": 336,
+ "frameHeight": 304,
+ "columns": 12,
+ "rows": 7,
+ "offsetX": -60,
+ "offsetY": -60,
+ "note": "몸 칸의 왼쪽 위에서 (offsetX, offsetY) 만큼 옮겨 몸 위에 겹친다. 프레임 i = 몸 프레임 i.",
+ "swings": [
+  {
+   "start": 4,
+   "end": 7,
+   "dir": "반시계",
+   "flat": 1
+  },
+  {
+   "start": 14,
+   "end": 19,
+   "dir": "반시계",
+   "flat": 1
+  },
+  {
+   "start": 36,
+   "end": 41,
+   "dir": "시계",
+   "flat": 1
+  }
+ ],
+ "style": {
+  "shape": "타원 약하게",
+  "ellipse": [
+   0.85,
+   1.2
+  ],
+  "tailFrames": 3,
+  "palette": [
+   "#3c434f",
+   "#5d6676",
+   "#8892a2",
+   "#b9c2d0",
+   "#e3e9f0",
+   "#ffffff"
+  ]
+ }
+}
