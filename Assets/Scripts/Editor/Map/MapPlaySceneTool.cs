@@ -37,6 +37,7 @@ namespace CardGame.EditorTools
             var controller = go.AddComponent<MapPlayController>();
             controller.mapFile = AssetDatabase.LoadAssetAtPath<TextAsset>(mapPath);
             MapArtTool.FillArt(controller);
+            FillBattleData(controller);
 
             Directory.CreateDirectory(Path.GetDirectoryName(ScenePath));
             EditorSceneManager.SaveScene(scene, ScenePath);
@@ -65,11 +66,19 @@ namespace CardGame.EditorTools
             }
             controller.mapFile = file;
             MapArtTool.FillArt(controller);
+            FillBattleData(controller);
             EditorUtility.SetDirty(controller);
             EditorSceneManager.MarkSceneDirty(controller.gameObject.scene);
             EditorSceneManager.SaveScene(controller.gameObject.scene);
 
             EditorApplication.isPlaying = true;
+        }
+
+        // 전투 데이터 파일 연결 (규칙집 카드 + 임시 검사 몬스터)
+        static void FillBattleData(MapPlayController controller)
+        {
+            controller.cardsFile = AssetDatabase.LoadAssetAtPath<TextAsset>("Assets/Data/cards.json");
+            controller.testBattleFile = AssetDatabase.LoadAssetAtPath<TextAsset>("Assets/Data/test_swordsman.json");
         }
 
         static void AddToBuildSettings()

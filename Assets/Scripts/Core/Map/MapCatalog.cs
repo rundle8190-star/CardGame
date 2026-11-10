@@ -77,6 +77,7 @@ namespace CardGame.Core.Map
             new NodeTypeDef("big_dungeon",   "큰 던전 (보스)",  "보", "#2B2B5E", false, true),
             new NodeTypeDef("exit",          "탈출 후보",       "탈", "#4CAF50", false, false),
             new NodeTypeDef("map_gate",      "다른 맵으로 이동", "→", "#1E88E5", false, true),
+            new NodeTypeDef("boss_spot",     "보스 출몰지",     "B",  "#B0302A", false, false),
             // 랜덤 칸: 탐험마다 RandomNodeGenerator 가 후보 중 하나로 바꾼다
             new NodeTypeDef("random",        "랜덤 칸",         "랜", "#B8B8C8", false, false, true),
         };

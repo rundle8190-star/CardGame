@@ -1,0 +1,20 @@
+{
+  "note": "임시 시험 데이터 (규칙집 아님). 장비창의 무기 목록. layer = 전투 캐릭터 그림 Assets/Art/characters/<캐릭터>_ual2_x1_5/layers/<layer>/ 폴더. group 이 같은 무기끼리만 바꿔 낄 수 있다 (같은 모션을 쓰는 무기 묶음). 지금은 그림만 바뀌고 덱·수치는 그대로. 이름은 임시. 장비는 배낭 무게에 들어가지 않는다.",
+  "start": "sword",
+  "startInventory": [ "bearded_axe", "mace", "dagger" ],
+  "weapons": [
+    { "id": "sword", "name": "검", "layer": "sword", "group": "one_hand" },
+    { "id": "arming_sword", "name": "기사검", "layer": "arming_sword", "group": "one_hand" },
+    { "id": "cutlass", "name": "커틀러스", "layer": "cutlass", "group": "one_hand" },
+    { "id": "falchion", "name": "팔시온", "layer": "falchion", "group": "one_hand" },
+    { "id": "scimitar", "name": "시미터", "layer": "scimitar", "group": "one_hand" },
+    { "id": "messer", "name": "메서", "layer": "messer", "group": "one_hand" },
+    { "id": "kopesh", "name": "코페시", "layer": "kopesh", "group": "one_hand" },
+    { "id": "dagger", "name": "단검", "layer": "dagger", "group": "one_hand" },
+    { "id": "hatchet", "name": "손도끼", "layer": "hatchet", "group": "one_hand" },
+    { "id": "bearded_axe", "name": "도끼", "layer": "bearded_axe", "group": "one_hand" },
+    { "id": "mace", "name": "철퇴", "layer": "mace", "group": "one_hand" },
+    { "id": "spiked_mace", "name": "가시 철퇴", "layer": "spiked_mace", "group": "one_hand" },
+    { "id": "war_hammer", "name": "전투 망치", "layer": "war_hammer", "group": "one_hand" }
+  ]
+}

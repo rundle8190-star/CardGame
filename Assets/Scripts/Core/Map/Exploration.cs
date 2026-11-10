@@ -72,7 +72,7 @@ namespace CardGame.Core.Map
         }
     }
 
-    public class Exploration
+    public partial class Exploration
     {
         public readonly MapData Map;
         public readonly ExplorationConfig Config;
@@ -85,6 +85,7 @@ namespace CardGame.Core.Map
         public int Money { get; private set; }
         public int Totems { get; private set; }
         public ExplorationEnd End { get; private set; }
+        public int Seed { get; private set; }          // 탐험마다 정해지는 수. 이벤트 고르기·확률도 이 수로 정해 다시 들어가도 바뀌지 않는다
         public readonly List<BagItem> Bag = new List<BagItem>();
         public readonly List<string> Log = new List<string>();
 
@@ -106,10 +107,11 @@ namespace CardGame.Core.Map
             Memory = memory != null && memory.Width == map.width && memory.Height == map.height
                 ? memory : new MapMemory(map.width, map.height);
             Hp = Config.maxHp;
+            Seed = seed;
 
             MapNode start = null;
             foreach (var n in map.nodes) if (n.type == "start") start = n;
-            if (start == null) throw new InvalidOperationException("맵에 시작 지점이 없어요.");
+            if (start == null) throw new InvalidOperationException("맵에 시작 지점이 없다.");
             X = start.x; Y = start.y;
 
             if (map.links == null) map.links = new List<MapLink>();
@@ -139,7 +141,7 @@ namespace CardGame.Core.Map
             // 시작 지점은 처음부터 지나간 곳
             cleared.Add(start);
             Reveal();
-            AddLog(map.name + " 탐험을 시작했어요.");
+            AddLog(map.name + " 탐험을 시작했다.");
         }
 
         // ───────── 보기 ─────────
@@ -159,7 +161,7 @@ namespace CardGame.Core.Map
             int h;
             if (hopsHere.TryGetValue(n, out h))
             {
-                if (h <= Config.visionHops) return CellView.Visible;
+                if (h <= VisionHops) return CellView.Visible;
                 return Memory.IsSeen(n.x, n.y) ? CellView.Remembered : CellView.Hint;
             }
             return Memory.IsSeen(n.x, n.y) ? CellView.Remembered : CellView.Unknown;
@@ -230,10 +232,10 @@ namespace CardGame.Core.Map
         // 갈 수 없으면 이유를, 갈 수 있으면 null 을 준다
         public string CannotMove(MapNode target)
         {
-            if (End != ExplorationEnd.None) return "탐험이 끝났어요.";
-            if (target == null) return "노드로만 옮겨 갈 수 있어요.";
-            if (!Neighbors.Contains(target)) return "길로 이어진 노드로만 갈 수 있어요.";
-            if (BlockedSlots >= 3) return "짐이 너무 무거워 움직일 수 없어요. 물품을 버리세요.";
+            if (End != ExplorationEnd.None) return "탐험이 끝났다.";
+            if (target == null) return "노드로만 옮겨 갈 수 있다.";
+            if (!Neighbors.Contains(target)) return "길로 이어진 노드로만 갈 수 있다.";
+            if (BlockedSlots >= 3) return "짐이 너무 무거워 움직일 수 없다. 물품을 버려야 한다.";
             return null;
         }
 
@@ -241,8 +243,10 @@ namespace CardGame.Core.Map
         public bool Move(MapNode target)
         {
             if (CannotMove(target) != null) return false;
+            Previous = CurrentNode;
             X = target.x; Y = target.y;
             Steps++;
+            bonusVision = 0;
             Reveal();
             if (Config.respawnEvery > 0 && Steps % Config.respawnEvery == 0) Respawn();
             return true;
@@ -265,7 +269,7 @@ namespace CardGame.Core.Map
                 {
                     var cur = q.Dequeue();
                     int h = hopsHere[cur];
-                    if (h > Config.visionHops) continue;
+                    if (h > VisionHops) continue;
                     foreach (var nb in Map.Neighbors(cur))
                         if (!hopsHere.ContainsKey(nb)) { hopsHere[nb] = h + 1; q.Enqueue(nb); }
                 }
@@ -274,7 +278,7 @@ namespace CardGame.Core.Map
             foreach (var kv in hopsHere)
             {
                 var n = kv.Key;
-                if (kv.Value <= Config.visionHops)
+                if (kv.Value <= VisionHops)
                 {
                     Memory.See(n.x, n.y);
                     int r = kv.Value == 0 ? Config.visionRadius : Math.Max(0, Config.visionRadius - 1);
@@ -291,8 +295,8 @@ namespace CardGame.Core.Map
                 var b = Map.NodeAt(l.bx, l.by);
                 if (a == null || b == null) continue;
                 int ha, hb;
-                bool va = hopsHere.TryGetValue(a, out ha) && ha <= Config.visionHops;
-                bool vb = hopsHere.TryGetValue(b, out hb) && hb <= Config.visionHops;
+                bool va = hopsHere.TryGetValue(a, out ha) && ha <= VisionHops;
+                bool vb = hopsHere.TryGetValue(b, out hb) && hb <= VisionHops;
                 if (va || vb) MarkLine(l.ax, l.ay, l.bx, l.by, va && vb ? visibleCells : hintCells);
             }
 
@@ -323,7 +327,7 @@ namespace CardGame.Core.Map
         }
 
         // 가장 오래전에 이긴 전투 노드 1곳(지금 서 있는 곳 제외)에 적이 다시 생긴다
-        void Respawn()
+        bool Respawn()
         {
             for (int i = 0; i < clearOrder.Count; i++)
             {
@@ -332,9 +336,10 @@ namespace CardGame.Core.Map
                 if (!MapCatalog.NodeType(n.type).HasBattle) continue;
                 clearOrder.RemoveAt(i);
                 cleared.Remove(n);
-                AddLog(Label(n) + "에 적이 다시 나타났어요.");
-                return;
+                AddLog(Label(n) + "에 적이 다시 나타났다.");
+                return true;
             }
+            return false;
         }
 
         // ───────── 노드 ─────────
@@ -344,10 +349,10 @@ namespace CardGame.Core.Map
         {
             if (End != ExplorationEnd.None || IsCleared(n)) return;
             int lv = DifficultyOf(n);
-            if (!won) { Die("전투에서 졌어요."); return; }
+            if (!won) { Die("전투에서 졌다."); return; }
 
             Hp -= Config.battleDamage[lv];
-            if (Hp <= 0) { Hp = 0; Die("이겼지만 쓰러졌어요."); return; }
+            if (Hp <= 0) { Hp = 0; Die("이겼지만 상처가 깊어 쓰러졌다."); return; }
             int money = Config.battleMoney[lv] * (n.type == "elite" ? 2 : 1);
             Money += money;
             string weapon = MapCatalog.FamilyName(EnemyOf(n)) + "의 무기";
@@ -356,22 +361,46 @@ namespace CardGame.Core.Map
             AddLog(Label(n) + " 승리: 체력 -" + Config.battleDamage[lv] + ", 재화 +" + money + ", " + weapon + " 획득");
         }
 
+        // 실제 카드 전투 결과. 전투가 끝났을 때의 체력을 그대로 가져온다. 보상은 임시 전투와 같다.
+        public void ResolveBattleResult(MapNode n, bool won, int hpLeft)
+        {
+            ResolveBattleResult(n, won, hpLeft, 1, null);
+        }
+
+        // moneyMult: 재화 보상 배수 (이벤트 전투), enemyName: 무기 이름에 쓸 적 이름 (비우면 노드의 적 계열)
+        public void ResolveBattleResult(MapNode n, bool won, int hpLeft, int moneyMult, string enemyName)
+        {
+            if (End != ExplorationEnd.None || IsCleared(n)) return;
+            if (!won) { Hp = 0; Die("전투에서 졌다."); return; }
+
+            int lv = DifficultyOf(n);
+            int before = Hp;
+            Hp = Math.Max(1, Math.Min(Config.maxHp, hpLeft));
+            int money = Config.battleMoney[lv] * (n.type == "elite" ? 2 : 1) * Math.Max(1, moneyMult);
+            Money += money;
+            string who = !string.IsNullOrEmpty(enemyName) ? enemyName : MapCatalog.FamilyName(EnemyOf(n));
+            string weapon = (string.IsNullOrEmpty(who) ? "적" : who) + "의 무기";
+            Bag.Add(new BagItem(weapon, "weapon", Config.dropWeaponWeight));
+            MarkCleared(n);
+            AddLog(NodeTitle(n) + " 승리: 체력 " + before + "→" + Hp + ", 재화 +" + money + (moneyMult > 1 ? " (" + moneyMult + "배)" : "") + ", " + weapon + " 획득");
+        }
+
         public void Farm(MapNode n)
         {
             if (End != ExplorationEnd.None || IsCleared(n)) return;
             for (int i = 0; i < Config.farmMaterials; i++) Bag.Add(new BagItem("재료", "material", 1));
             Money += Config.farmMoney;
             MarkCleared(n);
-            AddLog(Label(n) + "에서 재료 " + Config.farmMaterials + "개, 재화 " + Config.farmMoney + "을 주웠어요.");
+            AddLog(Label(n) + "에서 재료 " + Config.farmMaterials + "개와 재화 " + Josa.Eul(Config.farmMoney) + " 주웠다.");
         }
 
         public bool TakeTotem(MapNode n)
         {
             if (End != ExplorationEnd.None || IsCleared(n)) return false;
-            if (Totems >= Config.maxTotems) { AddLog("토템은 " + Config.maxTotems + "개까지만 가질 수 있어요."); return false; }
+            if (Totems >= Config.maxTotems) { AddLog("토템은 " + Config.maxTotems + "개까지만 가질 수 있다."); return false; }
             Totems++;
             MarkCleared(n);
-            AddLog("토템을 얻었어요. (" + Totems + "/" + Config.maxTotems + ")");
+            AddLog("토템을 얻었다. (" + Totems + "/" + Config.maxTotems + ")");
             return true;
         }
 
@@ -383,7 +412,7 @@ namespace CardGame.Core.Map
             int heal = (int)Math.Round(Config.maxHp * Config.restHealRate);
             Hp = Math.Min(Config.maxHp, Hp + heal);
             restUsed = true;
-            AddLog("휴식: 체력 +" + heal);
+            AddLog("푹 쉬었다. 체력 +" + heal);
         }
 
         // 이벤트·폐허 마을 같은 노드를 "봤음"으로 표시
@@ -396,21 +425,21 @@ namespace CardGame.Core.Map
         {
             if (End != ExplorationEnd.None || n.type != "exit" || !IsExitOpen(n)) return false;
             End = ExplorationEnd.Escaped;
-            AddLog("탈출했어요. 재화 " + Money + ", 물품 " + Bag.Count + "개를 가지고 돌아가요.");
+            AddLog("탈출했다. 재화 " + Money + ", 물품 " + Bag.Count + "개를 가지고 돌아간다.");
             return true;
         }
 
         public void DropItem(int index)
         {
             if (index < 0 || index >= Bag.Count) return;
-            AddLog(Bag[index].name + "을 버렸어요.");
+            AddLog(Josa.Eul(Bag[index].name) + " 버렸다.");
             Bag.RemoveAt(index);
         }
 
         void Die(string why)
         {
             End = ExplorationEnd.Dead;
-            AddLog(why + " 들고 있던 물품과 재화를 모두 잃었어요.");
+            AddLog(why + " 들고 있던 물품과 재화를 모두 잃었다.");
             Bag.Clear();
             Money = 0;
         }

@@ -1,0 +1,26 @@
+{
+  "note": "전투 화면 모션 연결 (임시, 규칙집 아님). 모션 이름은 '세트:모션'. ual2 = <캐릭터>_ual2_x1_5 폴더, ual = <캐릭터>_ual_x1_5 폴더.",
+  "playerCharacter": "woodcutter",
+  "monsterCharacter": "ranger",
+  "weaponLayer": "sword",
+  "playerClothRow": 0,
+  "monsterClothRow": 2,
+  "idle": "ual2:idle_shield_loop",
+  "hit": "ual2:hit_knockback",
+  "death": "ual:death01",
+  "cards": [
+    { "card": "longsword", "motion": "ual2:sword_regular_a" },
+    { "card": "serrated_sword", "motion": "ual2:sword_regular_b" },
+    { "card": "rapier", "motion": "ual2:sword_regular_c" },
+    { "card": "execution_strike", "motion": "ual2:sword_heavy_combo" },
+    { "card": "whirlwind_slash", "motion": "ual2:sword_regular_combo" },
+    { "card": "parry", "motion": "ual2:sword_block" },
+    { "card": "advance", "motion": "ual2:sword_dash" },
+    { "card": "roll", "motion": "ual:roll" },
+    { "card": "dodge", "motion": "ual:walk_loop", "reverse": true },
+    { "card": "sharpen", "motion": "ual2:consume" },
+    { "card": "gather_strength", "motion": "ual2:consume" },
+    { "card": "first_aid", "motion": "ual2:consume" },
+    { "card": "catch_breath", "motion": "ual2:consume" }
+  ]
+}

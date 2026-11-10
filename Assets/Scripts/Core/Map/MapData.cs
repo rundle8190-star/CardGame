@@ -32,6 +32,13 @@ namespace CardGame.Core.Map
     public class MapLink
     {
         public int ax, ay, bx, by;
+        // 지름길: gate 가 있으면 장애물(obstacle)로 막힌 길. 여는 규칙은 맵 코어가 들어오면 붙인다.
+        // 지금은 항상 막힌 상태로 둔다 (지나갈 수 없고, 지도에는 빨간 점선과 X 로 보인다).
+        public string gate = "";
+        public string obstacle = "";
+        public bool keep;             // 자동 연결이 지우지 않는 길 (편집기용)
+
+        public bool IsGated { get { return !string.IsNullOrEmpty(gate); } }
 
         public MapLink() { }
         public MapLink(MapNode a, MapNode b) { ax = a.x; ay = a.y; bx = b.x; by = b.y; }
@@ -157,6 +164,7 @@ namespace CardGame.Core.Map
             var result = new List<MapNode>();
             foreach (var l in links)
             {
+                if (l.IsGated) continue;   // 막힌 지름길은 지나갈 수 없다
                 MapNode other = null;
                 if (l.ax == node.x && l.ay == node.y) other = NodeAt(l.bx, l.by);
                 else if (l.bx == node.x && l.by == node.y) other = NodeAt(l.ax, l.ay);

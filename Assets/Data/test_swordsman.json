@@ -1,0 +1,99 @@
+{
+  "source": "임시 시험 데이터 (규칙집 아님)",
+  "version": "temp-1",
+  "temporary": true,
+  "note": "애니메이션이 있는 검 계열 카드만으로 시험하려고 만든 임시 몬스터·패턴·덱. 규칙집(v0.7.3) 데이터가 아니다. 모든 전투 노드가 지금은 이 몬스터를 쓴다.",
+  "monsters": [
+    {
+      "id": "swordsman",
+      "no": 0,
+      "name": "검사",
+      "hp": 40,
+      "startCell": 6,
+      "concept": "(임시) 검 계열 카드만 쓰는 시험용 몬스터",
+      "cards": [
+        "longsword",
+        "serrated_sword",
+        "rapier",
+        "execution_strike",
+        "whirlwind_slash",
+        "parry",
+        "sharpen",
+        "gather_strength",
+        "advance",
+        "dodge",
+        "roll",
+        "first_aid",
+        "catch_breath"
+      ]
+    }
+  ],
+  "patterns": [
+    {
+      "monster": "swordsman",
+      "name": "기본 베기",
+      "isDefault": true,
+      "conditionText": "기본",
+      "conditions": [{ "type": "default" }],
+      "slots": ["advance", "longsword", "parry", "serrated_sword", "longsword"],
+      "description": "다가가서 베고, 받아넘긴 뒤 다시 벤다"
+    },
+    {
+      "monster": "swordsman",
+      "name": "거리 좁히기",
+      "isDefault": false,
+      "conditionText": "거리 3 이상",
+      "conditions": [{ "type": "distance", "op": ">=", "value": 3 }],
+      "slots": ["advance", "advance", "sharpen", "longsword", "serrated_sword"],
+      "description": "두 번 다가가고 칼을 간 뒤 벤다"
+    },
+    {
+      "monster": "swordsman",
+      "name": "찌르기 견제",
+      "isDefault": false,
+      "conditionText": "거리 2",
+      "conditions": [{ "type": "distance", "op": "==", "value": 2 }],
+      "slots": ["rapier", "advance", "longsword", "parry", "serrated_sword"],
+      "description": "떨어진 채 레이피어로 찌르고 붙는다"
+    },
+    {
+      "monster": "swordsman",
+      "name": "등 뒤 노리기",
+      "isDefault": false,
+      "conditionText": "거리 1",
+      "conditions": [{ "type": "distance", "op": "==", "value": 1 }],
+      "slots": ["parry", "roll", "longsword", "serrated_sword", "dodge"],
+      "description": "받아넘기고 구르기로 넘어가 등 뒤를 벤다"
+    },
+    {
+      "monster": "swordsman",
+      "name": "필사의 일격",
+      "isDefault": false,
+      "conditionText": "몬스터 체력 40% 이하",
+      "conditions": [{ "type": "monsterHpPercent", "op": "<=", "value": 40 }],
+      "slots": ["first_aid", "gather_strength", "whirlwind_slash", null, "execution_strike"],
+      "description": "응급 처치 후 힘을 모아 회전 베기와 처형으로 몰아친다"
+    }
+  ],
+  "decks": [
+    {
+      "id": "sword_test",
+      "name": "(임시) 검 시험 덱",
+      "cards": [
+        { "card": "longsword", "count": 2 },
+        { "card": "serrated_sword", "count": 2 },
+        { "card": "rapier", "count": 2 },
+        { "card": "execution_strike", "count": 1 },
+        { "card": "whirlwind_slash", "count": 1 },
+        { "card": "parry", "count": 2 },
+        { "card": "sharpen", "count": 2 },
+        { "card": "gather_strength", "count": 1 },
+        { "card": "advance", "count": 2 },
+        { "card": "dodge", "count": 2 },
+        { "card": "roll", "count": 1 },
+        { "card": "first_aid", "count": 1 },
+        { "card": "catch_breath", "count": 1 }
+      ]
+    }
+  ]
+}

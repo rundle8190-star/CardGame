@@ -1,0 +1,146 @@
+{
+  "note": "임시 시험 데이터 (규칙집 아님). 맵의 이벤트(?) 노드에서 나오는 선택지. 이벤트마다 '무난한 보상' 하나와 '더 좋은 보상 + 대가' 하나, 그리고 지나가기(또는 돌아가기). 숨은 확률은 쓰지 않는다. 버튼에 보상과 대가를 그대로 적는다. 문장은 ~다 / ~인 듯하다 체. speaker·line 은 사람이 나오는 이벤트의 말하는 사람과 첫 대사, 선택지의 reply 는 고른 뒤 그 사람의 대답. 효과 종류: hp, money, material, weapon, totem, battle(전투, amount = 재화 보상 배수), next_battle_enemy_hp, next_battle_poison, respawn, go_back",
+  "events": [
+    {
+      "id": "abandoned_cart",
+      "title": "버려진 수레",
+      "text": "바퀴가 빠진 수레가 길가에 기울어 있다. 짐칸에 뭔가 남아 있는 듯하다.",
+      "choices": [
+        {
+          "label": "겉만 뒤진다",
+          "hint": "재료 1개",
+          "result": "짐칸 위에 굴러다니던 재료를 하나 챙겼다.",
+          "effects": [ { "type": "material", "amount": 1 } ]
+        },
+        {
+          "label": "깊이 뒤진다",
+          "hint": "재료 3개 + 무기 1개 · 대신 매복한 도적과 전투",
+          "result": "짐을 다 꺼내는데 수레 뒤에서 도적이 튀어나왔다!",
+          "replySpeaker": "도적",
+          "reply": "남의 물건에 손을 대? 그럼 값을 치러야지.",
+          "effects": [ { "type": "material", "amount": 3 }, { "type": "weapon", "amount": 1, "name": "수레 속 무기" }, { "type": "battle", "amount": 1, "name": "도적" } ]
+        },
+        { "label": "지나간다", "hint": "아무 일도 없다", "leave": true }
+      ]
+    },
+    {
+      "id": "wounded_mercenary",
+      "title": "다친 용병",
+      "text": "나무에 기댄 용병이 피를 흘리고 있다. 옆에는 짐 보따리가 놓여 있다.",
+      "speaker": "다친 용병",
+      "line": "…거기, 붕대 좀 있나? 이대로는 못 버티겠군.",
+      "choices": [
+        {
+          "label": "붕대를 나눠 준다",
+          "hint": "재화 +10 · 대신 체력 -5",
+          "needHpAbove": 5,
+          "result": "상처를 싸매 주자 용병이 재화 주머니를 건넸다.",
+          "reply": "고맙다. 많진 않지만 이건 받아 둬.",
+          "effects": [ { "type": "hp", "amount": -5 }, { "type": "money", "amount": 10 } ]
+        },
+        {
+          "label": "짐을 턴다",
+          "hint": "재화 +15 + 무기 1개 · 대신 다음 전투 적 체력 +10",
+          "result": "용병의 짐을 챙겼다. 소문이 퍼져 다음 적은 단단히 준비하고 있을 듯하다.",
+          "reply": "이… 날강도 같은 놈… 네 얼굴, 똑똑히 기억해 두겠다.",
+          "effects": [ { "type": "money", "amount": 15 }, { "type": "weapon", "amount": 1, "name": "용병의 무기" }, { "type": "next_battle_enemy_hp", "amount": 10 } ]
+        },
+        { "label": "지나간다", "hint": "아무 일도 없다", "leave": true, "reply": "…그래, 다들 제 갈 길이 바쁘지." }
+      ]
+    },
+    {
+      "id": "ruined_shrine",
+      "title": "무너진 사당",
+      "text": "이끼 낀 사당이 반쯤 무너져 있다. 제단에는 아직 희미한 빛이 남아 있다.",
+      "choices": [
+        {
+          "label": "기도한다",
+          "hint": "체력 +10 (최대치까지)",
+          "result": "따뜻한 기운이 몸을 감쌌다.",
+          "effects": [ { "type": "hp", "amount": 10 } ]
+        },
+        {
+          "label": "피를 바친다",
+          "hint": "토템 1개 · 대신 체력 -10",
+          "needHpAbove": 10,
+          "needTotemRoom": true,
+          "result": "제단에 피가 스며들자 빛이 모여 토템이 되었다.",
+          "effects": [ { "type": "hp", "amount": -10 }, { "type": "totem", "amount": 1 } ]
+        },
+        { "label": "지나간다", "hint": "아무 일도 없다", "leave": true }
+      ]
+    },
+    {
+      "id": "bandit_toll",
+      "title": "도적의 통행세",
+      "text": "도적 무리가 길을 막아섰다.",
+      "speaker": "도적 두목",
+      "line": "여길 지나가려면 통행세를 내야지. 싫으면… 알지?",
+      "choices": [
+        {
+          "label": "낸다",
+          "hint": "그냥 통과 · 대신 재화 -10",
+          "needMoney": 10,
+          "result": "도적들이 재화를 세더니 길을 비켜 줬다.",
+          "reply": "현명하군. 조심해서 가라고.",
+          "effects": [ { "type": "money", "amount": -10 } ]
+        },
+        {
+          "label": "싸운다",
+          "hint": "이기면 재화 보상 2배 · 대신 전투",
+          "result": "검을 뽑았다!",
+          "reply": "좋아, 몸으로 내겠다 이거지!",
+          "effects": [ { "type": "battle", "amount": 2, "name": "도적" } ]
+        },
+        {
+          "label": "돌아간다",
+          "hint": "왔던 노드로 돌아간다",
+          "leave": true,
+          "result": "괜한 싸움은 피하고 왔던 길로 돌아갔다.",
+          "reply": "하하, 겁쟁이 녀석. 돈 생기면 다시 와라.",
+          "effects": [ { "type": "go_back", "amount": 1 } ]
+        }
+      ]
+    },
+    {
+      "id": "campfire",
+      "title": "모닥불 흔적",
+      "text": "누군가 피워 둔 모닥불이 아직 따뜻하다. 멀리 가지는 않은 듯하다.",
+      "choices": [
+        {
+          "label": "잠깐 쉰다",
+          "hint": "체력 +5",
+          "result": "불가에 앉아 숨을 돌렸다.",
+          "effects": [ { "type": "hp", "amount": 5 } ]
+        },
+        {
+          "label": "푹 쉰다",
+          "hint": "체력 +15 · 대신 지나온 전투 노드 1곳에 적이 다시 나타난다",
+          "result": "푹 잠들었다. 그사이 지나온 길에 적이 다시 모여든 듯하다.",
+          "effects": [ { "type": "hp", "amount": 15 }, { "type": "respawn", "amount": 1 } ]
+        },
+        { "label": "지나간다", "hint": "아무 일도 없다", "leave": true }
+      ]
+    },
+    {
+      "id": "strange_chest",
+      "title": "수상한 상자",
+      "text": "자물쇠가 달린 상자가 덩그러니 놓여 있다. 틈새로 이상한 냄새가 난다.",
+      "choices": [
+        {
+          "label": "조심히 연다",
+          "hint": "재화 +5",
+          "result": "자물쇠를 살살 따서 구석에 있던 재화만 챙겼다.",
+          "effects": [ { "type": "money", "amount": 5 } ]
+        },
+        {
+          "label": "억지로 부순다",
+          "hint": "재화 +20 · 대신 다음 전투를 독 2로 시작",
+          "result": "상자를 부수자 재화가 쏟아졌지만, 독 가스도 함께 뿜어져 나왔다.",
+          "effects": [ { "type": "money", "amount": 20 }, { "type": "next_battle_poison", "amount": 2 } ]
+        },
+        { "label": "지나간다", "hint": "아무 일도 없다", "leave": true }
+      ]
+    }
+  ]
+}
