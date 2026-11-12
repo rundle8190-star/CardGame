@@ -106,6 +106,10 @@ namespace CardGame.EditorTools
         // 편집 설정의 반복 지정 (굽는 동안만)
         static readonly Dictionary<AnimationClip, bool> loopOverride = new Dictionary<AnimationClip, bool>();
 
+        // json 의 clip 칸에 적을 이름 (새로 만든 Timeline 모션)
+        static readonly Dictionary<AnimationClip, string> infoName = new Dictionary<AnimationClip, string>();
+        static string InfoName(AnimationClip clip) => clip != null && infoName.TryGetValue(clip, out var n) ? n : SourceName(clip);
+
         /// <summary>원래 모션 이름 (편집본이면 복사해 온 팩 모션 이름)</summary>
         public static string SourceName(AnimationClip clip)
             => clip != null && editSource.TryGetValue(clip, out var src) && src != null ? src.name : (clip != null ? clip.name : "");
@@ -304,7 +308,7 @@ namespace CardGame.EditorTools
 
             var info = new ClipInfo
             {
-                clip = SourceName(clip),
+                clip = InfoName(clip),
                 fps = s.fps,
                 frames = n,
                 frameWidth = fw,
@@ -479,7 +483,7 @@ namespace CardGame.EditorTools
 
             var info = new ClipInfo
             {
-                clip = SourceName(clip), fps = s.fps, frames = n, frameWidth = fw, frameHeight = fh,
+                clip = InfoName(clip), fps = s.fps, frames = n, frameWidth = fw, frameHeight = fh,
                 columns = cols, rows = (n + cols - 1) / cols, pivotX = pivX, pivotY = gy,
                 loop = IsLoop(clip), hitFrame = hit,
                 layers = names.ToArray(),
@@ -829,6 +833,75 @@ namespace CardGame.EditorTools
             string rel = s.outputFolder.TrimEnd('/') + "/_layers.json";
             File.WriteAllText(Path.Combine(Directory.GetCurrentDirectory(), rel), JsonUtility.ToJson(info, true));
             AssetDatabase.ImportAsset(rel);
+        }
+
+        // ───────── Timeline 굽기 (모션 편집) ─────────
+
+        /// <summary>편집본(.anim)이면 같은 이름의 팩 모션, 아니면 그대로</summary>
+        public static AnimationClip PackClipOf(CharacterBakeSetup s, AnimationClip c)
+        {
+            if (c == null) return null;
+            string p = AssetDatabase.GetAssetPath(c);
+            if (p.StartsWith(MotionEditData.Root + "/"))
+            {
+                var e = MotionEditData.FindEntry(s, c.name);
+                return e != null ? e.clip : c;
+            }
+            return c;
+        }
+
+        /// <summary>
+        /// Timeline 하나를 모션처럼 굽는다. 결과 이름 = Timeline 이름. 같은 이름의 모션이 있으면 그 결과를 바꾸고
+        /// (타격 자동 찾기·반복 같은 설정도 그 모션 것을 따른다), 없으면 새 모션으로 만든다.
+        /// 설정의 hitFrames 가 있으면 첫 번째를 hitFrame 에, 전체를 json 의 hitFrames 에 적는다.
+        /// </summary>
+        public static string BakeTimeline(CharacterRig rig, string name, UnityEngine.Timeline.TimelineAsset tl, MotionEditData.Settings ms)
+        {
+            var s = rig.setup;
+            var clips = MotionEditTimeline.AnimClips(tl);
+            if (clips.Count == 0) { Debug.LogWarning($"[모션 편집] Timeline {name}: Animation 트랙에 모션이 없어요."); return null; }
+            var existing = MotionEditData.FindEntry(s, name);
+            var src = existing != null ? existing.clip : PackClipOf(s, MotionEditTimeline.ClipOf(clips[0]));
+            var proxy = MotionEditTimeline.MakeProxy(tl, name, existing != null ? existing.clip : null);
+            if (src != null) editSource[proxy] = src;
+            if (existing == null) infoName[proxy] = "Timeline:" + name;
+            if (ms != null && ms.loop.HasValue) loopOverride[proxy] = ms.loop.Value;
+            var e = new CharacterBakeSetup.ClipEntry
+            {
+                bake = true, clip = proxy, outputName = name,
+                findHitFrame = existing != null && existing.findHitFrame,
+                hitFrameOverride = existing != null ? existing.hitFrameOverride : -1,
+            };
+            if (ms != null && ms.hitFrames.Count > 0) { e.hitFrameOverride = ms.hitFrames[0]; e.findHitFrame = false; }
+
+            int oldMax = s.maxFrames;
+            int need = Mathf.FloorToInt((float)tl.duration * s.fps + 0.0001f) + 1;
+            if (need > s.maxFrames)
+            {
+                Debug.LogWarning($"[모션 편집] Timeline {name}: {need}프레임이라 최대 프레임 수({s.maxFrames})를 이번 굽기만 {need}로 올립니다.");
+                s.maxFrames = need;
+            }
+            string png;
+            try { png = BakeClipCore(rig, e); }
+            finally
+            {
+                s.maxFrames = oldMax;
+                editSource.Remove(proxy); infoName.Remove(proxy); loopOverride.Remove(proxy);
+                rig.SetClip(null);
+                MotionEditTimeline.ReleaseProxy(proxy);
+            }
+            if (png != null && ms != null && ms.hitFrames.Count > 0)
+            {
+                // 연속 공격은 타격이 여러 번: json 에 hitFrames 를 더한다
+                string json = Path.Combine(Directory.GetCurrentDirectory(), s.outputFolder.TrimEnd('/') + "/" + name + ".json");
+                string text = File.ReadAllText(json);
+                text = System.Text.RegularExpressions.Regex.Replace(text, "(\"hitFrame\":\\s*-?\\d+,)",
+                    "$1\n    \"hitFrames\": [" + string.Join(", ", ms.hitFrames) + "],");
+                File.WriteAllText(json, text);
+                AssetDatabase.ImportAsset(s.outputFolder.TrimEnd('/') + "/" + name + ".json");
+            }
+            Debug.Log($"[모션 편집] Timeline {name} 굽기: 클립 {clips.Count}개, {tl.duration:0.00}초" + (existing != null ? " (같은 이름 모션 결과를 바꿈)" : " (새 모션)"));
+            return png;
         }
 
         // ───────── 모션 편집 미리보기 (굽기와 같은 그리기, 깜빡임 정리만 빠짐) ─────────

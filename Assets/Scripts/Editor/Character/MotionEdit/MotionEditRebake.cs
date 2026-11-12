@@ -22,21 +22,25 @@ namespace CardGame.EditorTools
         {
             if (EditorApplication.isPlaying) { EditorUtility.DisplayDialog("모션 편집", "플레이 중에는 구울 수 없어요.", "확인"); return; }
             var marked = MotionEditData.Marked();
-            if (marked.Count == 0) { EditorUtility.DisplayDialog("모션 편집", "굽기 표시된 모션이 없어요.\n미리보기 창의 '굽기 표시'를 켜 주세요.", "확인"); return; }
+            var markedTl = MotionEditData.MarkedTimelines();
+            if (marked.Count + markedTl.Count == 0) { EditorUtility.DisplayDialog("모션 편집", "굽기 표시된 모션·Timeline 이 없어요.\n미리보기 창의 '굽기 표시'를 켜 주세요.", "확인"); return; }
 
             var sb = new StringBuilder();
             var t0 = DateTime.Now;
             sb.AppendLine($"표시된 모션만 굽기  {t0:yyyy-MM-dd HH:mm:ss}");
-            var bySet = new Dictionary<string, List<string>>();
-            foreach (var kv in marked)
+            // 세트 → (이름, Timeline 인지). 모션을 먼저, Timeline 을 나중에 굽는다 (같은 이름이면 Timeline 결과가 남는다)
+            var bySet = new Dictionary<string, List<KeyValuePair<string, bool>>>();
+            void Add(string set, string name, bool tl)
             {
-                if (!bySet.TryGetValue(kv.Key, out var l)) { l = new List<string>(); bySet[kv.Key] = l; }
-                l.Add(kv.Value);
+                if (!bySet.TryGetValue(set, out var l)) { l = new List<KeyValuePair<string, bool>>(); bySet[set] = l; }
+                l.Add(new KeyValuePair<string, bool>(name, tl));
             }
+            foreach (var kv in marked) Add(kv.Key, kv.Value, false);
+            foreach (var kv in markedTl) Add(kv.Key, kv.Value, true);
 
-            var done = new HashSet<string>();   // 세트/모션 (두 캐릭터 다 성공한 것)
+            var done = new HashSet<string>();   // 세트/이름/종류 (두 캐릭터 다 성공한 것)
             var failed = new List<string>();
-            int total = marked.Count * MotionEditData.Characters.Length, step = 0;
+            int total = (marked.Count + markedTl.Count) * MotionEditData.Characters.Length, step = 0;
             try
             {
                 foreach (var kv in bySet)
@@ -47,46 +51,56 @@ namespace CardGame.EditorTools
                     {
                         var s = MotionEditData.LoadSetup(ch, set);
                         if (s == null) { failed.Add($"{ch} {set}: 굽기 설정 없음 ({MotionEditData.SetupPath(ch, set)})"); continue; }
-                        var entries = new List<CharacterBakeSetup.ClipEntry>();
-                        foreach (var clip in kv.Value)
-                        {
-                            var e = MotionEditData.FindEntry(s, clip);
-                            if (e == null) failed.Add($"{ch} {set}/{clip}: 굽기 설정에 이 모션이 없음");
-                            else entries.Add(e);
-                        }
-                        if (entries.Count == 0) continue;
                         if (!CharacterBaker.HasSavedPalettes(s)) { failed.Add($"{ch} {set}: 저장된 팔레트가 없어 건너뜀 (세트 전체를 먼저 구워야 함)"); continue; }
 
                         var rig = new CharacterRig(s);
                         var baked = new List<string>();
+                        var lines = new List<string>();
                         try
                         {
                             if (!rig.IsValid) { failed.Add($"{ch} {set}: 조립 실패 {rig.Warnings}"); continue; }
                             // 전부 굽기와 같은 순서: 첫 모션을 먼저 넣어 무기를 주먹에 맞춘다 (fistGrip)
                             var first = MotionEditData.FirstBakeClip(s);
                             if (first != null) rig.SetClip(first);
-                            foreach (var e in entries)
+                            foreach (var item in kv.Value)
                             {
-                                string name = MotionEditData.OutName(e);
-                                if (EditorUtility.DisplayCancelableProgressBar("표시된 모션만 굽기", $"{ch} {set}/{name}", step++ / (float)total))
+                                string name = item.Key; bool isTl = item.Value;
+                                if (EditorUtility.DisplayCancelableProgressBar("표시된 모션만 굽기", $"{ch} {set}/{name}{(isTl ? " (Timeline)" : "")}", step++ / (float)total))
                                     throw new OperationCanceledException();
-                                string png = CharacterBaker.BakeClip(rig, e);
+                                string png;
+                                MotionEditData.Settings ms;
+                                if (isTl)
+                                {
+                                    var tl = AssetDatabase.LoadAssetAtPath<UnityEngine.Timeline.TimelineAsset>(MotionEditData.TimelinePath(set, name));
+                                    ms = MotionEditData.LoadTimelineSettings(set, name);
+                                    png = tl != null ? CharacterBaker.BakeTimeline(rig, name, tl, ms) : null;
+                                    if (png != null)
+                                        lines.Add($"  {ch} {set}/{name}: Timeline {tl.duration:0.00}초"
+                                            + (ms != null && ms.hitFrames.Count > 0 ? $", 타격 [{string.Join(", ", ms.hitFrames)}]" : "")
+                                            + (ms != null && ms.loop.HasValue ? $", 반복 {(ms.loop.Value ? "켬" : "끔")}" : ""));
+                                }
+                                else
+                                {
+                                    var e = MotionEditData.FindEntry(s, name);
+                                    if (e == null) { failed.Add($"{ch} {set}/{name}: 굽기 설정에 이 모션이 없음"); continue; }
+                                    ms = MotionEditData.LoadSettings(set, name);
+                                    png = CharacterBaker.BakeClip(rig, e);
+                                    bool edited = MotionEditData.LoadEditClip(set, name) != null;
+                                    if (png != null)
+                                        lines.Add($"  {ch} {set}/{name}: {(edited ? "편집본" : "팩 모션")}"
+                                            + (ms != null && ms.hitFrame.HasValue ? $", 타격 {ms.hitFrame.Value}" : "")
+                                            + (ms != null && ms.loop.HasValue ? $", 반복 {(ms.loop.Value ? "켬" : "끔")}" : ""));
+                                }
                                 if (png == null) { failed.Add($"{ch} {set}/{name}: 굽기 실패"); continue; }
-                                baked.Add(name);
-                                ok.TryGetValue(name, out int c); ok[name] = c + 1;
+                                if (!baked.Contains(name)) baked.Add(name);
+                                string key = name + (isTl ? "|tl" : "|clip");
+                                ok.TryGetValue(key, out int c); ok[key] = c + 1;
                             }
                         }
                         finally { rig.Dispose(); }
 
                         string zipNote = UpdateZip(ch, set, s.outputFolder, baked);
-                        foreach (var name in baked)
-                        {
-                            var ms = MotionEditData.LoadSettings(set, name);
-                            bool edited = MotionEditData.LoadEditClip(set, name) != null;
-                            sb.AppendLine($"  {ch} {set}/{name}: {(edited ? "편집본" : "팩 모션")}"
-                                + (ms != null && ms.hitFrame.HasValue ? $", 타격 {ms.hitFrame.Value}" : "")
-                                + (ms != null && ms.loop.HasValue ? $", 반복 {(ms.loop.Value ? "켬" : "끔")}" : ""));
-                        }
+                        foreach (var l in lines) sb.AppendLine(l);
                         if (!string.IsNullOrEmpty(zipNote)) sb.AppendLine("    " + zipNote);
                     }
                     foreach (var kv2 in ok) if (kv2.Value == MotionEditData.Characters.Length) done.Add(set + "/" + kv2.Key);
@@ -98,10 +112,13 @@ namespace CardGame.EditorTools
             // 두 캐릭터 다 구운 것만 굽기 표시를 지운다
             foreach (var key in done)
             {
-                int slash = key.IndexOf('/');
-                string set = key.Substring(0, slash), clip = key.Substring(slash + 1);
-                var ms = MotionEditData.LoadSettings(set, clip);
-                if (ms != null && ms.rebake) { ms.rebake = false; MotionEditData.SaveSettings(set, clip, ms); }
+                int slash = key.IndexOf('/'), bar = key.LastIndexOf('|');
+                string set = key.Substring(0, slash), name = key.Substring(slash + 1, bar - slash - 1);
+                bool isTl = key.EndsWith("|tl");
+                var ms = isTl ? MotionEditData.LoadTimelineSettings(set, name) : MotionEditData.LoadSettings(set, name);
+                if (ms == null || !ms.rebake) continue;
+                ms.rebake = false;
+                if (isTl) MotionEditData.SaveTimelineSettings(set, name, ms); else MotionEditData.SaveSettings(set, name, ms);
             }
             AssetDatabase.Refresh();
 

@@ -31,6 +31,10 @@ namespace CardGame.EditorTools
         double dirtyAt;
         readonly Dictionary<int, Texture2D> cache = new Dictionary<int, Texture2D>();
         [System.NonSerialized] MotionEditData.Settings settings;
+        [System.NonSerialized] UnityEngine.Timeline.TimelineAsset timeline;
+        [System.NonSerialized] AnimationClip proxy;
+        [System.NonSerialized] int tlDirtyCount;
+        [System.NonSerialized] float lastDirTime = -1f;
         string message = "";
         Vector2 scroll;
 
@@ -53,7 +57,7 @@ namespace CardGame.EditorTools
 
         void OnCurveModified(AnimationClip c, EditorCurveBinding b, AnimationUtility.CurveModifiedType t)
         {
-            if (c != null && c == clip) MarkDirty();
+            if (c != null && (c == clip || timeline != null)) MarkDirty();
         }
 
         /// <summary>열린 미리보기 창을 다시 그리게 한다 (편집본을 만들거나 구운 뒤)</summary>
@@ -68,6 +72,7 @@ namespace CardGame.EditorTools
         {
             ClearCache();
             if (rig != null) { rig.Dispose(); rig = null; }
+            if (proxy != null) { MotionEditTimeline.ReleaseProxy(proxy); proxy = null; }
             rigKey = null;
         }
 
@@ -99,6 +104,21 @@ namespace CardGame.EditorTools
                 return;
             }
 
+            // Timeline: 고치면 다시 그리고, Timeline 창(장면 PlayableDirector) 시간을 따라간다
+            if (timeline != null)
+            {
+                int dc = EditorUtility.GetDirtyCount(timeline);
+                if (dc != tlDirtyCount) { tlDirtyCount = dc; MarkDirty(); }
+                var dir = MotionEditScene.Director;
+                if (syncAnimWindow && dir != null && dir.playableAsset == timeline && rig != null && Mathf.Abs((float)dir.time - lastDirTime) > 1e-4f)
+                {
+                    lastDirTime = (float)dir.time;
+                    int f = Mathf.Clamp(Mathf.FloorToInt(lastDirTime * rig.setup.fps + 0.0001f), 0, frames - 1);
+                    if (f != frame) { frame = f; Repaint(); }
+                }
+                return;
+            }
+
             if (syncAnimWindow && clip != null && HasOpenInstances<AnimationWindow>())
             {
                 var aw = GetWindow<AnimationWindow>(false, null, false);
@@ -126,8 +146,31 @@ namespace CardGame.EditorTools
                 rigKey = key;
                 if (!rig.IsValid) { message = "조립 실패:\n" + rig.Warnings; DisposeRig(); return; }
             }
-            clip = MotionEditScene.CurrentClip(s, out clipIsEdit);
-            settings = MotionEditData.LoadSettings(MotionEditScene.SetId, MotionEditScene.Clip) ?? new MotionEditData.Settings();
+            if (proxy != null) { rig.SetClip(null); MotionEditTimeline.ReleaseProxy(proxy); proxy = null; }
+            timeline = MotionEditScene.CurrentTimeline();
+            if (timeline != null)
+            {
+                // Timeline 은 길이만 맞춘 대리 모션으로 넘긴다 (무기 레이어·반복은 같은 이름 모션 또는 첫 클립의 팩 모션 기준)
+                string tn = MotionEditScene.Timeline;
+                var existing = MotionEditData.FindEntry(s, tn);
+                var tcs = MotionEditTimeline.AnimClips(timeline);
+                var src = existing != null ? existing.clip : (tcs.Count > 0 ? CharacterBaker.PackClipOf(s, MotionEditTimeline.ClipOf(tcs[0])) : null);
+                if (tcs.Count == 0) { message = "Timeline 의 Animation 트랙에 모션이 없어요."; clip = null; }
+                else
+                {
+                    proxy = MotionEditTimeline.MakeProxy(timeline, tn, existing != null ? existing.clip : null);
+                    CharacterBaker.RegisterEditCopy(proxy, src);
+                    clip = proxy;
+                }
+                clipIsEdit = true;
+                tlDirtyCount = EditorUtility.GetDirtyCount(timeline);
+                settings = MotionEditData.LoadTimelineSettings(MotionEditScene.SetId, tn) ?? new MotionEditData.Settings();
+            }
+            else
+            {
+                clip = MotionEditScene.CurrentClip(s, out clipIsEdit);
+                settings = MotionEditData.LoadSettings(MotionEditScene.SetId, MotionEditScene.Clip) ?? new MotionEditData.Settings();
+            }
             if (clip == null) { frames = 1; frame = 0; return; }
             if (!CharacterBaker.HasSavedPalettes(s)) message = "저장된 팔레트가 없어 색이 굽기와 다를 수 있어요 (먼저 이 세트를 한 번 구워 주세요).";
             frames = CharacterBaker.PreparePreview(rig, clip, MotionEditData.FirstBakeClip(s));
@@ -148,7 +191,17 @@ namespace CardGame.EditorTools
         void SetFrame(int f, bool moveAnimWindow)
         {
             frame = Mathf.Clamp(f, 0, Mathf.Max(0, frames - 1));
-            if (moveAnimWindow && syncAnimWindow && clip != null && rig != null && HasOpenInstances<AnimationWindow>())
+            if (moveAnimWindow && syncAnimWindow && timeline != null && rig != null)
+            {
+                var dir = MotionEditScene.Director;
+                if (dir != null && dir.playableAsset == timeline)
+                {
+                    dir.time = CharacterBaker.FrameTime(clip, rig.setup, frame);
+                    lastDirTime = (float)dir.time;
+                    dir.Evaluate();
+                }
+            }
+            else if (moveAnimWindow && syncAnimWindow && clip != null && rig != null && HasOpenInstances<AnimationWindow>())
             {
                 var aw = GetWindow<AnimationWindow>(false, null, false);
                 if (aw != null && aw.animationClip == clip)
@@ -184,7 +237,7 @@ namespace CardGame.EditorTools
             {
                 bool setChanged = set != MotionEditScene.Set;
                 MotionEditScene.Character = ch; MotionEditScene.Set = set;
-                if (setChanged) { MotionEditScene.Weapon = 0; MotionEditScene.Shield = 0; }
+                if (setChanged) { MotionEditScene.Weapon = 0; MotionEditScene.Shield = 0; MotionEditScene.Timeline = ""; }
                 OnChoiceChanged(true);
                 return;
             }
@@ -225,15 +278,37 @@ namespace CardGame.EditorTools
                 OnChoiceChanged(false);
             }
 
+            // Timeline 고르기: 고르면 모션 대신 Timeline 을 미리보고 굽는다
+            var tls = MotionEditData.TimelineNames(MotionEditScene.SetId);
+            var tlOpts = new string[tls.Count + 1];
+            tlOpts[0] = "(없음 — 모션 하나)";
+            int tcur = 0;
+            for (int i = 0; i < tls.Count; i++) { tlOpts[i + 1] = tls[i]; if (tls[i] == MotionEditScene.Timeline) tcur = i + 1; }
+            if (tcur == 0 && !string.IsNullOrEmpty(MotionEditScene.Timeline)) { MotionEditScene.Timeline = ""; OnChoiceChanged(false); }
+            EditorGUI.BeginChangeCheck();
+            int tpick = EditorGUILayout.Popup("Timeline", tcur, tlOpts);
+            if (EditorGUI.EndChangeCheck())
+            {
+                MotionEditScene.Timeline = tpick == 0 ? "" : tls[tpick - 1];
+                frame = 0;
+                OnChoiceChanged(false);
+            }
+
             EditorGUILayout.BeginHorizontal();
             if (GUILayout.Button(MotionEditScene.IsOpen ? "장면 다시 세우기" : "편집 장면 열기")) MotionEditScene.Open();
-            if (GUILayout.Button(clipIsEdit ? "편집본 열기 (Animation 창)" : "편집용 복사본 만들기"))
+            if (timeline != null)
+            {
+                if (GUILayout.Button("Timeline 창 열기")) { if (!MotionEditScene.IsOpen) MotionEditScene.Open(); MotionEditScene.FocusTimelineWindow(); }
+            }
+            else if (GUILayout.Button(clipIsEdit ? "편집본 열기 (Animation 창)" : "편집용 복사본 만들기"))
             {
                 var c = MotionEditScene.MakeCopy();
                 if (c != null) { MarkDirty(); dirtyAt = 0; }
             }
+            if (GUILayout.Button("Timeline 만들기", GUILayout.Width(110))) TimelineCreateWindow.Open();
             EditorGUILayout.EndHorizontal();
-            EditorGUILayout.LabelField(clip == null ? "모션 없음" : clipIsEdit ? "편집본: " + MotionEditData.ClipPath(MotionEditScene.SetId, MotionEditScene.Clip) : "팩 원본 (읽기 전용) — 고치려면 편집용 복사본을 만드세요", EditorStyles.miniLabel);
+            EditorGUILayout.LabelField(timeline != null ? "Timeline: " + MotionEditData.TimelinePath(MotionEditScene.SetId, MotionEditScene.Timeline)
+                : clip == null ? "모션 없음" : clipIsEdit ? "편집본: " + MotionEditData.ClipPath(MotionEditScene.SetId, MotionEditScene.Clip) : "팩 원본 (읽기 전용) — 고치려면 편집용 복사본을 만드세요", EditorStyles.miniLabel);
         }
 
         void OnChoiceChanged(bool rebuildRig)
@@ -267,7 +342,7 @@ namespace CardGame.EditorTools
                 float gy = r.yMax - rig.Ground * zoom;
                 EditorGUI.DrawRect(new Rect(r.x, gy, r.width, 1), new Color(1f, 0.85f, 0.3f, 0.8f));
                 EditorGUI.DrawRect(new Rect(r.x + rig.PivotX * zoom, gy - 6, 1, 12), new Color(1f, 0.85f, 0.3f, 0.8f));
-                if (settings != null && HitFrame() == frame)
+                if (settings != null && (HitFrame() == frame || (timeline != null && settings.hitFrames.Contains(frame))))
                     GUI.Label(new Rect(r.x + 4, r.y + 2, 120, 18), "타격", new GUIStyle(EditorStyles.boldLabel) { normal = { textColor = new Color(1f, 0.3f, 0.3f) } });
             }
 
@@ -298,6 +373,7 @@ namespace CardGame.EditorTools
         void DrawSettings()
         {
             if (clip == null || settings == null) return;
+            if (timeline != null) { DrawTimelineSettings(); return; }
             EditorGUILayout.LabelField("모션 설정 (굽기에 쓰임)", EditorStyles.boldLabel);
             EditorGUI.BeginChangeCheck();
 
@@ -327,10 +403,38 @@ namespace CardGame.EditorTools
             }
             EditorGUILayout.LabelField("저장 위치: " + MotionEditData.SettingsPath(MotionEditScene.SetId, MotionEditScene.Clip), EditorStyles.miniLabel);
 
+            DrawBakeButton();
+        }
+
+        void DrawTimelineSettings()
+        {
+            string tn = MotionEditScene.Timeline;
+            EditorGUILayout.LabelField("Timeline 설정 (굽기에 쓰임)", EditorStyles.boldLabel);
+            bool changed = false;
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField("타격 프레임", settings.hitFrames.Count == 0 ? "굽기가 정한 대로" : string.Join(", ", settings.hitFrames));
+            if (GUILayout.Button("지금 프레임 추가", GUILayout.Width(110)) && !settings.hitFrames.Contains(frame)) { settings.hitFrames.Add(frame); settings.hitFrames.Sort(); changed = true; }
+            if (GUILayout.Button("지금 프레임 빼기", GUILayout.Width(110)) && settings.hitFrames.Remove(frame)) changed = true;
+            if (GUILayout.Button("모두 지우기", GUILayout.Width(80)) && settings.hitFrames.Count > 0) { settings.hitFrames.Clear(); changed = true; }
+            EditorGUILayout.EndHorizontal();
+            EditorGUI.BeginChangeCheck();
+            int loopIdx = settings.loop.HasValue ? (settings.loop.Value ? 1 : 2) : 0;
+            loopIdx = EditorGUILayout.Popup("반복", loopIdx, new[] { "원래대로 (같은 이름 모션, 없으면 한 번만)", "반복함", "한 번만" });
+            settings.rebake = EditorGUILayout.ToggleLeft("굽기 표시 (다음 '표시된 모션만 굽기' 때 다시 굽기)", settings.rebake);
+            if (EditorGUI.EndChangeCheck()) { settings.loop = loopIdx == 0 ? (bool?)null : loopIdx == 1; changed = true; }
+            if (changed) { MotionEditData.SaveTimelineSettings(MotionEditScene.SetId, tn, settings); Repaint(); }
+            bool replaces = rig != null && MotionEditData.FindEntry(rig.setup, tn) != null;
+            EditorGUILayout.LabelField(replaces ? $"구우면 '{tn}' 모션 결과를 이 Timeline 으로 바꿉니다." : $"구우면 새 모션 '{tn}' 이 생깁니다.", EditorStyles.miniLabel);
+            EditorGUILayout.LabelField("저장 위치: " + MotionEditData.TimelineSettingsPath(MotionEditScene.SetId, tn), EditorStyles.miniLabel);
+            DrawBakeButton();
+        }
+
+        void DrawBakeButton()
+        {
             EditorGUILayout.Space(6);
-            var marked = MotionEditData.Marked();
-            EditorGUILayout.LabelField($"굽기 표시된 모션: {marked.Count}개", EditorStyles.miniLabel);
-            using (new EditorGUI.DisabledScope(marked.Count == 0))
+            int marked = MotionEditData.Marked().Count, markedTl = MotionEditData.MarkedTimelines().Count;
+            EditorGUILayout.LabelField($"굽기 표시: 모션 {marked}개, Timeline {markedTl}개", EditorStyles.miniLabel);
+            using (new EditorGUI.DisabledScope(marked + markedTl == 0))
                 if (GUILayout.Button("표시된 모션만 굽기 (레인저·나무꾼 둘 다)", GUILayout.Height(26)))
                 {
                     MotionEditRebake.BakeMarked();

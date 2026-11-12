@@ -8,7 +8,9 @@ using UnityEditor;
 using UnityEditor.Animations;
 using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.Playables;
 using UnityEngine.SceneManagement;
+using UnityEngine.Timeline;
 
 namespace CardGame.EditorTools
 {
@@ -26,6 +28,15 @@ namespace CardGame.EditorTools
         public static string Clip { get => EditorPrefs.GetString("CG_ME_clip", ""); set => EditorPrefs.SetString("CG_ME_clip", value); }
         public static int Weapon { get => EditorPrefs.GetInt("CG_ME_weapon", 0); set => EditorPrefs.SetInt("CG_ME_weapon", value); }
         public static int Shield { get => EditorPrefs.GetInt("CG_ME_shield", 0); set => EditorPrefs.SetInt("CG_ME_shield", value); }   // 0 = 없음
+
+        /// <summary>지금 고른 Timeline 이름 (비어 있으면 모션 하나)</summary>
+        public static string Timeline { get => EditorPrefs.GetString("CG_ME_tl", ""); set => EditorPrefs.SetString("CG_ME_tl", value ?? ""); }
+
+        public static TimelineAsset CurrentTimeline()
+            => string.IsNullOrEmpty(Timeline) ? null : AssetDatabase.LoadAssetAtPath<TimelineAsset>(MotionEditData.TimelinePath(SetId, Timeline));
+
+        /// <summary>장면 캐릭터의 PlayableDirector (Timeline 창이 이걸로 미리 보여 준다)</summary>
+        public static PlayableDirector Director => sceneRig != null && sceneRig.Root != null ? sceneRig.Root.GetComponent<PlayableDirector>() : null;
 
         public static string CharacterId => MotionEditData.Characters[Mathf.Clamp(Character, 0, MotionEditData.Characters.Length - 1)];
         public static string SetId => MotionEditData.Sets[Mathf.Clamp(Set, 0, MotionEditData.Sets.Length - 1)];
@@ -131,6 +142,20 @@ namespace CardGame.EditorTools
                 anim.runtimeAnimatorController = clip != null ? Controller(clip) : null;
                 anim.applyRootMotion = false;
             }
+            // Timeline: 장면 캐릭터에 PlayableDirector 를 붙여 Timeline 창에서 고칠 수 있게
+            var tl = CurrentTimeline();
+            var dir = sceneRig.Root.GetComponent<PlayableDirector>();
+            if (tl != null)
+            {
+                if (dir == null) { dir = sceneRig.Root.AddComponent<PlayableDirector>(); dir.hideFlags = HideFlags.DontSave; }
+                dir.playOnAwake = false;
+                dir.extrapolationMode = DirectorWrapMode.Hold;
+                dir.playableAsset = tl;
+                foreach (var track in tl.GetOutputTracks())
+                    if (track is AnimationTrack) dir.SetGenericBinding(track, anim);
+                dir.RebuildGraph();
+            }
+            else if (dir != null) dir.playableAsset = null;
         }
 
         /// <summary>미리보기·장면에서 보일 레이어 번호 (무기 묶음 + 방패)</summary>
@@ -204,6 +229,14 @@ namespace CardGame.EditorTools
             var aw = EditorWindow.GetWindow<AnimationWindow>();
             aw.Show();
             EditorApplication.delayCall += () => { if (aw != null) aw.animationClip = clip; };
+        }
+
+        /// <summary>장면 캐릭터를 선택하고 Timeline 창을 연다.</summary>
+        public static void FocusTimelineWindow()
+        {
+            if (sceneRig == null || sceneRig.Root == null) return;
+            Selection.activeGameObject = sceneRig.Root;
+            EditorApplication.ExecuteMenuItem("Window/Sequencing/Timeline");
         }
 
         // ───────── 편집용 복사본 ─────────

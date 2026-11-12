@@ -136,6 +136,7 @@ namespace CardGame.EditorTools
         public void ReleaseGraph()
         {
             if (graph.IsValid()) graph.Destroy();
+            tlClips = null;
             currentClip = null;
         }
 
@@ -827,6 +828,7 @@ namespace CardGame.EditorTools
         {
             if (clip == currentClip && graph.IsValid()) return;
             if (graph.IsValid()) graph.Destroy();
+            tlClips = null;
             currentClip = clip;
             useDirect = false;
             clipOffsetY = 0f;
@@ -840,14 +842,72 @@ namespace CardGame.EditorTools
             graph = PlayableGraph.Create("CardGameCharacterBake");
             graph.SetTimeUpdateMode(DirectorUpdateMode.Manual);
             var output = AnimationPlayableOutput.Create(graph, "pose", animator);
-            clipPlayable = AnimationClipPlayable.Create(graph, clip);
-            clipPlayable.SetApplyFootIK(false);
-            output.SetSourcePlayable(clipPlayable);
+            tlClips = null;
+            if (MotionEditTimeline.TryGet(clip, out var tl))
+            {
+                // Timeline: 클립마다 재생기를 만들고, 시각마다 Timeline 규칙대로 무게·클립 안 시간을 넣는다
+                useDirect = false;
+                animator.avatar = humanAvatar;
+                animator.Rebind();
+                tlClips = MotionEditTimeline.AnimClips(tl);
+                tlDuration = tl.duration;
+                tlPlayables = new AnimationClipPlayable[tlClips.Count];
+                tlWeights = new float[tlClips.Count];
+                tlLocal = new double[tlClips.Count];
+                for (int i = 0; i < tlClips.Count; i++)
+                {
+                    tlPlayables[i] = AnimationClipPlayable.Create(graph, MotionEditTimeline.ClipOf(tlClips[i]));
+                    tlPlayables[i].SetApplyFootIK(false);
+                }
+                if (tlClips.Count == 1) output.SetSourcePlayable(tlPlayables[0]);   // 하나면 섞지 않고 그대로 (모션 굽기와 같은 결과)
+                else
+                {
+                    tlMixer = AnimationMixerPlayable.Create(graph, tlClips.Count);
+                    for (int i = 0; i < tlClips.Count; i++) graph.Connect(tlPlayables[i], 0, tlMixer, i);
+                    output.SetSourcePlayable(tlMixer);
+                }
+            }
+            else
+            {
+                clipPlayable = AnimationClipPlayable.Create(graph, clip);
+                clipPlayable.SetApplyFootIK(false);
+                output.SetSourcePlayable(clipPlayable);
+            }
             graph.Play();
             FaceForward();
             if (setup.fistGrip && !fistGripDone) FitWeaponsToFist();
             GroundFromFirstFrame();
         }
+
+        // Timeline 재생 (모션 편집)
+        List<UnityEngine.Timeline.TimelineClip> tlClips;
+        AnimationClipPlayable[] tlPlayables;
+        AnimationMixerPlayable tlMixer;
+        float[] tlWeights; double[] tlLocal;
+        double tlDuration;
+
+        /// <summary>t초 자세를 그래프에 넣는다 (모션 하나 또는 Timeline)</summary>
+        void EvalPose(float t)
+        {
+            if (tlClips != null)
+            {
+                MotionEditTimeline.Weights(tlClips, t, tlDuration, tlWeights, tlLocal);
+                for (int i = 0; i < tlClips.Count; i++)
+                {
+                    tlPlayables[i].SetTime(tlLocal[i]);
+                    tlPlayables[i].SetTime(tlLocal[i]);
+                    if (tlClips.Count > 1) tlMixer.SetInputWeight(i, tlWeights[i]);
+                }
+            }
+            else
+            {
+                clipPlayable.SetTime(t);
+                clipPlayable.SetTime(t); // 두 번 넣어야 이전 시간과의 차이(이동량)가 생기지 않는다
+            }
+            graph.Evaluate(0f);
+        }
+
+        bool IsHumanMotion => tlClips != null || (currentClip != null && currentClip.humanMotion);
 
         // ───────────────────────── 주먹 안 쥐기 ─────────────────────────
 
@@ -925,7 +985,7 @@ namespace CardGame.EditorTools
         void FaceForward()
         {
             root.transform.rotation = Quaternion.identity;
-            if (setup.keepClipFacing && currentClip != null && currentClip.humanMotion)
+            if (setup.keepClipFacing && currentClip != null && IsHumanMotion)
             {
                 // 팩이 정한 방향 그대로: 루트 앞 = +Z(화면 오른쪽). 몸이 카메라 쪽으로 돌아간 정도는 모션이 정한 대로 둔다.
                 Sample(0f);
@@ -958,9 +1018,7 @@ namespace CardGame.EditorTools
             if (!graph.IsValid()) return;
             float ikNeighborW = (setup.offHandIK && !skipFixes) ? IkNeighborWeight(t) : 0f;
             root.transform.position = Vector3.zero;
-            clipPlayable.SetTime(t);
-            clipPlayable.SetTime(t); // 두 번 넣어야 이전 시간과의 차이(이동량)가 생기지 않는다
-            graph.Evaluate(0f);
+            EvalPose(t);
             root.transform.position = Vector3.up * clipOffsetY;
             if (skipFixes) return;
             StraightenHips();
@@ -1041,7 +1099,7 @@ namespace CardGame.EditorTools
             {
                 float tt = Mathf.Clamp(t + o, 0f, currentClip.length);
                 root.transform.position = Vector3.zero;
-                clipPlayable.SetTime(tt); clipPlayable.SetTime(tt); graph.Evaluate(0f);
+                EvalPose(tt);
                 root.transform.position = Vector3.up * clipOffsetY;
                 sum += 0.25f * (ShaftTarget(out _, out _, out float dn, out _, out _) ? IkRawWeight(dn) : 0f);
             }

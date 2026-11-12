@@ -75,6 +75,8 @@ namespace CardGame.EditorTools
             public bool? loop;
             /// <summary>다음 '표시된 모션만 굽기' 때 다시 굽는다</summary>
             public bool rebake;
+            /// <summary>Timeline 전용: 타격 프레임 여러 개 (연속 공격). 비어 있으면 굽기가 정한 대로.</summary>
+            public List<int> hitFrames = new List<int>();
         }
 
         public static Settings LoadSettings(string set, string clip)
@@ -94,16 +96,21 @@ namespace CardGame.EditorTools
             if (m.Success && m.Groups[1].Value != "null") s.loop = m.Groups[1].Value == "true";
             m = Regex.Match(json, "\"rebake\"\\s*:\\s*(true|false)");
             s.rebake = m.Success && m.Groups[1].Value == "true";
+            m = Regex.Match(json, "\"hitFrames\"\\s*:\\s*\\[([^\\]]*)\\]");
+            if (m.Success)
+                foreach (var part in m.Groups[1].Value.Split(','))
+                    if (int.TryParse(part.Trim(), out int h)) s.hitFrames.Add(h);
             return s;
         }
 
-        public static string ToJson(string set, string clip, Settings s)
+        public static string ToJson(string set, string clip, Settings s, bool timeline = false)
         {
             var sb = new StringBuilder();
             sb.Append("{\n");
             sb.Append($"  \"set\": \"{set}\",\n");
-            sb.Append($"  \"clip\": \"{clip}\",\n");
-            sb.Append($"  \"hitFrame\": {(s.hitFrame.HasValue ? s.hitFrame.Value.ToString() : "null")},\n");
+            sb.Append($"  \"{(timeline ? "timeline" : "clip")}\": \"{clip}\",\n");
+            if (timeline) sb.Append($"  \"hitFrames\": [{string.Join(", ", s.hitFrames)}],\n");
+            else sb.Append($"  \"hitFrame\": {(s.hitFrame.HasValue ? s.hitFrame.Value.ToString() : "null")},\n");
             sb.Append($"  \"loop\": {(s.loop.HasValue ? (s.loop.Value ? "true" : "false") : "null")},\n");
             sb.Append($"  \"rebake\": {(s.rebake ? "true" : "false")}\n");
             sb.Append("}\n");
@@ -135,6 +142,55 @@ namespace CardGame.EditorTools
                     if (st != null && st.rebake) list.Add(new KeyValuePair<string, string>(set, clip));
                 }
             }
+            return list;
+        }
+
+        // ───────── Timeline (motion_edits/<세트>/timelines/<이름>.playable + .json) ─────────
+
+        public static string TimelineFolder(string set) => $"{Root}/{set}/timelines";
+        public static string TimelinePath(string set, string name) => $"{TimelineFolder(set)}/{name}.playable";
+        public static string TimelineSettingsPath(string set, string name) => $"{TimelineFolder(set)}/{name}.json";
+
+        /// <summary>세트별 모션 이름 앞부분 (연속 공격 이름 = 앞부분 + combo)</summary>
+        public static string ClipPrefix(string set)
+            => set == "sword" ? "sword_shield_" : set == "dual" ? "dualblades_" : set == "hammer" ? "hammer_" : set == "spear" ? "spear_" : set + "_";
+
+        public static List<string> TimelineNames(string set)
+        {
+            var list = new List<string>();
+            string dir = Full(TimelineFolder(set));
+            if (!Directory.Exists(dir)) return list;
+            foreach (var f in Directory.GetFiles(dir, "*.playable")) list.Add(Path.GetFileNameWithoutExtension(f));
+            list.Sort(StringComparer.OrdinalIgnoreCase);
+            return list;
+        }
+
+        public static Settings LoadTimelineSettings(string set, string name)
+        {
+            string full = Full(TimelineSettingsPath(set, name));
+            if (!File.Exists(full)) return null;
+            try { return ParseSettings(File.ReadAllText(full)); }
+            catch (Exception e) { Debug.LogWarning($"[모션 편집] Timeline 설정을 읽지 못했어요: {TimelineSettingsPath(set, name)} ({e.Message})"); return null; }
+        }
+
+        public static void SaveTimelineSettings(string set, string name, Settings s)
+        {
+            string rel = TimelineSettingsPath(set, name);
+            EnsureFolder(TimelineFolder(set));
+            File.WriteAllText(Full(rel), ToJson(set, name, s, true));
+            AssetDatabase.ImportAsset(rel);
+        }
+
+        /// <summary>'굽기 표시'된 Timeline (세트, 이름) 목록</summary>
+        public static List<KeyValuePair<string, string>> MarkedTimelines()
+        {
+            var list = new List<KeyValuePair<string, string>>();
+            foreach (var set in Sets)
+                foreach (var n in TimelineNames(set))
+                {
+                    var st = LoadTimelineSettings(set, n);
+                    if (st != null && st.rebake) list.Add(new KeyValuePair<string, string>(set, n));
+                }
             return list;
         }
 
