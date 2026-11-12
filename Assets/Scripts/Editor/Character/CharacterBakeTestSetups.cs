@@ -165,6 +165,297 @@ namespace CardGame.EditorTools
             return s;
         }
 
+        // ── Platform Animation (Shinabro) ──
+        const string PLATFORM_ANIM = "Assets/Shinabro/Platform_Animation/Animation";
+        // 2D 옆 전투에 쓰는 검방패 모션 (true = 공격이라 타격 프레임을 찾는다).
+        // 빼는 것: Crouch, CrouchAttack, CrouchBlock, Weapon_Sheath, Weapon_Unsheath
+        static readonly (string name, bool attack)[] PlatformSwordShieldClips =
+        {
+            ("Sword&Shield_Idle", false),
+            ("Sword&Shield_Walk_F", false), ("Sword&Shield_Walk_B", false),
+            ("Sword&Shield_Run", false), ("Sword&Shield_RunEnd", false),
+            ("Sword&Shield_Attack1", true), ("Sword&Shield_Attack2", true), ("Sword&Shield_Attack3", true),
+            ("Sword&Shield_Block", false), ("Sword&Shield_Block_In", false), ("Sword&Shield_Block_Loop", false),
+            ("Sword&Shield_Block_Damage", false), ("Sword&Shield_Block_Parry", false), ("Sword&Shield_Block_Out", false),
+            ("Sword&Shield_Dodge", false), ("Sword&Shield_DodgeAttack", true), ("Sword&Shield_DodgeRoll", false),
+            ("Sword&Shield_Jump_Start", false), ("Sword&Shield_Jump", false), ("Sword&Shield_JumpFall", false),
+            ("Sword&Shield_Jump_End", false), ("Sword&Shield_Jump_Original", false),
+            ("Sword&Shield_JumpAttack1", true), ("Sword&Shield_JumpAttack2", true), ("Sword&Shield_JumpAttack3", true),
+            ("Sword&Shield_Skill1_Float", true), ("Sword&Shield_Skill2_Slow", true), ("Sword&Shield_Skill3_Stun", true),
+            ("Sword&Shield_Skill4_Push", true), ("Sword&Shield_Skill5_Pull", true), ("Sword&Shield_Skill6_Move", true),
+            ("Sword&Shield_Skill7_Around", true), ("Sword&Shield_Skill8_Air", true),
+        };
+        // 피격 모션 7개: 앞 피격, 두 번째 피격, 밀려남, 뒤로 넘어짐, 누움, 일어남, 기절 (죽는 모션은 팩에 없다)
+        static readonly string[] PlatformDamageClips =
+        {
+            "Damage1", "Damage2", "Damage1_Pushed", "KnockDown_B_Heavy", "LyingBack", "LyingBack_WakeUp", "Stunned",
+        };
+
+        [MenuItem("CardGame/캐릭터 굽기/캐릭터 2종 Platform 모션 굽기 (옆)")]
+        static void BakeCharsPlatform()
+        {
+            var missing = new List<string>();
+            var list = new[]
+            {
+                PlatformChar(Ranger, "ranger_platform_x1_5", true, missing),
+                PlatformChar(Woodcutter, "woodcutter_platform_x1_5", true, missing),
+            };
+            AssetDatabase.SaveAssets();
+            if (missing.Count > 0) Debug.LogWarning("[캐릭터 굽기] 찾지 못한 파일/모션 (건너뜀):\n" + string.Join("\n", missing));
+            var t0 = EditorApplication.timeSinceStartup;
+            foreach (var s in list) CharacterBaker.BakeAll(s);
+            Debug.Log($"[캐릭터 굽기] Platform 2종 굽기 끝 ({EditorApplication.timeSinceStartup - t0:0}초)");
+        }
+
+        /// <summary>
+        /// Platform Animation(Shinabro) 검방패·피격 모션 (옆 시점만). Ual2Char와 같은 몸·무기 레이어.
+        /// 모션은 휴머노이드라 CharacterRig가 몸의 휴머노이드 아바타로 재생한다. 모션 보정 없이 그대로.
+        /// </summary>
+        static CharacterBakeSetup PlatformChar(Look look, string name, bool withShields, List<string> missing,
+            string[] onlyClips = null, bool shieldFlip = true)
+        {
+            var s = NewSetup(name);
+            UalCommon(s, look, name, false, missing);
+            s.weapon = new CharacterBakeSetup.WeaponSlot();
+            s.shield = new CharacterBakeSetup.ShieldSlot();
+            s.paletteSwap = true;
+            s.autoPaletteColors = 24;
+            // 무기·방패를 몸에 자르지 않고 앞뒤 두 장으로 → 같은 레이어를 여러 캐릭터가 같이 쓴다
+            s.splitLayers = true;
+            s.layerClipPrefixes.Add("Sword&Shield_");
+            s.layerClipPrefixes.AddRange(PlatformDamageClips);
+            foreach (var w in OneHanded)
+            {
+                var go = Load<GameObject>(w.path, missing);
+                if (go != null) s.layers.Add(new CharacterBakeSetup.LayerItem
+                {
+                    name = w.name, prefab = go, boneName = "hand_r", bladeMode = w.mode, flipGrip = w.flip,
+                    extraPosition = w.offset, scale = w.scale, strikePoint = w.name == "sword",
+                });
+            }
+            if (withShields)
+                foreach (var L in Shields)
+                {
+                    var sh = Load<GameObject>(MW + $"Shields/Shield {L}.fbx", missing);
+                    if (sh != null) s.layers.Add(new CharacterBakeSetup.LayerItem
+                    {
+                        name = "shield_" + L.ToLowerInvariant(), isShield = true, prefab = sh, boneName = "lowerarm_l",
+                        scale = ShieldScale, swapColors = true,
+                        // 자동 방향은 안쪽(손잡이 면)이 바깥을 보게 나온다. 팔 축으로 180도 돌려 바깥면이 보이게 한다.
+                        extraRotation = shieldFlip ? new Vector3(0f, 180f, 0f) : Vector3.zero,
+                    });
+                }
+
+            var fbxByClip = PlatformClipIndex();
+            void Add(string n, bool attack)
+            {
+                if (onlyClips != null && Array.IndexOf(onlyClips, n) < 0) return;
+                if (fbxByClip.TryGetValue(n, out var fbx)) AddClip(s, fbx, n, attack, missing);
+                else missing.Add(PLATFORM_ANIM + " : " + n);
+            }
+            foreach (var (n, attack) in PlatformSwordShieldClips) Add(n, attack);
+            foreach (var n in PlatformDamageClips) Add(n, false);
+            Save(s);
+            return s;
+        }
+
+        // ── Platform 무기별 세트 (<캐릭터>_platform_<세트>_x1_5) ──
+        // 세트 이름, 모션 폴더, 모션 이름 앞부분
+        static readonly string[][] PlatformSets =
+        {
+            new[] { "sword", "01_Sword&Shield", "Sword&Shield_" },
+            new[] { "dual", "03_DualBlades", "DualBlades_" },
+            new[] { "hammer", "02_Hammer", "Hammer_" },
+            new[] { "spear", "07_Spear", "Spear_" },
+        };
+
+        [MenuItem("CardGame/캐릭터 굽기/캐릭터 2종 Platform 무기별 4세트 굽기 (옆)")]
+        static void BakeCharsPlatformSets()
+        {
+            var list = CreatePlatformSets(out var missing);
+            if (missing.Count > 0) Debug.LogWarning("[캐릭터 굽기] 찾지 못한 파일/모션 (건너뜀):\n" + string.Join("\n", missing));
+            var t0 = EditorApplication.timeSinceStartup;
+            foreach (var s in list)
+            {
+                var t1 = EditorApplication.timeSinceStartup;
+                CharacterBaker.BakeAll(s);
+                Debug.Log($"[캐릭터 굽기] {s.name} 굽기 끝 ({EditorApplication.timeSinceStartup - t1:0}초)");
+            }
+            Debug.Log($"[캐릭터 굽기] Platform 무기별 4세트 굽기 끝 ({EditorApplication.timeSinceStartup - t0:0}초)");
+        }
+
+        [MenuItem("CardGame/캐릭터 굽기/캐릭터 2종 Platform 양손 무기(해머·창)만 굽기 (옆)")]
+        static void BakeCharsPlatformTwoHanded()
+        {
+            var list = CreatePlatformSets(out var missing);
+            if (missing.Count > 0) Debug.LogWarning("[캐릭터 굽기] 찾지 못한 파일/모션 (건너뜀):\n" + string.Join("\n", missing));
+            var t0 = EditorApplication.timeSinceStartup;
+            foreach (var s in list)
+            {
+                if (!s.offHandIK) continue;
+                var t1 = EditorApplication.timeSinceStartup;
+                CharacterBaker.BakeAll(s);
+                Debug.Log($"[캐릭터 굽기] {s.name} 굽기 끝 ({EditorApplication.timeSinceStartup - t1:0}초)");
+            }
+            Debug.Log($"[캐릭터 굽기] Platform 양손 무기 굽기 끝 ({EditorApplication.timeSinceStartup - t0:0}초)");
+        }
+
+        /// <summary>레인저·나무꾼 × 4세트 설정을 만든다 (굽지는 않는다).</summary>
+        public static List<CharacterBakeSetup> CreatePlatformSets(out List<string> missing)
+        {
+            missing = new List<string>();
+            var list = new List<CharacterBakeSetup>();
+            foreach (var look in new[] { Ranger, Woodcutter })
+                foreach (var set in PlatformSets)
+                    list.Add(PlatformSet(look, $"{look.id}_platform_{set[0]}_x1_5", set[0], set[1], set[2], missing));
+            AssetDatabase.SaveAssets();
+            return list;
+        }
+
+        /// <summary>
+        /// Platform 무기별 세트. 옆 시점, 1.5배, 24fps, 무기·방패는 앞뒤로 나눠 굽는다(splitLayers).
+        /// 모션: 세트 폴더 전부에서 웅크리기(Crouch*)·무기 넣기/꺼내기를 빼고, 피격 7개를 더한다.
+        /// </summary>
+        static CharacterBakeSetup PlatformSet(Look look, string name, string set, string folder, string prefix, List<string> missing)
+        {
+            var s = NewSetup(name);
+            UalCommon(s, look, name, false, missing);
+            s.weapon = new CharacterBakeSetup.WeaponSlot();
+            s.shield = new CharacterBakeSetup.ShieldSlot();
+            s.paletteSwap = true;
+            s.autoPaletteColors = 24;
+            s.splitLayers = true;
+            // 팩은 루트가 옆을 보고 몸을 카메라 쪽으로 돌려 둔 채 만들어졌다. 모션마다 0프레임을 정면으로 돌리면 뒤를 보는 것처럼 보여서 원래 방향을 쓴다.
+            s.keepClipFacing = true;
+            // 자루가 주먹 한가운데를 지나게 (예전 규칙은 편 손 기준이라 자루가 손 바깥에 붙었다)
+            s.fistGrip = true;
+            s.layerClipPrefixes.Add(prefix);
+            s.layerClipPrefixes.AddRange(PlatformDamageClips);
+
+            void Weapon(string layerName, string path, int mode, string bone = "hand_r", float scale = 1f, bool strike = false, float spin = 0f)
+            {
+                var go = Load<GameObject>(path, missing);
+                if (go != null) s.layers.Add(new CharacterBakeSetup.LayerItem
+                {
+                    name = layerName, prefab = go, boneName = bone, bladeMode = mode, scale = scale, strikePoint = strike,
+                    extraRotation = new Vector3(0f, 0f, spin),   // 자루 축으로 돌리기 (도끼 날 방향)
+                });
+            }
+            switch (set)
+            {
+                case "sword":
+                {
+                    // 칼 5종은 날 길이(코등이~칼끝)를 아밍 소드에 맞춘다
+                    string arming = A + "Weapons/Arming_Sword.fbx";
+                    float armLen = BladeLength(arming);
+                    Weapon("arming_sword", arming, 1, strike: true);
+                    foreach (var (n, p) in new[] { ("sword", MW + "Swords/Sword.fbx"), ("falchion", MW + "Swords/Falchion.fbx"), ("messer", MW + "Swords/Messer.fbx"), ("scimitar", A + "Weapons/Scimitar.fbx") })
+                    {
+                        float len = BladeLength(p);
+                        Weapon(n, p, 1, scale: len > 0f ? armLen / len : 1f);
+                    }
+                    // 한손 둔기·도끼는 지금 크기 그대로
+                    Weapon("mace", MW + "Maces/Mace.fbx", 2);
+                    Weapon("spiked_mace", MW + "Maces/Spiked Mace.fbx", 2);
+                    // 도끼 2종·미늘창: 머리 무게중심 쪽이 날의 반대(뒤통수) 쪽이라 자동 방향이 날을 뒤로 보낸다 → 자루 축으로 180도
+                    Weapon("hatchet", A + "Weapons/Hatchet.fbx", 2, spin: 180f);
+                    Weapon("bearded_axe", A + "Weapons/Bearded_Axe.fbx", 2, spin: 180f);
+                    foreach (var L in Shields)
+                    {
+                        var sh = Load<GameObject>(MW + $"Shields/Shield {L}.fbx", missing);
+                        if (sh != null) s.layers.Add(new CharacterBakeSetup.LayerItem
+                        {
+                            name = "shield_" + L.ToLowerInvariant(), isShield = true, prefab = sh, boneName = "lowerarm_l",
+                            scale = ShieldScale, swapColors = true,
+                            // 자동 방향은 안쪽(손잡이 면)이 바깥을 보게 나온다. 팔 축으로 180도 돌려 바깥면이 보이게 한다.
+                            extraRotation = new Vector3(0f, 180f, 0f),
+                        });
+                    }
+                    break;
+                }
+                case "dual":
+                    // 단검 2종을 오른손·왼손에 하나씩 (dagger_a = Art3D Dagger, dagger_b = Medieval Dagger)
+                    Weapon("dagger_a_r", A + "Weapons/Dagger.fbx", 1, "hand_r", strike: true);
+                    Weapon("dagger_a_l", A + "Weapons/Dagger.fbx", 1, "hand_l");
+                    Weapon("dagger_b_r", MW + "Swords/Dagger.fbx", 1, "hand_r");
+                    Weapon("dagger_b_l", MW + "Swords/Dagger.fbx", 1, "hand_l");
+                    break;
+                case "hammer":
+                    Weapon("hammer_2h", MW + "Hammers/Two-Handed Hammer.fbx", 2, strike: true);
+                    s.offHandIK = true;   // 양손 무기: 왼손을 자루에 붙인다
+                    break;
+                case "spear":
+                    // 왼손 IK 기준은 창 자루 (미늘창도 쥐는 축이 같다)
+                    Weapon("spear", MW + "Spears/Spear.fbx", 2, strike: true);
+                    Weapon("halberd", MW + "Axes/Halberd.fbx", 2, spin: 180f);   // 날이 뒤로 나와서 180도
+                    s.offHandIK = true;
+                    break;
+            }
+
+            var fbxByClip = PlatformClipIndex();
+            var names = new List<string>();
+            foreach (var kv in fbxByClip)
+                if (kv.Value.Contains("/" + folder + "/") && !kv.Key.Contains("Crouch")
+                    && !kv.Key.EndsWith("Weapon_Sheath") && !kv.Key.EndsWith("Weapon_Unsheath"))
+                    names.Add(kv.Key);
+            names.Sort(StringComparer.OrdinalIgnoreCase);
+            if (names.Count == 0) missing.Add(PLATFORM_ANIM + "/" + folder + " (모션 없음)");
+            foreach (var n in names) AddClip(s, fbxByClip[n], n, n.Contains("Attack") || n.Contains("_Skill"), missing);
+            foreach (var n in PlatformDamageClips)
+                if (fbxByClip.TryGetValue(n, out var fbx)) AddClip(s, fbx, n, false, missing);
+                else missing.Add(PLATFORM_ANIM + " : " + n);
+            Save(s);
+            return s;
+        }
+
+        /// <summary>칼 모델의 날 길이 (가장 넓은 곳 = 코등이에서 먼 끝까지, m). 굽기의 손잡이 찾기와 같은 방법.</summary>
+        static float BladeLength(string path)
+        {
+            var go = AssetDatabase.LoadAssetAtPath<GameObject>(path);
+            if (go == null) return 0f;
+            var pts = new List<Vector3>();
+            foreach (var mf in go.GetComponentsInChildren<MeshFilter>(true))
+            {
+                if (mf.sharedMesh == null) continue;
+                foreach (var v in mf.sharedMesh.vertices) pts.Add(go.transform.InverseTransformPoint(mf.transform.TransformPoint(v)));
+            }
+            if (pts.Count == 0) return 0f;
+            var b = new Bounds(pts[0], Vector3.zero);
+            foreach (var p in pts) b.Encapsulate(p);
+            int k = b.size.x >= b.size.y && b.size.x >= b.size.z ? 0 : (b.size.y >= b.size.z ? 1 : 2);
+            int o1 = (k + 1) % 3, o2 = (k + 2) % 3;
+            int kb = b.size[o1] >= b.size[o2] ? o1 : o2;
+            const int Bins = 20;
+            float lo = b.min[k], len = Mathf.Max(0.0001f, b.size[k]);
+            var mn = new float[Bins]; var mx = new float[Bins]; var cnt = new int[Bins];
+            for (int i = 0; i < Bins; i++) { mn[i] = float.MaxValue; mx[i] = float.MinValue; }
+            foreach (var p in pts)
+            {
+                int bi = Mathf.Clamp((int)((p[k] - lo) / len * Bins), 0, Bins - 1);
+                mn[bi] = Mathf.Min(mn[bi], p[kb]); mx[bi] = Mathf.Max(mx[bi], p[kb]); cnt[bi]++;
+            }
+            int w = 0; float ww = -1f;
+            for (int i = 0; i < Bins; i++) if (cnt[i] > 0 && mx[i] - mn[i] > ww) { ww = mx[i] - mn[i]; w = i; }
+            float wp = lo + (w + 0.5f) / Bins * len;
+            float unitFix = len < 0.1f ? 100f : (len > 10f ? 0.01f : 1f);
+            bool nearLo = Mathf.Abs(wp - b.min[k]) < Mathf.Abs(wp - b.max[k]);
+            return (nearLo ? b.max[k] - wp : wp - b.min[k]) * unitFix;
+        }
+
+        /// <summary>Platform Animation 폴더의 FBX마다 들어 있는 모션 이름 → FBX 경로</summary>
+        static Dictionary<string, string> PlatformClipIndex()
+        {
+            var map = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            foreach (var guid in AssetDatabase.FindAssets("t:AnimationClip", new[] { PLATFORM_ANIM }))
+            {
+                string p = AssetDatabase.GUIDToAssetPath(guid);
+                if (!p.EndsWith(".fbx", StringComparison.OrdinalIgnoreCase)) continue;
+                foreach (var o in AssetDatabase.LoadAllAssetsAtPath(p))
+                    if (o is AnimationClip c && !c.name.StartsWith("__preview__") && !map.ContainsKey(c.name)) map[c.name] = p;
+            }
+            return map;
+        }
+
         /// <summary>
         /// UAL 모션 전부로 굽는 설정 (검 + 임시 원판 방패). 뼈대가 같으므로 리타깃 없이 그대로 재생하고, 자세 보정은 끈다.
         /// 모션마다 첫 프레임의 가장 낮은 발이 바닥에 닿도록 높이만 한 번 맞추고, 바닥 아래로 내려가는 것만 막는다.
@@ -276,6 +567,10 @@ namespace CardGame.EditorTools
             s.layers.Clear();
             s.layerClipPrefixes.Clear();
             s.layerPaletteColors = 12;
+            s.splitLayers = false;
+            s.offHandIK = false;
+            s.keepClipFacing = false;
+            s.fistGrip = false;
             s.paletteSwap = false;
             s.skinColors = 5; s.clothColors = 6; s.leatherColors = 6; s.metalColors = 4; s.darkColors = 3;
             AddDefaultTextureRules(s);

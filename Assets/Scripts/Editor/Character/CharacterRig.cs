@@ -29,8 +29,9 @@ namespace CardGame.EditorTools
         /// Layer: 무기 레이어 하나 (몸은 깊이만 써서 가림막)
         /// LayerAlone: 무기 레이어 하나, 가림막 없이 (윤곽선 판단용)
         /// LayerId: 색 교체를 쓰는 레이어(방패)의 부위 번호 (몸은 깊이만 써서 가림막)
+        /// LayerIdAlone: 위와 같지만 가림막 없이 (앞뒤로 나눠 구울 때)
         /// </summary>
-        public enum Pass { All, Fit, Body, BodyId, Layer, LayerAlone, LayerId }
+        public enum Pass { All, Fit, Body, BodyId, Layer, LayerAlone, LayerId, LayerIdAlone }
 
         class DrawItem
         {
@@ -103,6 +104,41 @@ namespace CardGame.EditorTools
             Build();
         }
 
+        /// <summary>
+        /// 열려 있는 씬(targetScene)에 조립한다 (모션 편집 장면용). 씬 파일에는 저장되지 않게(DontSave) 표시한다.
+        /// 굽기와 같은 조립(옷, 머리, 무기 쥐기, 방패)이지만 그리기는 씬의 원래 재질로 보인다.
+        /// </summary>
+        public CharacterRig(CharacterBakeSetup setup, Scene targetScene)
+        {
+            this.setup = setup;
+            externalScene = targetScene.IsValid();
+            if (externalScene) scene = targetScene;
+            ResetFrame();
+            Build();
+            if (externalScene && root != null)
+                foreach (var t in root.GetComponentsInChildren<Transform>(true)) t.gameObject.hideFlags = HideFlags.DontSave;
+        }
+
+        bool externalScene;
+        public GameObject Root => root;
+        public Animator Animator => animator;
+        /// <summary>첫 프레임 발 높이 맞춤 값 (모션마다 다르다)</summary>
+        public float GroundOffset => clipOffsetY;
+
+        /// <summary>무기 레이어 중 고른 것만 보이게 한다 (편집 장면용. 굽기는 그릴 때 하나씩 고르므로 쓰지 않는다).</summary>
+        public void ShowLayers(ICollection<int> visible)
+        {
+            for (int i = 0; i < layerRoots.Count; i++)
+                if (layerRoots[i] != null) layerRoots[i].gameObject.SetActive(visible != null && visible.Contains(i));
+        }
+
+        /// <summary>재생용 그래프를 없앤다 (편집 장면에서 Animation 창이 자세를 넣게).</summary>
+        public void ReleaseGraph()
+        {
+            if (graph.IsValid()) graph.Destroy();
+            currentClip = null;
+        }
+
         // ───────────────────────── 조립 ─────────────────────────
 
         void Build()
@@ -111,7 +147,7 @@ namespace CardGame.EditorTools
             if (s.baseModel == null) { Warnings += "기본 몸(baseModel)이 비어 있습니다.\n"; return; }
             if (Shader.Find(ShaderName) == null) { Warnings += $"셰이더 {ShaderName} 를 찾을 수 없습니다. Assets/Art3D/Shaders 를 확인하세요.\n"; return; }
 
-            scene = EditorSceneManager.NewPreviewScene();
+            if (!externalScene) scene = EditorSceneManager.NewPreviewScene();
 
             root = Spawn(s.baseModel, "bake_body");
             root.transform.SetPositionAndRotation(Vector3.zero, Quaternion.identity);
@@ -197,6 +233,8 @@ namespace CardGame.EditorTools
                         {
                             strike = t; strikeTip = tip;
                             strikeChosen = L.strikePoint;
+                            // 왼손 IK 기준 자루 (BuildWeapon 이 방금 잰 값)
+                            ikWeapon = t; ikHandleLocal = lastHandleLocal; ikShaftEndLocal = lastShaftEndLocal; ikGripLocal = lastGripLocal;
                         }
                     }
                 }
@@ -643,6 +681,17 @@ namespace CardGame.EditorTools
             Vector3 axisB = Vector3.zero; axisB[kb] = bSign;
             tipLocal = tip;
 
+            // 자루 범위 (왼손 IK용): 손잡이 끝부터, 가장 넓은 곳(머리)에서 손잡이 쪽으로 걸어가 폭이 절반 아래로 줄어드는 곳까지
+            {
+                int hb = widest; int stepB = handleAtLo ? -1 : 1;
+                // 꼭짓점이 없는 칸(긴 원통 자루의 가운데)도 자루로 본다
+                while (hb + stepB >= 0 && hb + stepB < Bins && binCount[hb] > 0 && binMax[hb] - binMin[hb] > widestW * 0.5f) hb += stepB;
+                float shaftEnd = bladeType ? headEnd : lo + (hb + (handleAtLo ? 1f : 0f)) / Bins * len;
+                lastHandleLocal = center; lastHandleLocal[k] = handleEnd;
+                lastShaftEndLocal = center; lastShaftEndLocal[k] = shaftEnd;
+                lastGripLocal = gripPoint;
+            }
+
             // 단위가 cm로 들어와 100배 작거나 큰 무기를 자동으로 맞춘다
             float unitFix = len < 0.1f ? 100f : (len > 10f ? 0.01f : 1f);
             float scale = w.scale * unitFix;
@@ -796,7 +845,63 @@ namespace CardGame.EditorTools
             output.SetSourcePlayable(clipPlayable);
             graph.Play();
             FaceForward();
+            if (setup.fistGrip && !fistGripDone) FitWeaponsToFist();
             GroundFromFirstFrame();
+        }
+
+        // ───────────────────────── 주먹 안 쥐기 ─────────────────────────
+
+        bool fistGripDone;
+        public string fistGripInfo = "";
+
+        /// <summary>세 점을 지나는 원의 중심</summary>
+        static Vector3 CircleCenter(Vector3 a, Vector3 b, Vector3 c)
+        {
+            Vector3 ab = b - a, ac = c - a, n = Vector3.Cross(ab, ac);
+            if (n.sqrMagnitude < 1e-12f) return (a + c) * 0.5f;
+            return a + (Vector3.Cross(n, ab) * ac.sqrMagnitude + Vector3.Cross(ac, n) * ab.sqrMagnitude) / (2f * n.sqrMagnitude);
+        }
+
+        /// <summary>굽은 손가락(검지·중지·약지의 01·02·03 마디)이 감싸는 원의 중심 평균 = 주먹 안 자루가 지나갈 곳</summary>
+        bool FistCenter(string side, out Vector3 center)
+        {
+            center = Vector3.zero; int n = 0;
+            foreach (var f in new[] { "index", "middle", "ring" })
+            {
+                var b1 = Bone(f + "_01" + side); var b2 = Bone(f + "_02" + side); var b3 = Bone(f + "_03" + side);
+                if (b1 == null || b2 == null || b3 == null) continue;
+                center += CircleCenter(b1.position, b2.position, b3.position); n++;
+            }
+            if (n == 0) return false;
+            center /= n; return true;
+        }
+
+        /// <summary>
+        /// 첫 모션 0프레임에서 무기마다 쥔 손의 주먹 중심을 구해, 자루 축이 그 점을 지나도록 무기를 축과 수직으로만 옮긴다 (손 로컬에 고정되므로 모든 모션에 같이 적용).
+        /// </summary>
+        void FitWeaponsToFist()
+        {
+            fistGripDone = true;
+            skipFixes = true; Sample(0f); skipFixes = false;
+            var sb = new System.Text.StringBuilder();
+            for (int i = 0; i < setup.layers.Count && i < layerRoots.Count; i++)
+            {
+                var L = setup.layers[i]; var w = layerRoots[i];
+                if (L == null || w == null || L.isShield) continue;
+                string side = L.boneName.EndsWith("_l") ? "_l" : "_r";
+                if (!FistCenter(side, out Vector3 c)) continue;
+                var mf = w.GetComponentInChildren<MeshFilter>(); if (mf == null || mf.sharedMesh == null) continue;
+                var mb = mf.sharedMesh.bounds;
+                int k = mb.size.x >= mb.size.y && mb.size.x >= mb.size.z ? 0 : (mb.size.y >= mb.size.z ? 1 : 2);
+                Vector3 a = mb.center, b = mb.center; a[k] -= mb.extents[k]; b[k] += mb.extents[k];
+                Vector3 A = mf.transform.TransformPoint(a), B = mf.transform.TransformPoint(b), d = (B - A).normalized;
+                Vector3 onAxis = A + d * Vector3.Dot(c - A, d);
+                Vector3 move = c - onAxis;                 // 축과 수직 방향만 (자루 위 쥐는 위치는 그대로)
+                w.position += move;
+                sb.Append($"{L.name} {move.magnitude * 100f:0.0}cm, ");
+            }
+            fistGripInfo = sb.ToString();
+            Info += "주먹 안으로 옮김: " + fistGripInfo + "\n";
         }
 
         /// <summary>첫 프레임에서 가장 낮은 발바닥이 바닥(0)에 닿도록 모션 전체의 높이를 한 번 정한다.</summary>
@@ -820,6 +925,13 @@ namespace CardGame.EditorTools
         void FaceForward()
         {
             root.transform.rotation = Quaternion.identity;
+            if (setup.keepClipFacing && currentClip != null && currentClip.humanMotion)
+            {
+                // 팩이 정한 방향 그대로: 루트 앞 = +Z(화면 오른쪽). 몸이 카메라 쪽으로 돌아간 정도는 모션이 정한 대로 둔다.
+                Sample(0f);
+                facingInfo = "원래 루트 방향 유지 (정면 보정 안 함)";
+                return;
+            }
             skipFixes = true;
             Sample(0f);
             skipFixes = false;
@@ -844,6 +956,7 @@ namespace CardGame.EditorTools
         {
             poseReady = false;
             if (!graph.IsValid()) return;
+            float ikNeighborW = (setup.offHandIK && !skipFixes) ? IkNeighborWeight(t) : 0f;
             root.transform.position = Vector3.zero;
             clipPlayable.SetTime(t);
             clipPlayable.SetTime(t); // 두 번 넣어야 이전 시간과의 차이(이동량)가 생기지 않는다
@@ -854,6 +967,121 @@ namespace CardGame.EditorTools
             foreach (var f in feet) f.preSole = Sole(f);
             FlattenFeet();
             PlantFeet();
+            if (setup.offHandIK) OffHandIK(ikNeighborW);
+        }
+
+        // ───────────────────────── 양손 무기: 왼손 IK ─────────────────────────
+
+        Transform ikWeapon;
+        Vector3 ikHandleLocal, ikShaftEndLocal, ikGripLocal;            // 기준 무기의 자루 양 끝과 오른손 쥐는 곳 (무기 로컬)
+        Vector3 lastHandleLocal, lastShaftEndLocal, lastGripLocal;      // BuildWeapon 이 마지막으로 잰 값
+        const float IkNear = 0.40f, IkFar = 0.55f;   // 이 거리 안이면 완전히 붙이고, 이 거리 밖이면 그대로
+        const float IkRightHandGap = 0.12f;          // 오른손 쥐는 곳에서 이만큼은 비워 둔다 (두 손이 겹치지 않게)
+        public string ikInfo = "";                    // 점검용: 마지막 프레임의 거리·무게
+
+        /// <summary>왼손 주먹 안쪽(자루가 지나갈 곳). 오른손 자동 쥐기와 같은 규칙: 손가락 뿌리 가운데에서 손가락 쪽으로 2.5cm.</summary>
+        bool LeftGrip(out Vector3 grip, out Vector3 gripAxis)
+        {
+            grip = gripAxis = Vector3.zero;
+            var hand = Bone("hand_l"); var i1 = Bone("index_01_l"); var p1 = Bone("pinky_01_l");
+            if (hand == null || i1 == null || p1 == null) return false;
+            if (setup.fistGrip && FistCenter("_l", out Vector3 fc))
+            {
+                // 주먹 안쪽 중심 (오른손 무기와 같은 규칙)
+                grip = fc; gripAxis = (i1.position - p1.position).normalized;
+                return true;
+            }
+            Vector3 knuckle = (i1.position + p1.position) * 0.5f;
+            gripAxis = (i1.position - p1.position).normalized;
+            Vector3 fingerDir = Vector3.ProjectOnPlane(knuckle - hand.position, gripAxis).normalized;
+            var i2 = Bone("index_02_l"); var p2 = Bone("pinky_02_l");
+            if (i2 != null && p2 != null)
+            {
+                Vector3 f = Vector3.ProjectOnPlane((i2.position + p2.position) * 0.5f - knuckle, gripAxis);
+                if (f.sqrMagnitude > 1e-8f) fingerDir = f.normalized;
+            }
+            grip = knuckle + fingerDir * 0.025f;
+            return true;
+        }
+
+        /// <summary>지금 자세에서 왼손이 붙을 자루 위 점과 거리. 오른손 주변은 피한다.</summary>
+        bool ShaftTarget(out Vector3 target, out Vector3 shaftDir, out float dist, out Vector3 grip, out Vector3 gripAxis)
+        {
+            target = shaftDir = Vector3.zero; dist = float.MaxValue;
+            if (!LeftGrip(out grip, out gripAxis) || ikWeapon == null) return false;
+            Vector3 a = ikWeapon.TransformPoint(ikHandleLocal), b = ikWeapon.TransformPoint(ikShaftEndLocal), g = ikWeapon.TransformPoint(ikGripLocal);
+            Vector3 ab = b - a; float L = ab.magnitude; if (L < 1e-4f) return false;
+            shaftDir = ab / L;
+            float tg = Vector3.Dot(g - a, shaftDir), tp = Mathf.Clamp(Vector3.Dot(grip - a, shaftDir), 0f, L);
+            // 오른손 자리(쥐는 곳 ± 12cm)는 비워 둔다: 가까운 쪽 가장자리로 민다 (넘치면 반대쪽)
+            if (Mathf.Abs(tp - tg) < IkRightHandGap)
+            {
+                float lo = tg - IkRightHandGap, hi = tg + IkRightHandGap;
+                float pick = (tp < tg) ? lo : hi;
+                if (pick < 0f || pick > L) pick = (pick == lo) ? hi : lo;
+                tp = Mathf.Clamp(pick, 0f, L);
+            }
+            target = a + shaftDir * tp;
+            dist = Vector3.Distance(grip, target);
+            return true;
+        }
+
+        float IkRawWeight(float d) => d <= IkNear ? 1f : (d >= IkFar ? 0f : Mathf.SmoothStep(1f, 0f, (d - IkNear) / (IkFar - IkNear)));
+
+        /// <summary>
+        /// 왼팔 두 뼈 IK. 오른손과 무기는 움직이지 않는다. 무게는 앞뒤 프레임 거리로 부드럽게(0.25/0.5/0.25) 해서 툭 붙지 않게 한다.
+        /// 팔꿈치 방향은 원래 자세를 따른다. 손은 쥐는 축을 자루 방향으로 돌린다 (손가락은 그대로).
+        /// </summary>
+        /// <summary>앞뒤 프레임(±1프레임)의 무게 합 (0.25씩). 그 시각 자세를 잠깐 만들어 거리만 잰다. 현재 자세를 만들기 전에 부른다.</summary>
+        float IkNeighborWeight(float t)
+        {
+            if (ikWeapon == null || currentClip == null) return 0f;
+            float dt = 1f / Mathf.Max(1, setup.fps), sum = 0f;
+            foreach (float o in new[] { -dt, dt })
+            {
+                float tt = Mathf.Clamp(t + o, 0f, currentClip.length);
+                root.transform.position = Vector3.zero;
+                clipPlayable.SetTime(tt); clipPlayable.SetTime(tt); graph.Evaluate(0f);
+                root.transform.position = Vector3.up * clipOffsetY;
+                sum += 0.25f * (ShaftTarget(out _, out _, out float dn, out _, out _) ? IkRawWeight(dn) : 0f);
+            }
+            return sum;
+        }
+
+        void OffHandIK(float neighborW)
+        {
+            var upper = Bone("upperarm_l"); var lower = Bone("lowerarm_l"); var hand = Bone("hand_l");
+            if (upper == null || lower == null || hand == null || ikWeapon == null || currentClip == null) return;
+            float wSum = neighborW;
+
+            if (!ShaftTarget(out Vector3 target, out Vector3 shaftDir, out float d, out Vector3 grip, out Vector3 gripAxis)) return;
+            float w = Mathf.Clamp01(wSum + 0.5f * IkRawWeight(d));
+            ikInfo = $"d={d * 100f:0}cm w={w:0.00}";
+            if (w <= 0.001f) return;
+
+            // 손 회전: 쥐는 축을 자루 방향(현재와 가까운 쪽 부호)으로
+            Quaternion handRot0 = hand.rotation;
+            Vector3 sd = Vector3.Dot(gripAxis, shaftDir) >= 0f ? shaftDir : -shaftDir;
+            Quaternion handRot1 = Quaternion.Slerp(handRot0, Quaternion.FromToRotation(gripAxis, sd) * handRot0, w);
+            // 손목 목표: 새 손 회전에서 주먹 안쪽이 자루 점에 오도록
+            Vector3 gripOff = handRot1 * (Quaternion.Inverse(handRot0) * (grip - hand.position));
+            Vector3 wristTarget = Vector3.Lerp(hand.position, target - gripOff, w);
+
+            // 두 뼈 IK (팔꿈치는 원래 굽은 방향 유지, 다 펴지지 않게 99.5%까지만)
+            Vector3 A = upper.position, B = lower.position, C = hand.position;
+            float l1 = Vector3.Distance(A, B), l2 = Vector3.Distance(B, C);
+            Vector3 toT = wristTarget - A; float D = Mathf.Clamp(toT.magnitude, Mathf.Abs(l1 - l2) + 1e-3f, (l1 + l2) * 0.995f);
+            Vector3 dir = toT.normalized;
+            Vector3 pole = Vector3.ProjectOnPlane(B - A, dir);
+            if (pole.sqrMagnitude < 1e-8f) pole = Vector3.ProjectOnPlane(Vector3.down, dir);
+            pole.Normalize();
+            float x = (l1 * l1 - l2 * l2 + D * D) / (2f * D);
+            float h = Mathf.Sqrt(Mathf.Max(0f, l1 * l1 - x * x));
+            Vector3 newB = A + dir * x + pole * h;
+            upper.rotation = Quaternion.FromToRotation(B - A, newB - A) * upper.rotation;
+            Vector3 c1 = hand.position;
+            lower.rotation = Quaternion.FromToRotation(c1 - lower.position, (A + dir * D) - lower.position) * lower.rotation;
+            hand.rotation = handRot1;
         }
 
         // ───────────────────────── 카메라 ─────────────────────────
@@ -974,7 +1202,7 @@ namespace CardGame.EditorTools
                 if (readback != null) UnityEngine.Object.DestroyImmediate(readback);
                 readback = new Texture2D(bw, bh, TextureFormat.RGBA32, false, false) { hideFlags = HideFlags.HideAndDontSave };
             }
-            bool idPass = pass == Pass.BodyId || pass == Pass.LayerId;
+            bool idPass = pass == Pass.BodyId || pass == Pass.LayerId || pass == Pass.LayerIdAlone;
             if (idPass && rtId == null)
             {
                 // 부위 번호는 색 변환 없이 그대로 읽어야 해서 선형 텍스처에 그린다
@@ -1040,6 +1268,8 @@ namespace CardGame.EditorTools
                         else if (it.layer == layer && it.idMats != null) mats = it.idMats;
                         else continue;
                         break;
+                    case Pass.LayerIdAlone:
+                        if (it.layer != layer || it.idMats == null) continue; mats = it.idMats; break;
                     default: // LayerAlone
                         if (it.layer != layer) continue; mats = it.mats; break;
                 }
@@ -1103,7 +1333,8 @@ namespace CardGame.EditorTools
             if (rt != null) { rt.Release(); UnityEngine.Object.DestroyImmediate(rt); rt = null; }
             if (rtId != null) { rtId.Release(); UnityEngine.Object.DestroyImmediate(rtId); rtId = null; }
             if (readback != null) { UnityEngine.Object.DestroyImmediate(readback); readback = null; }
-            if (scene.IsValid()) EditorSceneManager.ClosePreviewScene(scene);
+            if (externalScene) { if (root != null) UnityEngine.Object.DestroyImmediate(root); }
+            else if (scene.IsValid()) EditorSceneManager.ClosePreviewScene(scene);
             root = null;
         }
     }

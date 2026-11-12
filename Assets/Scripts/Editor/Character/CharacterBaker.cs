@@ -34,6 +34,12 @@ namespace CardGame.EditorTools
             public string indexImage;
             [Tooltip("색 교체 팔레트 PNG (한 줄 = 색 세트 하나, 맨 위 줄이 기본 색)")]
             public string paletteImage;
+            [Tooltip("원본 모션 파일의 반복 설정 (팩이 공격 모션도 반복으로 표시한 경우가 있어 따로 적는다)")]
+            public bool packLoop;
+            [Tooltip("무기 레이어를 앞뒤로 나눴으면 [\"back\",\"front\"]. 파일은 layers/이름/모션_back.png, 모션_front.png. 비어 있으면 한 장(모션.png).")]
+            public string[] layerParts;
+            [Tooltip("그리는 순서 (먼저 그리는 것부터)")]
+            public string[] drawOrder;
         }
 
         /// <summary>
@@ -94,13 +100,30 @@ namespace CardGame.EditorTools
 
         static string ShortName(string n) { int bar = n.LastIndexOf('|'); return bar >= 0 ? n.Substring(bar + 1) : n; }
 
+        // ───────── 모션 편집본 (Assets/Art/motion_edits) ─────────
+        // 편집본(.anim)은 이름이 원래 모션과 달라서, 이름으로 정하는 것(무기 레이어, 반복, json의 clip)은 원래 모션 이름을 쓴다.
+        static readonly Dictionary<AnimationClip, AnimationClip> editSource = new Dictionary<AnimationClip, AnimationClip>();
+        // 편집 설정의 반복 지정 (굽는 동안만)
+        static readonly Dictionary<AnimationClip, bool> loopOverride = new Dictionary<AnimationClip, bool>();
+
+        /// <summary>원래 모션 이름 (편집본이면 복사해 온 팩 모션 이름)</summary>
+        public static string SourceName(AnimationClip clip)
+            => clip != null && editSource.TryGetValue(clip, out var src) && src != null ? src.name : (clip != null ? clip.name : "");
+
+        /// <summary>편집본을 원래 모션과 이어 둔다 (미리보기 창이 쓴다).</summary>
+        public static void RegisterEditCopy(AnimationClip copy, AnimationClip source)
+        {
+            if (copy == null) return;
+            if (source == null) editSource.Remove(copy); else editSource[copy] = source;
+        }
+
         /// <summary>이 모션에 무기 레이어 li를 굽는지</summary>
         public static bool LayerApplies(CharacterBakeSetup s, int li, AnimationClip clip)
         {
             var L = s.layers[li];
             if (L == null || L.prefab == null || string.IsNullOrEmpty(L.name)) return false;
             if (s.layerClipPrefixes.Count == 0) return true;
-            string n = ShortName(clip.name);
+            string n = ShortName(SourceName(clip));
             foreach (var pre in s.layerClipPrefixes)
                 if (!string.IsNullOrEmpty(pre) && n.StartsWith(pre, StringComparison.OrdinalIgnoreCase)) return true;
             return false;
@@ -108,7 +131,8 @@ namespace CardGame.EditorTools
 
         static string LayerFolder(CharacterBakeSetup s, int li) => s.outputFolder.TrimEnd('/') + "/layers/" + PixelArtUtil.SafeName(s.layers[li].name);
 
-        public static bool IsLoop(AnimationClip clip) => clip.isLooping || CharacterArtImport.LooksLooping(clip.name);
+        public static bool IsLoop(AnimationClip clip)
+            => loopOverride.TryGetValue(clip, out bool v) ? v : clip.isLooping || CharacterArtImport.LooksLooping(SourceName(clip));
 
         public static int FrameCount(AnimationClip clip, CharacterBakeSetup s)
         {
@@ -187,8 +211,47 @@ namespace CardGame.EditorTools
             rig.UseFrame(w, h, piv, g);
         }
 
-        /// <summary>모션 하나 굽기. 저장한 PNG 경로를 돌려준다.</summary>
+        /// <summary>
+        /// 모션 하나 굽기. 저장한 PNG 경로를 돌려준다.
+        /// Platform 무기별 세트는 모션 편집본(motion_edits/세트/모션.anim)이 있으면 팩 모션 대신 그걸 굽고,
+        /// 편집 설정(모션.json)에 타격 프레임·반복이 적혀 있으면 그 값을 쓴다.
+        /// </summary>
         public static string BakeClip(CharacterRig rig, CharacterBakeSetup.ClipEntry entry)
+        {
+            var s = rig.setup;
+            if (entry == null || entry.clip == null) return null;
+            string name = MotionEditData.OutName(entry);
+            if (!MotionEditData.TrySetOf(s, out string set)) return BakeClipCore(rig, entry);
+
+            var ms = MotionEditData.LoadSettings(set, name);
+            var edited = MotionEditData.LoadEditClip(set, name);
+            if (edited == null && (ms == null || (!ms.hitFrame.HasValue && !ms.loop.HasValue))) return BakeClipCore(rig, entry);
+
+            var e = new CharacterBakeSetup.ClipEntry
+            {
+                bake = entry.bake, clip = edited != null ? edited : entry.clip, outputName = name,
+                findHitFrame = entry.findHitFrame, hitFrameOverride = entry.hitFrameOverride,
+            };
+            if (ms != null && ms.hitFrame.HasValue)
+            {
+                e.hitFrameOverride = ms.hitFrame.Value;      // -1 = 타격 없음
+                e.findHitFrame = false;
+            }
+            bool hadSource = editSource.ContainsKey(e.clip);
+            if (edited != null) editSource[edited] = entry.clip;
+            if (ms != null && ms.loop.HasValue) loopOverride[e.clip] = ms.loop.Value;
+            Debug.Log($"[모션 편집] {name}: {(edited != null ? "편집본 사용" : "팩 모션")}"
+                + (ms != null && ms.hitFrame.HasValue ? $", 타격 프레임 {ms.hitFrame.Value}" : "")
+                + (ms != null && ms.loop.HasValue ? $", 반복 {(ms.loop.Value ? "켬" : "끔")}" : ""));
+            try { return BakeClipCore(rig, e); }
+            finally
+            {
+                loopOverride.Remove(e.clip);
+                if (edited != null && !hadSource) editSource.Remove(edited);
+            }
+        }
+
+        static string BakeClipCore(CharacterRig rig, CharacterBakeSetup.ClipEntry entry)
         {
             var s = rig.setup;
             var clip = entry.clip;
@@ -241,7 +304,7 @@ namespace CardGame.EditorTools
 
             var info = new ClipInfo
             {
-                clip = clip.name,
+                clip = SourceName(clip),
                 fps = s.fps,
                 frames = n,
                 frameWidth = fw,
@@ -298,6 +361,11 @@ namespace CardGame.EditorTools
             var lay = new Dictionary<int, List<Color32[]>>();
             foreach (int li in lis) lay[li] = new List<Color32[]>(n);
             var tip = new Vector2[n];
+            bool split = s.splitLayers;
+            // 앞뒤로 나눌 때: 프레임마다 레이어 실루엣(가림막 없이)과 '몸 앞에 보이는' 칸 표시
+            var silMask = new Dictionary<int, List<bool[]>>();
+            var frontMask = new Dictionary<int, List<bool[]>>();
+            if (split) foreach (int li in lis) { silMask[li] = new List<bool[]>(n); frontMask[li] = new List<bool[]>(n); }
             var outlineIdx = sp != null ? new Color32((byte)sp.Outline, 0, 0, 255) : (Color32)s.outlineColor;
             for (int i = 0; i < n; i++)
             {
@@ -313,6 +381,27 @@ namespace CardGame.EditorTools
                 {
                     var px = rig.RenderPass(CharacterRig.Pass.Layer, li);
                     var alone = rig.RenderPass(CharacterRig.Pass.LayerAlone, li);
+                    if (split)
+                    {
+                        // 몸에 자르지 않은 온전한 모양을 굽고, 몸 앞에 보이는 칸만 따로 표시해 둔다 (나누기는 깜빡임 정리 뒤에)
+                        var sil = new bool[alone.Length]; var fr = new bool[alone.Length];
+                        for (int p = 0; p < alone.Length; p++) { sil[p] = alone[p].a != 0; fr[p] = sil[p] && px[p].a != 0; }
+                        silMask[li].Add(sil); frontMask[li].Add(fr);
+                        Color32[] full;
+                        if (SwapLayer(s, sp, li))
+                        {
+                            full = ToIndex(alone, rig.RenderPass(CharacterRig.Pass.LayerIdAlone, li), sp);
+                            if (s.outline) PixelArtUtil.AddLayerOutline(full, null, fw, fh, outlineIdx);
+                        }
+                        else
+                        {
+                            full = alone;
+                            if (rig.LayerPalettes != null && rig.LayerPalettes[li] != null) PixelArtUtil.Quantize(full, rig.LayerPalettes[li]);
+                            if (s.outline) PixelArtUtil.AddLayerOutline(full, null, fw, fh, s.outlineColor);
+                        }
+                        lay[li].Add(full);
+                        continue;
+                    }
                     if (SwapLayer(s, sp, li))
                     {
                         // 방패: 몸과 같은 칸 번호로 (옷 색을 바꾸면 방패 판도 같이 바뀐다)
@@ -356,6 +445,25 @@ namespace CardGame.EditorTools
             var names = new List<string>();
             foreach (int li in lis)
             {
+                if (split)
+                {
+                    SplitBackFront(lay[li], silMask[li], frontMask[li], body, fw, fh, out var back, out var front);
+                    foreach (var part in new[] { ("back", back), ("front", front) })
+                    {
+                        string pp = $"{LayerFolder(s, li)}/{name}_{part.Item1}.png";
+                        if (SwapLayer(s, sp, li))
+                        {
+                            var row = sp.Row(s.outlineColor);
+                            var colorFrames = new List<Color32[]>(n);
+                            foreach (var f in part.Item2) colorFrames.Add(FromIndex(f, row));
+                            PixelArtUtil.SaveStrip(pp, colorFrames, fw, fh, pivot, s.spritePixelsPerUnit);
+                            PixelArtUtil.SaveStrip($"{LayerFolder(s, li)}/{name}_{part.Item1}_idx.png", part.Item2, fw, fh, pivot, s.spritePixelsPerUnit, true);
+                        }
+                        else PixelArtUtil.SaveStrip(pp, part.Item2, fw, fh, pivot, s.spritePixelsPerUnit);
+                    }
+                    names.Add(PixelArtUtil.SafeName(s.layers[li].name));
+                    continue;
+                }
                 string lp = $"{LayerFolder(s, li)}/{name}.png";
                 if (SwapLayer(s, sp, li))
                 {
@@ -371,17 +479,52 @@ namespace CardGame.EditorTools
 
             var info = new ClipInfo
             {
-                clip = clip.name, fps = s.fps, frames = n, frameWidth = fw, frameHeight = fh,
+                clip = SourceName(clip), fps = s.fps, frames = n, frameWidth = fw, frameHeight = fh,
                 columns = cols, rows = (n + cols - 1) / cols, pivotX = pivX, pivotY = gy,
                 loop = IsLoop(clip), hitFrame = hit,
                 layers = names.ToArray(),
                 indexImage = idxPng != null ? System.IO.Path.GetFileName(idxPng) : "",
                 paletteImage = sp != null ? "_palette_swap.png" : "",
+                packLoop = clip.isLooping,
+                layerParts = split ? new[] { "back", "front" } : new string[0],
+                drawOrder = split ? new[] { "layer_back", "body", "layer_front" } : new[] { "body", "layer" },
             };
             string json = $"{folder}/{name}.json";
             File.WriteAllText(Path.Combine(Directory.GetCurrentDirectory(), json), JsonUtility.ToJson(info, true));
             AssetDatabase.ImportAsset(json);
             return png;
+        }
+
+        /// <summary>
+        /// 온전한 레이어 프레임을 몸 뒤(back)와 몸 앞(front)으로 나눈다. 둘을 합치면 원래 프레임과 똑같다.
+        /// 실루엣 안: 몸에 가려지지 않고 보이면 앞, 가려지면 뒤.
+        /// 실루엣 밖(윤곽선, 깜빡임 정리로 생긴 칸): 아래에 몸이 없거나 옆 칸이 앞이면 앞, 아니면 뒤.
+        /// </summary>
+        static void SplitBackFront(List<Color32[]> full, List<bool[]> sil, List<bool[]> front, List<Color32[]> body,
+            int w, int h, out List<Color32[]> back, out List<Color32[]> fore)
+        {
+            back = new List<Color32[]>(full.Count); fore = new List<Color32[]>(full.Count);
+            for (int f = 0; f < full.Count; f++)
+            {
+                var src = full[f]; var S = sil[f]; var F = front[f]; var B = body[f];
+                var b = new Color32[src.Length]; var fr = new Color32[src.Length];
+                for (int y = 0; y < h; y++)
+                    for (int x = 0; x < w; x++)
+                    {
+                        int i = y * w + x;
+                        if (src[i].a == 0) continue;
+                        bool isFront;
+                        if (S[i]) isFront = F[i];
+                        else
+                        {
+                            isFront = B[i].a == 0
+                                || (x > 0 && F[i - 1]) || (x < w - 1 && F[i + 1])
+                                || (y > 0 && F[i - w]) || (y < h - 1 && F[i + w]);
+                        }
+                        if (isFront) fr[i] = src[i]; else b[i] = src[i];
+                    }
+                back.Add(b); fore.Add(fr);
+            }
         }
 
         /// <summary>이 레이어를 몸 색 교체 칸 번호로 굽는지 (방패)</summary>
@@ -655,6 +798,142 @@ namespace CardGame.EditorTools
             return pal;
         }
 
+        [Serializable]
+        class LayerOrderInfo
+        {
+            public string note;
+            public string[] drawOrder;
+            public string[] layers;
+            public string[] shields;
+            public string backFile;
+            public string frontFile;
+        }
+
+        /// <summary>앞뒤로 나눈 레이어의 그리는 순서를 {폴더}/_layers.json 에 적는다.</summary>
+        static void WriteLayerOrder(CharacterBakeSetup s)
+        {
+            var names = new List<string>(); var shields = new List<string>();
+            foreach (var L in s.layers)
+            {
+                if (L == null || L.prefab == null || string.IsNullOrEmpty(L.name)) continue;
+                names.Add(PixelArtUtil.SafeName(L.name));
+                if (L.isShield) shields.Add(PixelArtUtil.SafeName(L.name));
+            }
+            var info = new LayerOrderInfo
+            {
+                note = "무기·방패는 몸에 맞춰 자르지 않았다. back(몸 뒤) → 몸 → front(몸 앞) 순서로 그린다. back+front = 온전한 모양이라 다른 캐릭터 몸에도 쓸 수 있다.",
+                drawOrder = new[] { "layer_back", "body", "layer_front" },
+                layers = names.ToArray(), shields = shields.ToArray(),
+                backFile = "layers/{layer}/{clip}_back.png", frontFile = "layers/{layer}/{clip}_front.png",
+            };
+            string rel = s.outputFolder.TrimEnd('/') + "/_layers.json";
+            File.WriteAllText(Path.Combine(Directory.GetCurrentDirectory(), rel), JsonUtility.ToJson(info, true));
+            AssetDatabase.ImportAsset(rel);
+        }
+
+        // ───────── 모션 편집 미리보기 (굽기와 같은 그리기, 깜빡임 정리만 빠짐) ─────────
+
+        /// <summary>저장된 팔레트 파일이 다 있는지 (미리보기는 팔레트를 새로 만들지 않는다: 그림 폴더에 쓰지 않기 위해)</summary>
+        public static bool HasSavedPalettes(CharacterBakeSetup s)
+        {
+            string cwd = Directory.GetCurrentDirectory();
+            if (s.paletteSwap && !File.Exists(Path.Combine(cwd, SwapPalettePath(s)))) return false;
+            for (int li = 0; li < s.layers.Count; li++)
+            {
+                if (s.layers[li] == null || s.layers[li].prefab == null) continue;
+                if (!File.Exists(Path.Combine(cwd, LayerFolder(s, li) + "/_palette.png"))) return false;
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// 미리보기 준비: 굽기처럼 첫 모션으로 무기를 주먹에 맞춘 뒤, 이 모션을 넣고 프레임 크기를 정한다. 프레임 수를 돌려준다.
+        /// </summary>
+        public static int PreparePreview(CharacterRig rig, AnimationClip clip, AnimationClip firstBakeClip)
+        {
+            var s = rig.setup;
+            if (Layered(s) && HasSavedPalettes(s)) EnsurePalettes(rig, new List<CharacterBakeSetup.ClipEntry>());
+            if (firstBakeClip != null) rig.SetClip(firstBakeClip);
+            rig.SetClip(null);   // 같은 모션을 다시 넣어도 처음부터 다시 맞추게
+            rig.SetClip(clip);
+            int n = FrameCount(clip, s);
+            if (s.autoExpandFrame) FitFrame(rig, clip, s, n); else rig.ResetFrame();
+            return n;
+        }
+
+        /// <summary>
+        /// 미리보기 한 프레임: 고른 레이어의 뒤쪽 → 몸 → 앞쪽 순서로 겹친 색 그림 (왼쪽 아래부터, rig.Width x rig.Height).
+        /// 색 교체 팔레트·윤곽선·앞뒤 나누기는 굽기와 같다. 깜빡임 정리는 프레임 여러 장이 필요해서 빠진다.
+        /// </summary>
+        public static Color32[] RenderPreviewFrame(CharacterRig rig, AnimationClip clip, int i, IList<int> layers)
+        {
+            var s = rig.setup;
+            int fw = rig.Width, fh = rig.Height;
+            var sp = rig.Swap;
+            var outlineIdx = sp != null ? new Color32((byte)sp.Outline, 0, 0, 255) : (Color32)s.outlineColor;
+            var row = sp != null ? sp.Row(s.outlineColor) : null;
+            rig.Sample(FrameTime(clip, s, i));
+
+            var raw = rig.RenderPass(CharacterRig.Pass.Body, -1);
+            Color32[] body;
+            if (sp != null) body = ToIndex(raw, rig.RenderPass(CharacterRig.Pass.BodyId, -1), sp);
+            else { body = raw; if (rig.AutoPalette != null) PixelArtUtil.Quantize(body, rig.AutoPalette); }
+            if (s.outline) PixelArtUtil.AddOutline(body, fw, fh, outlineIdx);
+
+            var backs = new List<Color32[]>(); var fronts = new List<Color32[]>();
+            if (layers != null)
+                foreach (int li in layers)
+                {
+                    if (li < 0 || li >= s.layers.Count || !LayerApplies(s, li, clip)) continue;
+                    var px = rig.RenderPass(CharacterRig.Pass.Layer, li);
+                    var alone = rig.RenderPass(CharacterRig.Pass.LayerAlone, li);
+                    bool swap = SwapLayer(s, sp, li);
+                    if (s.splitLayers)
+                    {
+                        var sil = new bool[alone.Length]; var fr = new bool[alone.Length];
+                        for (int p = 0; p < alone.Length; p++) { sil[p] = alone[p].a != 0; fr[p] = sil[p] && px[p].a != 0; }
+                        Color32[] full;
+                        if (swap)
+                        {
+                            full = ToIndex(alone, rig.RenderPass(CharacterRig.Pass.LayerIdAlone, li), sp);
+                            if (s.outline) PixelArtUtil.AddLayerOutline(full, null, fw, fh, outlineIdx);
+                        }
+                        else
+                        {
+                            full = alone;
+                            if (rig.LayerPalettes != null && rig.LayerPalettes[li] != null) PixelArtUtil.Quantize(full, rig.LayerPalettes[li]);
+                            if (s.outline) PixelArtUtil.AddLayerOutline(full, null, fw, fh, s.outlineColor);
+                        }
+                        SplitBackFront(new List<Color32[]> { full }, new List<bool[]> { sil }, new List<bool[]> { fr },
+                            new List<Color32[]> { body }, fw, fh, out var back, out var front);
+                        backs.Add(swap ? FromIndex(back[0], row) : back[0]);
+                        fronts.Add(swap ? FromIndex(front[0], row) : front[0]);
+                    }
+                    else
+                    {
+                        if (swap)
+                        {
+                            px = ToIndex(px, rig.RenderPass(CharacterRig.Pass.LayerId, li), sp);
+                            if (s.outline) PixelArtUtil.AddLayerOutline(px, alone, fw, fh, outlineIdx);
+                            px = FromIndex(px, row);
+                        }
+                        else
+                        {
+                            if (rig.LayerPalettes != null && rig.LayerPalettes[li] != null) PixelArtUtil.Quantize(px, rig.LayerPalettes[li]);
+                            if (s.outline) PixelArtUtil.AddLayerOutline(px, alone, fw, fh, s.outlineColor);
+                        }
+                        fronts.Add(px);
+                    }
+                }
+
+            var o = new Color32[fw * fh];
+            void Over(Color32[] src) { for (int p = 0; p < o.Length; p++) if (src[p].a != 0) o[p] = src[p]; }
+            foreach (var b in backs) Over(b);
+            Over(sp != null ? FromIndex(body, row) : body);
+            foreach (var f in fronts) Over(f);
+            return o;
+        }
+
         /// <summary>설정에서 체크된 모션을 전부 굽는다.</summary>
         public static void BakeAll(CharacterBakeSetup s)
         {
@@ -689,6 +968,7 @@ namespace CardGame.EditorTools
                 EditorUtility.ClearProgressBar();
                 rig.Dispose();
             }
+            if (s.splitLayers) WriteLayerOrder(s);
             if (!string.IsNullOrEmpty(rig.Warnings)) Debug.LogWarning("[캐릭터 굽기] 참고:\n" + rig.Warnings);
             var folder = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(s.outputFolder.TrimEnd('/'));
             if (folder != null) EditorGUIUtility.PingObject(folder);

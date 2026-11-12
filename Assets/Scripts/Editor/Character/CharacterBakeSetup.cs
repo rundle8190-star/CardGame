@@ -131,6 +131,14 @@ namespace CardGame.EditorTools
         public List<string> layerClipPrefixes = new List<string>();
         [Tooltip("무기 레이어마다 쓸 고정 팔레트 색 수")]
         [Range(4, 32)] public int layerPaletteColors = 12;
+        [Tooltip("켜면 무기·방패를 몸에 맞춰 자르지 않고, 몸 뒤 부분(_back)과 몸 앞 부분(_front) 두 장으로 나눠 굽는다. 게임은 back → 몸 → front 순서로 그린다. 둘을 합치면 온전한 모양이라 다른 캐릭터 몸에도 같이 쓸 수 있다.")]
+        public bool splitLayers = false;
+        [Tooltip("양손 무기용. 매 프레임 왼팔을 IK로 움직여 왼손이 자루를 쥐게 한다 (오른손과 무기는 그대로). 손이 자루에서 40cm 안이면 붙이고, 55cm 넘게 떨어진 한 손 동작은 그대로 둔다. 기준 무기는 strikePoint 레이어(없으면 첫 무기).")]
+        public bool offHandIK = false;
+        [Tooltip("휴머노이드 모션의 원래 루트 방향을 그대로 쓴다 (모션마다 0프레임 정면 보정을 하지 않는다). Platform Animation처럼 루트는 옆을 보고 몸은 일부러 카메라 쪽으로 돌려 둔 팩용. 모든 모션이 같은 기준이라 모션을 바꿔도 몸 방향이 튀지 않는다.")]
+        public bool keepClipFacing = false;
+        [Tooltip("무기 자루가 쥔 주먹 한가운데를 지나게 맞춘다. 첫 모션 0프레임의 굽은 손가락(검지·중지·약지 세 마디)으로 주먹 중심을 구해 무기를 옆으로 옮긴다. 자루 위 쥐는 위치(손잡이 끝에서의 거리)는 그대로.")]
+        public bool fistGrip = false;
 
         [Header("부위별 팔레트 (게임에서 색 교체)")]
         [Tooltip("켜면 몸 시트 색을 부위별 칸(피부, 천, 가죽, 금속, 어두운 곳)으로 나눠 정하고, 칸 번호를 담은 인덱스 이미지(_idx.png)와 색 교체 팔레트(_palette_swap.png)를 같이 만든다.")]
