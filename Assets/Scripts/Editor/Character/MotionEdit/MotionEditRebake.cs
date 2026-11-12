@@ -24,6 +24,14 @@ namespace CardGame.EditorTools
             var marked = MotionEditData.Marked();
             var markedTl = MotionEditData.MarkedTimelines();
             if (marked.Count + markedTl.Count == 0) { EditorUtility.DisplayDialog("모션 편집", "굽기 표시된 모션·Timeline 이 없어요.\n미리보기 창의 '굽기 표시'를 켜 주세요.", "확인"); return; }
+            // 결과가 애매한 Timeline 만 미리 알린다 (트랙 여러 개는 층으로 겹치므로 그 자체는 괜찮다)
+            var warn = new StringBuilder();
+            foreach (var kv in markedTl)
+            {
+                var tl = AssetDatabase.LoadAssetAtPath<UnityEngine.Timeline.TimelineAsset>(MotionEditData.TimelinePath(kv.Key, kv.Value));
+                foreach (var w in MotionEditTimeline.Warnings(tl)) warn.AppendLine($"[{kv.Key}/{kv.Value}] {w}");
+            }
+            if (warn.Length > 0 && !EditorUtility.DisplayDialog("모션 편집 - 확인해 주세요", warn + "\n그래도 구울까요?", "굽기", "취소")) return;
 
             var sb = new StringBuilder();
             var t0 = DateTime.Now;

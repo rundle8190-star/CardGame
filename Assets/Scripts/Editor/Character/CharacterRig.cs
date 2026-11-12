@@ -137,6 +137,7 @@ namespace CardGame.EditorTools
         {
             if (graph.IsValid()) graph.Destroy();
             tlClips = null;
+            tlOver = null;
             currentClip = null;
         }
 
@@ -829,6 +830,7 @@ namespace CardGame.EditorTools
             if (clip == currentClip && graph.IsValid()) return;
             if (graph.IsValid()) graph.Destroy();
             tlClips = null;
+            tlOver = null;
             currentClip = clip;
             useDirect = false;
             clipOffsetY = 0f;
@@ -859,13 +861,48 @@ namespace CardGame.EditorTools
                     tlPlayables[i] = AnimationClipPlayable.Create(graph, MotionEditTimeline.ClipOf(tlClips[i]));
                     tlPlayables[i].SetApplyFootIK(false);
                 }
-                if (tlClips.Count == 1) output.SetSourcePlayable(tlPlayables[0]);   // 하나면 섞지 않고 그대로 (모션 굽기와 같은 결과)
+                Playable basePlayable;
+                if (tlClips.Count == 1) basePlayable = tlPlayables[0];   // 하나면 섞지 않고 그대로 (모션 굽기와 같은 결과)
                 else
                 {
                     tlMixer = AnimationMixerPlayable.Create(graph, tlClips.Count);
                     for (int i = 0; i < tlClips.Count; i++) graph.Connect(tlPlayables[i], 0, tlMixer, i);
-                    output.SetSourcePlayable(tlMixer);
+                    basePlayable = tlMixer;
                 }
+                // 덮는 층 (두 번째 트랙부터): 트랙이 하나뿐이면 층 섞기를 아예 만들지 않는다 (예전 결과 그대로)
+                var layers = MotionEditTimeline.Layers(tl);
+                tlOver = new List<OverLayer>();
+                if (layers.Count > 1)
+                {
+                    tlLayerMixer = AnimationLayerMixerPlayable.Create(graph, layers.Count);
+                    graph.Connect(basePlayable, 0, tlLayerMixer, 0);
+                    tlLayerMixer.SetInputWeight(0, 1f);
+                    for (int li = 1; li < layers.Count; li++)
+                    {
+                        var L = layers[li];
+                        var o = new OverLayer
+                        {
+                            clips = L.clips,
+                            playables = new AnimationClipPlayable[L.clips.Count],
+                            weights = new float[L.clips.Count],
+                            local = new double[L.clips.Count],
+                            mixer = AnimationMixerPlayable.Create(graph, L.clips.Count),
+                            input = li,
+                        };
+                        for (int i = 0; i < L.clips.Count; i++)
+                        {
+                            o.playables[i] = AnimationClipPlayable.Create(graph, MotionEditTimeline.ClipOf(L.clips[i]));
+                            o.playables[i].SetApplyFootIK(false);
+                            graph.Connect(o.playables[i], 0, o.mixer, i);
+                        }
+                        graph.Connect(o.mixer, 0, tlLayerMixer, li);
+                        if (L.mask != null) tlLayerMixer.SetLayerMaskFromAvatarMask((uint)li, L.mask);
+                        tlLayerMixer.SetInputWeight(li, 0f);
+                        tlOver.Add(o);
+                    }
+                    output.SetSourcePlayable(tlLayerMixer);
+                }
+                else output.SetSourcePlayable(basePlayable);
             }
             else
             {
@@ -885,6 +922,17 @@ namespace CardGame.EditorTools
         AnimationMixerPlayable tlMixer;
         float[] tlWeights; double[] tlLocal;
         double tlDuration;
+        // 덮는 층 (Timeline 두 번째 Animation 트랙부터)
+        class OverLayer
+        {
+            public List<UnityEngine.Timeline.TimelineClip> clips;
+            public AnimationClipPlayable[] playables;
+            public AnimationMixerPlayable mixer;
+            public float[] weights; public double[] local;
+            public int input;
+        }
+        List<OverLayer> tlOver;
+        AnimationLayerMixerPlayable tlLayerMixer;
 
         /// <summary>t초 자세를 그래프에 넣는다 (모션 하나 또는 Timeline)</summary>
         void EvalPose(float t)
@@ -898,6 +946,18 @@ namespace CardGame.EditorTools
                     tlPlayables[i].SetTime(tlLocal[i]);
                     if (tlClips.Count > 1) tlMixer.SetInputWeight(i, tlWeights[i]);
                 }
+                if (tlOver != null)
+                    foreach (var o in tlOver)
+                    {
+                        float lw = MotionEditTimeline.OverrideWeights(o.clips, t, tlDuration, o.weights, o.local);
+                        for (int i = 0; i < o.clips.Count; i++)
+                        {
+                            o.playables[i].SetTime(o.local[i]);
+                            o.playables[i].SetTime(o.local[i]);
+                            o.mixer.SetInputWeight(i, o.weights[i]);
+                        }
+                        tlLayerMixer.SetInputWeight(o.input, lw);
+                    }
             }
             else
             {

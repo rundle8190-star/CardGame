@@ -900,7 +900,8 @@ namespace CardGame.EditorTools
                 File.WriteAllText(json, text);
                 AssetDatabase.ImportAsset(s.outputFolder.TrimEnd('/') + "/" + name + ".json");
             }
-            Debug.Log($"[모션 편집] Timeline {name} 굽기: 클립 {clips.Count}개, {tl.duration:0.00}초" + (existing != null ? " (같은 이름 모션 결과를 바꿈)" : " (새 모션)"));
+            int layerCount = MotionEditTimeline.Layers(tl).Count;
+            Debug.Log($"[모션 편집] Timeline {name} 굽기: 트랙 {layerCount}개(층), 바탕 클립 {clips.Count}개, {tl.duration:0.00}초" + (existing != null ? " (같은 이름 모션 결과를 바꿈)" : " (새 모션)"));
             return png;
         }
 

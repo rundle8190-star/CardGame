@@ -2,6 +2,7 @@
 // Assets/Art/motion_edits/<세트>/timelines/<이름>.playable : 모션 클립을 놓고 자르기(clip in·길이), 속도, 블렌드를 Timeline 창에서 고친다.
 // 굽기·미리보기는 Timeline의 클립 배치(시작, 길이, clip in, 속도, 블렌드 곡선)를 그대로 따라 굽기 리그에서 직접 섞어 재생한다
 // (PlayableDirector 를 쓰지 않아서 루트 이동 처리가 모션 굽기와 같다 → 한 모션 Timeline은 원래 모션과 같은 결과).
+// 음소거 안 된 Animation 트랙은 모두 층으로 겹친다: 아래 트랙이 위 트랙을 덮고, 마스크가 있으면 그 부위만 덮는다.
 using System;
 using System.Collections.Generic;
 using UnityEditor;
@@ -42,20 +43,95 @@ namespace CardGame.EditorTools
             UnityEngine.Object.DestroyImmediate(proxy);
         }
 
-        /// <summary>굽는 클립: 첫 번째(음소거 안 된) Animation 트랙의 모션 클립들, 시작 순서</summary>
+        /// <summary>굽기에 쓰는 Animation 트랙 하나 (= 섞기 층 하나)</summary>
+        public class Layer
+        {
+            public AnimationTrack track;
+            public List<TimelineClip> clips;
+            /// <summary>Apply Avatar Mask 가 켜져 있을 때의 마스크 (없으면 null = 온몸)</summary>
+            public AvatarMask mask;
+            /// <summary>다른 Animation 트랙 안에 든 덮어쓰기 트랙(Override Track)인지</summary>
+            public bool isOverride;
+        }
+
+        /// <summary>
+        /// 굽는 층: 음소거 안 된 Animation 트랙 전부, Timeline 창 위에서 아래 순서 (덮어쓰기 트랙은 부모 바로 다음).
+        /// 첫 층이 바탕, 아래 층일수록 위 층을 덮는다 (클립이 살아 있는 동안만, 마스크가 있으면 마스크 부위만).
+        /// 부모 트랙이 음소거면 그 안의 덮어쓰기 트랙도 뺀다. 모션 클립이 없는 트랙은 뺀다.
+        /// </summary>
+        public static List<Layer> Layers(TimelineAsset tl)
+        {
+            var list = new List<Layer>();
+            if (tl == null) return list;
+            void Walk(TrackAsset t, bool parentMuted, bool insideAnim)
+            {
+                bool muted = parentMuted || t.muted;
+                if (!muted && t is AnimationTrack at)
+                {
+                    var cl = new List<TimelineClip>();
+                    foreach (var c in at.GetClips())
+                        if (c.asset is AnimationPlayableAsset a && a.clip != null) cl.Add(c);
+                    cl.Sort((a, b) => a.start.CompareTo(b.start));
+                    if (cl.Count > 0)
+                        list.Add(new Layer { track = at, clips = cl, mask = at.applyAvatarMask ? at.avatarMask : null, isOverride = insideAnim });
+                }
+                foreach (var ch in t.GetChildTracks()) Walk(ch, muted, insideAnim || t is AnimationTrack);
+            }
+            foreach (var r in tl.GetRootTracks()) Walk(r, false, false);
+            return list;
+        }
+
+        /// <summary>굽기 전에 알려 줄 점 (결과가 Unity Timeline 미리보기와 다를 수 있는 것). 없으면 빈 목록.</summary>
+        public static List<string> Warnings(TimelineAsset tl)
+        {
+            var w = new List<string>();
+            var layers = Layers(tl);
+            if (layers.Count == 0) { w.Add("음소거 안 된 Animation 트랙에 모션 클립이 없어요."); return w; }
+            for (int i = 0; i < layers.Count; i++)
+            {
+                var L = layers[i];
+                string tn = $"'{L.track.name}' 트랙";
+                if (i == 0 && L.mask != null)
+                    w.Add($"{tn}: 맨 위(바탕) 트랙의 마스크는 굽기에서 쓰지 않아요 (온몸으로 굽습니다).");
+                if (i > 0 && L.mask != null && !L.isOverride)
+                    w.Add($"{tn}: 따로 된 트랙에 마스크가 있어요. Unity Timeline 미리보기에선 마스크 밖 부위가 기본 자세(T자)로 보이지만, 굽기는 마스크 부위만 덮어요. 위 트랙 안의 덮어쓰기 트랙(Override Track)으로 넣으면 둘이 같아집니다.");
+                if (L.track.trackOffset != TrackOffset.Auto && (L.track.position != Vector3.zero || L.track.eulerAngles != Vector3.zero))
+                    w.Add($"{tn}: 트랙 위치·회전 보정값은 굽기에서 쓰지 않아요.");
+                foreach (var c in L.clips)
+                    if (c.asset is AnimationPlayableAsset a && (a.position != Vector3.zero || a.eulerAngles != Vector3.zero))
+                    { w.Add($"{tn} '{c.displayName}': 클립 위치·회전 보정값은 굽기에서 쓰지 않아요."); break; }
+            }
+            return w;
+        }
+
+        /// <summary>굽는 바탕 클립: 첫 번째 층(음소거 안 된 맨 위 Animation 트랙)의 모션 클립들, 시작 순서</summary>
         public static List<TimelineClip> AnimClips(TimelineAsset tl)
         {
-            var list = new List<TimelineClip>();
-            if (tl == null) return list;
-            foreach (var track in tl.GetOutputTracks())
+            var layers = Layers(tl);
+            return layers.Count > 0 ? layers[0].clips : new List<TimelineClip>();
+        }
+
+        /// <summary>
+        /// 덮는 층(두 번째 층부터)의 t초 무게. Timeline 과 같은 규칙: 클립 구간 안이면 섞기 곡선 무게,
+        /// 클립 밖이어도 앞·뒤 늘이기(Hold, Loop 등)가 켜져 있는 구간이면 무게 1, 그 밖은 0.
+        /// w 는 층 안 비율(합 1로 맞춤), 돌려주는 값 = 층 무게(0~1, 0이면 위 층이 그대로 보임).
+        /// </summary>
+        public static float OverrideWeights(List<TimelineClip> clips, double t, double duration, float[] w, double[] local)
+        {
+            if (t > duration) t = duration;
+            float sum = 0f;
+            for (int i = 0; i < clips.Count; i++)
             {
-                if (!(track is AnimationTrack at) || at.muted) continue;
-                foreach (var c in at.GetClips())
-                    if (c.asset is AnimationPlayableAsset a && a.clip != null) list.Add(c);
-                if (list.Count > 0) break;
+                var c = clips[i];
+                bool inside = t >= c.start && (t < c.end || (t <= c.end && c.end >= duration - 1e-6));
+                if (inside) { w[i] = c.EvaluateMixIn(t) * c.EvaluateMixOut(t); local[i] = c.ToLocalTime(t); }
+                else if ((c.hasPreExtrapolation || c.hasPostExtrapolation) && t >= c.extrapolatedStart && t < c.extrapolatedStart + c.extrapolatedDuration)
+                { w[i] = 1f; local[i] = c.ToLocalTime(t); }
+                else { w[i] = 0f; local[i] = c.ToLocalTimeUnbound(Math.Min(Math.Max(t, c.start), c.end)); }
+                sum += w[i];
             }
-            list.Sort((a, b) => a.start.CompareTo(b.start));
-            return list;
+            if (sum > 1e-6f) for (int i = 0; i < clips.Count; i++) w[i] /= sum;
+            return Mathf.Clamp01(sum);
         }
 
         public static AnimationClip ClipOf(TimelineClip c) => (c.asset as AnimationPlayableAsset)?.clip;
