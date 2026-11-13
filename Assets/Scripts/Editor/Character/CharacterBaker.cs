@@ -177,7 +177,7 @@ namespace CardGame.EditorTools
         /// 큰 캔버스에 모든 프레임을 한 번 그려 보고, 캐릭터가 기본 프레임 밖으로 나가면 그 모션만 프레임을 넓힌다.
         /// 발 위치(기준점)는 프레임 안에서 같은 자리를 유지하도록 왼쪽·아래 여백만큼 옮긴다.
         /// </summary>
-        static void FitFrame(CharacterRig rig, AnimationClip clip, CharacterBakeSetup s, int n)
+        static void FitFrame(CharacterRig rig, AnimationClip clip, CharacterBakeSetup s, int n, bool log = true)
         {
             rig.ResetFrame();
             int baseW = rig.Width, baseH = rig.Height, basePiv = rig.PivotX, baseG = rig.Ground;
@@ -210,7 +210,7 @@ namespace CardGame.EditorTools
             int h = Mathf.Max(baseH, g + needUp);
             // 8의 배수로 맞춰 둔다
             w = (w + 7) / 8 * 8; h = (h + 7) / 8 * 8;
-            if (w != baseW || h != baseH)
+            if (log && (w != baseW || h != baseH))
                 Debug.Log($"[캐릭터 굽기] {clip.name}: 프레임이 잘려서 {baseW}x{baseH} → {w}x{h} 로 넓혔습니다.");
             rig.UseFrame(w, h, piv, g);
         }
@@ -931,7 +931,7 @@ namespace CardGame.EditorTools
             rig.SetClip(null);   // 같은 모션을 다시 넣어도 처음부터 다시 맞추게
             rig.SetClip(clip);
             int n = FrameCount(clip, s);
-            if (s.autoExpandFrame) FitFrame(rig, clip, s, n); else rig.ResetFrame();
+            if (s.autoExpandFrame) FitFrame(rig, clip, s, n, log: false); else rig.ResetFrame();   // 미리보기는 안내를 남기지 않는다 (창에 크기가 보임)
             return n;
         }
 

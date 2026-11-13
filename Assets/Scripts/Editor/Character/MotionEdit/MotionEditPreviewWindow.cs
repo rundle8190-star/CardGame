@@ -38,26 +38,44 @@ namespace CardGame.EditorTools
         string message = "";
         Vector2 scroll;
 
+        // 가볍게 보기: 고칠 때마다 도트 그림을 처음부터 다시 만들지 않는다 (한 번에 1초 넘게 멈춤).
+        // 고친 뒤엔 '지금 도트로 보기'를 눌러야 새로 그리고, 프레임을 옮기면 멈춘 뒤 잠깐 있다가 그 한 장만 그린다.
+        public static bool Light { get => EditorPrefs.GetBool("CG_ME_light", true); set => EditorPrefs.SetBool("CG_ME_light", value); }
+        const double LightWait = 0.25;   // 프레임 옮기기를 멈추고 이만큼 지나야 그 프레임을 그린다
+        [System.NonSerialized] bool stale;            // 고친 뒤 아직 다시 안 그림
+        [System.NonSerialized] double frameMovedAt;
+        [System.NonSerialized] int lastMovedFrame = -1;
+        [System.NonSerialized] Texture2D lastTex;
+
         void OnEnable()
         {
             // 스크립트를 다시 읽으면 조립·그림이 사라지므로 처음부터 다시 그린다
             dirty = true; dirtyAt = 0; playing = false;
             AnimationUtility.onCurveWasModified += OnCurveModified;
-            Undo.undoRedoPerformed += MarkDirty;
+            Undo.undoRedoPerformed += MarkEdited;
             EditorApplication.update += Tick;
         }
 
         void OnDisable()
         {
             AnimationUtility.onCurveWasModified -= OnCurveModified;
-            Undo.undoRedoPerformed -= MarkDirty;
+            Undo.undoRedoPerformed -= MarkEdited;
             EditorApplication.update -= Tick;
             DisposeRig();
         }
 
         void OnCurveModified(AnimationClip c, EditorCurveBinding b, AnimationUtility.CurveModifiedType t)
         {
-            if (c != null && (c == clip || timeline != null)) MarkDirty();
+            // 이 창이 Reload 중에 만드는 Timeline 대리 모션도 이 알림을 보낸다 → 무시 (안 그러면 다시 그리기가 끝없이 반복됨)
+            if (reloading || c == null || c == proxy || (c.hideFlags & HideFlags.DontSave) != 0) return;
+            if (c == clip || timeline != null) MarkEdited();
+        }
+
+        /// <summary>모션·Timeline 을 고쳤을 때. 가볍게 보기면 표시만 하고, 아니면 예전처럼 다시 그린다.</summary>
+        void MarkEdited()
+        {
+            if (Light && rig != null && clip != null && !dirty) { stale = true; Repaint(); return; }
+            MarkDirty();
         }
 
         /// <summary>열린 미리보기 창을 다시 그리게 한다 (편집본을 만들거나 구운 뒤)</summary>
@@ -80,6 +98,7 @@ namespace CardGame.EditorTools
         {
             foreach (var t in cache.Values) if (t != null) DestroyImmediate(t);
             cache.Clear();
+            lastTex = null;
         }
 
         CharacterBakeSetup Setup => MotionEditData.LoadSetup(MotionEditScene.CharacterId, MotionEditScene.SetId);
@@ -91,6 +110,9 @@ namespace CardGame.EditorTools
             if (EditorApplication.isPlayingOrWillChangePlaymode) return;
             // 고치는 중에는 0.3초 쉬었다가 다시 그린다
             if (dirty && EditorApplication.timeSinceStartup - dirtyAt > 0.3) { Reload(); Repaint(); }
+            // 가볍게 보기: 프레임 옮기기를 멈추면 그 한 장을 그리러 다시 그린다
+            if (Light && !playing && !stale && lastMovedFrame == frame && !cache.ContainsKey(frame)
+                && EditorApplication.timeSinceStartup - frameMovedAt > LightWait) Repaint();
 
             if (playing && frames > 0)
             {
@@ -108,7 +130,7 @@ namespace CardGame.EditorTools
             if (timeline != null)
             {
                 int dc = EditorUtility.GetDirtyCount(timeline);
-                if (dc != tlDirtyCount) { tlDirtyCount = dc; MarkDirty(); }
+                if (dc != tlDirtyCount) { tlDirtyCount = dc; MarkEdited(); }
                 var dir = MotionEditScene.Director;
                 if (syncAnimWindow && dir != null && dir.playableAsset == timeline && rig != null && Mathf.Abs((float)dir.time - lastDirTime) > 1e-4f)
                 {
@@ -131,9 +153,19 @@ namespace CardGame.EditorTools
         }
 
         /// <summary>고른 것에 맞춰 조립(필요할 때만)하고, 모션을 넣어 프레임 크기를 다시 잰다.</summary>
+        [System.NonSerialized] bool reloading;
+
         void Reload()
         {
+            reloading = true;
+            try { ReloadCore(); }
+            finally { reloading = false; }
+        }
+
+        void ReloadCore()
+        {
             dirty = false;
+            stale = false;
             ClearCache();
             message = "";
             var s = Setup;
@@ -175,6 +207,24 @@ namespace CardGame.EditorTools
             if (!CharacterBaker.HasSavedPalettes(s)) message = "저장된 팔레트가 없어 색이 굽기와 다를 수 있어요 (먼저 이 세트를 한 번 구워 주세요).";
             frames = CharacterBaker.PreparePreview(rig, clip, MotionEditData.FirstBakeClip(s));
             frame = Mathf.Clamp(frame, 0, frames - 1);
+        }
+
+        /// <summary>
+        /// 지금 보여 줄 그림. 가볍게 보기면 고친 뒤(stale)엔 새로 그리지 않고, 프레임을 옮기는 중엔 마지막 그림을 그대로 둔다.
+        /// old = 지금 프레임 그림이 아니라 이전 그림을 보여 주는 중.
+        /// </summary>
+        Texture2D PreviewTexture(out bool old)
+        {
+            old = false;
+            if (cache.TryGetValue(frame, out var c) && c != null) { lastTex = c; return c; }
+            if (Light && !playing)
+            {
+                if (frame != lastMovedFrame) { lastMovedFrame = frame; frameMovedAt = EditorApplication.timeSinceStartup; }
+                if (stale || EditorApplication.timeSinceStartup - frameMovedAt <= LightWait) { old = lastTex != null; return lastTex; }
+            }
+            if (stale && lastTex != null) { old = true; return lastTex; }
+            lastTex = FrameTexture(frame);
+            return lastTex;
         }
 
         Texture2D FrameTexture(int i)
@@ -323,7 +373,17 @@ namespace CardGame.EditorTools
         {
             if (!string.IsNullOrEmpty(message)) EditorGUILayout.HelpBox(message, MessageType.Warning);
             if (dirty && rig == null) { EditorGUILayout.LabelField("준비 중…"); return; }
-            var tex = FrameTexture(frame);
+            var tex = PreviewTexture(out bool old);
+
+            EditorGUILayout.BeginHorizontal();
+            EditorGUI.BeginChangeCheck();
+            bool light = EditorGUILayout.ToggleLeft("가볍게 보기 (고칠 때 자동으로 다시 그리지 않음)", Light, GUILayout.Width(300));
+            if (EditorGUI.EndChangeCheck()) { Light = light; if (!light && stale) { MarkDirty(); dirtyAt = 0; } }
+            using (new EditorGUI.DisabledScope(rig == null))
+                if (GUILayout.Button(stale ? "지금 도트로 보기 (고친 내용 반영)" : "지금 도트로 보기", GUILayout.Height(20))) { MarkDirty(); dirtyAt = 0; }
+            EditorGUILayout.EndHorizontal();
+            if (stale) EditorGUILayout.HelpBox("고친 내용이 아직 이 그림에 없어요. '지금 도트로 보기'를 누르면 새로 그립니다 (1초쯤 걸려요).", MessageType.Info);
+            else if (old) EditorGUILayout.LabelField("프레임을 멈추면 그립니다…", EditorStyles.miniLabel);
 
             EditorGUILayout.BeginHorizontal();
             zoom = EditorGUILayout.IntPopup("배율", zoom, new[] { "2배", "3배", "4배" }, new[] { 2, 3, 4 }, GUILayout.Width(220));
