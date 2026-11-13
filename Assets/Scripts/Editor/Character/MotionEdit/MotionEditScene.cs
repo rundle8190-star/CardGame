@@ -50,6 +50,21 @@ namespace CardGame.EditorTools
             EditorSceneManager.sceneClosing += (scene, removing) => { if (scene.path == ScenePath) Clear(); };
             // 스크립트를 다시 읽으면(도메인 다시 불러오기) 씬에 남은 캐릭터와 연결이 끊긴다 → 다시 세운다
             EditorApplication.delayCall += () => { if (IsOpen && !EditorApplication.isPlayingOrWillChangePlaymode) Rebuild(); };
+            Camera.onPreCull += KeepInPlace;
+        }
+
+        /// <summary>
+        /// 제자리 보기: 장면 캐릭터가 앞뒤·옆으로 이동하지 않게 한다 (굽기와 같게: 수평 이동만 빼고 높이·회전은 그대로).
+        /// 모션·Timeline 파일은 건드리지 않고, 화면에 그리기 직전에 캐릭터 위치만 처음 자리로 돌려 놓는다.
+        /// </summary>
+        public static bool InPlace { get => EditorPrefs.GetBool("CG_ME_inplace", true); set => EditorPrefs.SetBool("CG_ME_inplace", value); }
+
+        static void KeepInPlace(Camera cam)
+        {
+            if (!InPlace || EditorApplication.isPlaying || sceneRig == null || sceneRig.Root == null) return;
+            var t = sceneRig.Root.transform;
+            var p = t.position;
+            if (p.x != 0f || p.z != 0f) t.position = new Vector3(0f, p.y, 0f);
         }
 
         public static bool IsOpen => SceneManager.GetActiveScene().path == ScenePath;

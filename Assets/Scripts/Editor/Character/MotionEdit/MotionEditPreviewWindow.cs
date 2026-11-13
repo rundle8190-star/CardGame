@@ -382,6 +382,9 @@ namespace CardGame.EditorTools
             using (new EditorGUI.DisabledScope(rig == null))
                 if (GUILayout.Button(stale ? "지금 도트로 보기 (고친 내용 반영)" : "지금 도트로 보기", GUILayout.Height(20))) { MarkDirty(); dirtyAt = 0; }
             EditorGUILayout.EndHorizontal();
+            EditorGUI.BeginChangeCheck();
+            bool inPlace = EditorGUILayout.ToggleLeft("3D 장면 제자리 보기 (앞으로 가는 이동 빼기, 굽기와 같음)", MotionEditScene.InPlace);
+            if (EditorGUI.EndChangeCheck()) { MotionEditScene.InPlace = inPlace; SceneView.RepaintAll(); }
             if (stale) EditorGUILayout.HelpBox("고친 내용이 아직 이 그림에 없어요. '지금 도트로 보기'를 누르면 새로 그립니다 (1초쯤 걸려요).", MessageType.Info);
             else if (old) EditorGUILayout.LabelField("프레임을 멈추면 그립니다…", EditorStyles.miniLabel);
 
