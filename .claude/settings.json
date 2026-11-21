@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "C:/Users/Rundle/.local/bin/graphify.EXE hook-guard search",
+            "command": "G=\"C:/Users/Rundle/.local/bin/graphify.EXE\"; [ -x \"$G\" ] || G=$(command -v graphify) || exit 0; \"$G\" hook-guard search",
             "timeout": 10
           }
         ]
@@ -16,7 +16,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "C:/Users/Rundle/.local/bin/graphify.EXE hook-guard read",
+            "command": "G=\"C:/Users/Rundle/.local/bin/graphify.EXE\"; [ -x \"$G\" ] || G=$(command -v graphify) || exit 0; \"$G\" hook-guard read",
             "timeout": 10
           }
         ]
@@ -28,7 +28,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "C:/Users/Rundle/.local/bin/graphify.EXE hook-guard compact",
+            "command": "G=\"C:/Users/Rundle/.local/bin/graphify.EXE\"; [ -x \"$G\" ] || G=$(command -v graphify) || exit 0; \"$G\" hook-guard compact",
             "timeout": 10
           }
         ]
@@ -40,18 +40,6 @@
       "source": {
         "source": "github",
         "repo": "DietrichGebert/ponytail"
-      }
-    },
-    "caveman": {
-      "source": {
-        "source": "github",
-        "repo": "JuliusBrussee/caveman"
-      }
-    },
-    "taste-skill": {
-      "source": {
-        "source": "github",
-        "repo": "Leonxlnx/taste-skill"
       }
     },
     "last30days-skill": {
@@ -75,8 +63,6 @@
   },
   "enabledPlugins": {
     "ponytail@ponytail": true,
-    "caveman@caveman": true,
-    "taste-skill@taste-skill": true,
     "last30days@last30days-skill": true,
     "watch@claude-video": true,
     "mattpocock-skills@claude-plugins-official": true
